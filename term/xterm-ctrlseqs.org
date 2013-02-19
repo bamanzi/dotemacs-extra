@@ -94,19 +94,16 @@ control sequences翻译为按键信息* :
     将它们与具体键码对应起来）。
 
 ** 烦人的细节
-  * 对于PC键盘，一个比较直观的键码表是mintty的wiki文档: [[http://code.google.com/p/mintty/wiki/Keycodes][Keycodes -
-    mintty - Character sequences sent by keys in mintty]] , 这比那份
-    [[http://euc.jp/i18n/ctlseqs.txt][Xterm control sequences]]要容易懂得多
-
+*** 关于control sequences
   * 同一个按键，可能有多种表示方法，不过你的TERM可能只支持其中一种。以
     =^[[= 开始的序列叫做[[http://en.wikipedia.org/wiki/ANSI_escape_code#CSI_codes][CSI序列]]，以 =^[O= 开始的序列叫做SS3序列，还有其
     它的序列。不过CSI算是“主流”，支持的按键比较多，受各种terminfo支持
     的比率也比较大(不过很多时候是混合使用的，比如下面的XFree86 xterm在
     F1..F4使用了SS3序列，在F5..F12使用了CSI序列);
 
-  * 对于Ctrl/Alt/Shift这些 ~modifier~, 是在类别前缀后面添加 /;m/ ，
-    * 这里m是个数字，其值本来是按位运算的规则来的，分别是: ~Shift: 1,
-      Alt: 2, Ctrl: 4~ ，不过还要再加上1。例如:
+  * 对于Ctrl/Alt/Shift这些 ~modifier~, 是在类别前缀后面添加 /;m/ ，这里
+    m是个数字，其值本来是按位运算的规则来的，分别是: ~Shift: 1, Alt:
+    2, Ctrl: 4~ ，不过还要再加上1。例如:
 
 #+begin_example
       | Key           | Ins      | Shift+Ins  | Alt+Ins    | Alt+Shift+Ins | Ctrl+Ins   | Ctrl+Shift+Ins | Ctrl+Alt+Ins |
@@ -114,13 +111,8 @@ control sequences翻译为按键信息* :
       | Xterm ctrlseq | ^[[2~    | ^[[2;2~    | ^[[2;3~    | ^[[2;4~       | ^[[2;5~    | ^[[2;6~        | ^[[2;7~      |
 #+end_example
 
-    * 注意Emacs处理Shift有点特殊：如果你按下 =Shift+F1= , 它会先按
-      =<S-f1>= 来查keybinding，如果没有绑定任何功能，则会自动检查不带
-      ~Shift~ 的组合（也就是<f1>），如果有对应命令，就调用。如果你用
-      =C-h k= 查看某个组合键是否存在绑定，它也会按上面的规则来检查，不
-      会提示 ~<S-f1> is undefined~ , 而是会把f1作为 =help-map= 的前缀键; 
 
-  * 关于功能键F1..F12
+*** 关于功能键F1..F12
 
     * 一个比较详细的列表 (来自: [[http://aperiodic.net/phil/archives/Geekery/term-function-keys.html][Terminal Function Key Escape Codes]]):
 #+begin_example
@@ -153,29 +145,41 @@ control sequences翻译为按键信息* :
       样的 ( =^[[24;6~= )。而rxvt和VT220的编码方式就完全不一样了（详情
       请查看[[http://aperiodic.net/phil/archives/Geekery/term-function-keys.html][Terminal Function Key Escape Codes]]);
 
-  * 关于Emacs里面的 =function-key-map=: Emacs里面有三个keymap用于“翻
-    译”按键信息: =input-decode-map=, =function-key-map= 和
-    =key-translation-map= , 功能比较接近，但也存在一些区别(详情可查看
-    [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Translation-Keymaps.html][Translation Keymaps - GNU Emacs Lisp Reference Manual]])：
+*** Emacs里面的一些细节
+    * 注意Emacs处理Shift有点特殊：如果你按下 =Shift+F1= , 它会先按
+      =<S-f1>= 来查keybinding，如果没有绑定任何功能，则会自动检查不带
+      ~Shift~ 的组合（也就是<f1>），如果有对应命令，就调用。如果你用
+      =C-h k= 查看某个组合键是否存在绑定，它也会按上面的规则来检查，不
+      会提示 ~<S-f1> is undefined~ , 而是会把f1作为 =help-map= 的前缀键; 
 
-    * 这三者的查找顺序是: =input-decode-map -> local-function-key-map ->
-      key-translation-map= 
-    * =function-key-map= 与另外两个的区别还有一个区别: 它不是全局性的，
-      而是可以针对多个键盘设备进行设置 (其实是
-      =local-function-key-map= ） 。不过，除非你在一个Emacs会话里使用多
-      种终端（比如daemon模式），否则你应该不会需要针对多种多个键盘设备
-      进行设置;
-    * 在具体能力上，三者差异倒不大，更多地只是约定俗成而已:
-      * =key-translation-map= 一般不用于Xterm control sequences的转换，而
-        是用于功能的替代，比如用<f11>替代<C-x>的功能:
+    * 关于Emacs里面的 =function-key-map=: Emacs里面有三个keymap用于“翻
+      译”按键信息: =input-decode-map=, =function-key-map= 和
+      =key-translation-map= , 功能比较接近，但也存在一些区别(详情可查看
+      [[http://www.gnu.org/software/emacs/manual/html_node/elisp/Translation-Keymaps.html][Translation Keymaps - GNU Emacs Lisp Reference Manual]])：
+
+      * 这三者的查找顺序是: =input-decode-map -> local-function-key-map ->
+        key-translation-map= 
+      * =function-key-map= 与另外两个的区别还有一个区别: 它不是全局性的，
+        而是可以针对多个键盘设备进行设置 (其实是
+        =local-function-key-map= ） 。不过，除非你在一个Emacs会话里使用多
+        种终端（比如daemon模式），否则你应该不会需要针对多种多个键盘设备
+        进行设置;
+      * 在具体能力上，三者差异倒不大，更多地只是约定俗成而已:
+        * =key-translation-map= 一般不用于Xterm control sequences的转换，而
+          是用于功能的替代，比如用<f11>替代<C-x>的功能:
 #+begin_src emacs-lisp
   (define-key key-translation-map (kbd "<f11>") (kbd "C-x"))
 #+end_src
-      * =input-decode-map= 的描述是 ~Keymap that decodes input escape
-        sequences~, 所以它的用途正是进行我们这里需要的（所以我觉得上面说
-        那个[[http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/xterm-extras.el][xterm-extra.el]]里面的用法并不太正确）
+        * =input-decode-map= 的描述是 ~Keymap that decodes input escape
+          sequences~, 所以它的用途正是进行我们这里需要的（所以我觉得上面说
+          那个[[http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/xterm-extras.el][xterm-extra.el]]里面的用法并不太正确）
 
-    * 各个终端上的快捷键序列:
+*** 各种终端
+   * 对于PC键盘，一个比较直观的键码表是mintty的wiki文档: [[http://code.google.com/p/mintty/wiki/Keycodes][Keycodes -
+     mintty - Character sequences sent by keys in mintty]] , 这比那份
+     [[http://euc.jp/i18n/ctlseqs.txt][Xterm control sequences]]要容易懂得多
+
+   * 各个终端上的快捷键序列:
 #+begin_example
       |          | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal |   |
       |----------+------------+--------------+----------+---------------+----------------+---|
@@ -256,9 +260,9 @@ control sequences翻译为按键信息* :
     端模拟器里面的应用程序，另一方面它自己又是一个终端模拟器，上面的三
     步曲要变成六步了。
 
-  * keypad
-    * 这篇Vim Tips里面提到了keypad键盘的control sequences: [[http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings][PuTTY
-      numeric keypad mappings - Vim Tips Wiki]]
+*** keypad
+    * 这篇Vim Tips里面提到了keypad键盘的control sequences:
+      [[http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings][PuTTY numeric keypad mappings - Vim Tips Wiki]]
     * keypad顶上那一排键(包括numlock本身)，在cat下显示是 ~/ * -~ 等键，
       在emacs里面却是 ~\eOP .. \eOS~ (跟XFree86 xterm的F1..F4)一致。读
       了一下Putty的文档才发现有个[[http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-appkeypad][Application Keypad]]功能，服务器端的程序
