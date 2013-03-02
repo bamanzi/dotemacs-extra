@@ -181,7 +181,7 @@
 !BackSpace::SendInput {Esc}[z3c
 ^BackSpace::SendInput {Esc}[z5c
 
-;;* ==== for numpad ====
+;;* ==== for keypad ====
 ;;http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings
 
 ;;for the top row, putty sends \eOP, \eOQ,\eOR \eOS,
