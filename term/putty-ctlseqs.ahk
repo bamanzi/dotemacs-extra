@@ -182,19 +182,27 @@ End::
 ;;Alft+Ins/Del/Home/End/PgUp/PgDwn work fine
 
 
+;;* ====== misc ==========
+;;; http://code.google.com/p/mintty/wiki/Keycodes#Special_keys
 
-;;* ====== some customized keys introducted by xterm-extra.el ======
-+Tab::SendInput {Esc}[z2a
-;!Tab::SendInput {Esc}[z3a
-^Tab::SendInput {Esc}[z5a
+;;+Tab::SendInput ^[[Z
+;!Tab
+^Tab::SendInput {Esc}[1;5I
 
-+Enter::SendInput {Esc}[z2b
-!Enter::SendInput {Esc}[z3b
-^Enter::SendInput {Esc}[z5b
+;;; Shift+Enter -> C-j
++Enter::SendInput ^j
+;;!Enter::SendInput {Esc}{Enter}
+^Enter::SendInput ^{^}
 
-+BackSpace::SendInput {Esc}[z2c
-!BackSpace::SendInput {Esc}[z3c
-^BackSpace::SendInput {Esc}[z5c
+
++BackSpace::SendInput {Esc}[3;2~
+;;; Alt+Bksp  = M-DEL  ^[[3;3~  or ^[^[[3~
+;!BackSpace::SendInput {Esc}^[[3~	
+;;; Ctrl+Bksp = ^_  (emacs: undo)
+^BackSpace::SendInput ^_
+;;; Ctrl+Shift+Bksp -> <C-S-delete>
+^+Backspace::SendInput {Esc}[3;6~
+
 
 ;;* ==== for keypad ====
 ;;http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings
@@ -209,13 +217,33 @@ End::
 
 ;;With the following scripts, keypad acts like normal PC keyboard:
 ;;when NumLock on, keypad sends 0-9 and +-*/
-;;when NumLock off, keypad send sequences \eOn .. \eOy
+;;when NumLock off, keypad send sequences \eOn .. \eOy (first row still sends 
 ~NumLock::return
-NumpadDiv:: SendInput /
-NumpadMult::SendInput *
-NumpadSub:: SendInput -
-NumpadAdd:: SendInput +
+NumpadDiv::
+  if GetKeyState("Numlock", "T")  
+    SendInput /
+  else
+    SendInput {Esc}OQ
+  return
+NumpadMult::
+  if GetKeyState("Numlock", "T")  
+    SendInput *
+  else
+    SendInput {Esc}OR
+  return
+NumpadSub::
+  if GetKeyState("Numlock", "T")  
+    SendInput -
+  else
+    SendInput {Esc}OS
+  return
 ;NumpadAdd:: SendInput {Esc}Ol
+NumpadAdd::
+  if GetKeyState("Numlock", "T")  
+    SendInput +
+  else
+    SendInput {Esc}OP
+  return
 NumpadEnter::SendInput {Enter}
 ;NumpadEnter::SendInput {Esc}Om
 
