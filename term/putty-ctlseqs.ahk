@@ -112,6 +112,21 @@
 ^!F12::SendInput {Esc}[24;7~
 
 ;;* ===== Cursor keys ==========
+Home::
+  if GetKeyState("Numlock", "T") 
+    ;; putty way
+    SendInput {Esc}[1~
+  else
+    ;; xterm 102/220 / gnome-terminal way
+    SendInput {Esc}OH
+  return
+End::
+  if GetKeyState("Numlock", "T")  
+    SendInput {Esc}[4~
+  else
+    SendInput {Esc}OF
+  return
+
 ;;** Shift+...
 ;;xterm-extra.el uses SS3 sequences
 +Up::SendInput    {Esc}O2A
