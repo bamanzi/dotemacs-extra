@@ -1,5 +1,18 @@
 ;;Let putty/mintty support more key-chords (such as Shift+F1, C-home)
-;;by sending corresponding XTerm control sequences on PuTTY
+;;by sending corresponding XTerm control sequences
+
+;;all of these sequences are translated from term/xterm.el .
+;;http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/term/xterm.el?h=emacs-23
+;;if emacs can't create keymap correctly from you TERM 
+;;you can force to load it
+;; (if (and (not (display-graphics-p))
+;;          (load-library "term/xterm"))
+;;   (terminal-init-xterm))
+
+;;with NumLock off, ambiguous keys would act as Xterm R6 compatibile
+;;with NumLock on, thses keys would act as Putty default settings 
+;;   (note: PuTTY's function key & keypad mode settings is not respected)
+
 
 ;;References:
 ;;http://code.google.com/p/mintty/wiki/Keycodes
@@ -15,6 +28,8 @@
 ;;http://blog.akinori.org/2013/01/18/pasting-a-text-literally-to-emacs-under-terminal/
 ;;http://www.joshstaiger.org/archives/2005/04/fixing_the_righ.html
 
+
+
 ;;AutoHotkey:  Ctrl ^ Alt ! Shift +
 ;;XTerm control sequences: Shift 1, Alt 2;;Ctrl  4
 
@@ -23,18 +38,52 @@
 #if WinActive("ahk_class PuTTY") or WinActive("ahk_class mintty") or WinActive("ahk_class SysTabControl32") or WinActive("ahk_class TMobaXtermForm") 
 
 ;;* ===== Fx ==========
+;;in default/VT400/VT100+ mode, putty sends ESC [11~ .. ESC [14~  (CSI sequences) for F1..F4 
+;;in Xterm R6 mode, putty sends ESC OP .. ESC OS (SS3 seqences) for F1..F4
+;;in Linux or SCO mode... who cares?
+;;http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-funkeys
+;;
+;;but xterm R6 & mintty/gnome-terminal/xfce-terminal send SS3 sequences
+F1::
+  if not GetKeyState("Numlock", "T")  
+    SendInput {F1}
+  else
+    SendInput {Esc}OP
+  return
+F2::
+  if not GetKeyState("Numlock", "T")  
+    SendInput {F2}
+  else
+    SendInput {Esc}OQ
+  return
+F3::
+  if not GetKeyState("Numlock", "T")  
+    SendInput {F3}
+  else
+    SendInput {Esc}OR
+  return
+F4::
+  if not GetKeyState("Numlock", "T")  
+    SendInput {F4}
+  else
+    SendInput {Esc}OS
+  return
+
+;;For F5..F12, most terminals sends ESC [15~ .. ESC[24~ (CSI sequences)
+ 
 ;;** Shift+Fx
+;;;;term/xterm.el maps both CSI and SS3 sequences for S-f1..S-f4 
+;;(but only SS3 for C-f1..C-f4, S-f1..S-f4, thus we use SS3 sequences
 ;;+F1::SendInput  {ESC}[1;2P
 ;;+F2::SendInput  {ESC}[1;2Q
 ;;+F3::SendInput  {ESC}[1;2R
 ;;+F4::SendInput  {ESC}[1;2S
-;;xterm-extra.el uses SS3 sequences
 +F1::SendInput  {ESC}O2P
 +F2::SendInput  {ESC}O2Q
 +F3::SendInput  {ESC}O2R
 +F4::SendInput  {ESC}O2S
-+F5::SendInput  {Esc}[15;2~
 
++F5::SendInput  {Esc}[15;2~
 +F6::SendInput  {Esc}[17;2~
 +F7::SendInput  {Esc}[18;2~
 +F8::SendInput  {Esc}[19;2~
@@ -44,7 +93,6 @@
 +F12::SendInput {Esc}[24;2~
 
 ;;** Alt+Fx
-;;xterm-extra.el uses SS3 sequences
 !F1::SendInput  {ESC}O3P
 !F2::SendInput  {ESC}O3Q
 !F3::SendInput  {ESC}O3R
@@ -60,19 +108,18 @@
 !F12::SendInput {Esc}[24;3~
 
 ;;** Alt+Shift+F1
-;;xterm-extra.el uses SS3 sequences
 +!F1::SendInput  {ESC}O4P
 +!F2::SendInput  {ESC}O4Q
 +!F3::SendInput  {ESC}O4R
 +!F4::SendInput  {ESC}O4S
+
 ;;** Ctrl+Fx
-;;xterm-extra.el uses SS3 sequences
 ^F1::SendInput  {ESC}O5P
 ^F2::SendInput  {ESC}O5Q
 ^F3::SendInput  {ESC}O5R
 ^F4::SendInput  {ESC}O5S
-^F5::SendInput  {Esc}[15;5~
 
+^F5::SendInput  {Esc}[15;5~
 ^F6::SendInput  {Esc}[17;5~
 ^F7::SendInput  {Esc}[18;5~
 ^F8::SendInput  {Esc}[19;5~
@@ -111,7 +158,11 @@
 ^!F11::SendInput {Esc}[23;7~
 ^!F12::SendInput {Esc}[24;7~
 
+
 ;;* ===== Cursor keys ==========
+;;Cursor keycodes without modifier keys depend on whether "application cursor key mode" 
+;;http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-appcursor
+;;http://code.google.com/p/mintty/wiki/Keycodes#Cursor_keys
 Home::
   if GetKeyState("Numlock", "T") 
     ;; putty way
@@ -128,41 +179,45 @@ End::
   return
 
 ;;** Shift+...
-;;xterm-extra.el uses SS3 sequences
-+Up::SendInput    {Esc}O2A
-+Down::SendInput  {Esc}O2B
-+Left::SendInput  {Esc}O2D
-+Right::SendInput {Esc}O2C
-+Home::SendInput  {ESC}O2H
-+End::SendInput   {ESC}O2F
++Up::SendInput    {Esc}[1;2A
++Down::SendInput  {Esc}[1;2B
++Left::SendInput  {Esc}[1;2D
++Right::SendInput {Esc}[1;2C
++Home::SendInput  {ESC}[1;2H
++End::SendInput   {ESC}[1;2F
+;;Other versions of xterm might emit these.
+;;+Up::SendInput    {Esc}O2A
+;;+Down::SendInput  {Esc}O2B
+;;+Left::SendInput  {Esc}O2D
+;;+Right::SendInput {Esc}O2C
+;;+Home::SendInput  {ESC}O2H
+;;+End::SendInput   {ESC}O2F
+
 
 ;;** Alt+...
 ;;Alt+Up/Down/Left/Right/ work fine
 ;;!Up::SendInput {ESC}[1;3A
 
 ;;** Alt+Shift...
-;;xterm-extra.el uses SS3 sequences
-+!Up::SendInput {ESC}O4A
-+!Down::SendInput {ESC}O4B
-;;** Ctrl+..
-;;xterm-extra.el uses SS3 sequences
-^Up::SendInput    {Esc}O5A
-^Down::SendInput  {Esc}O5B
-^Left::SendInput  {Esc}O5D
-^Right::SendInput {Esc}O5C
-^Home::SendInput  {ESC}O5H
-^End::SendInput   {ESC}O5F
++!Up::SendInput {ESC}[1;4A
++!Down::SendInput {ESC}[1;4B
 
+;;** Ctrl+..
+^Up::SendInput    {Esc}[1;5A
+^Down::SendInput  {Esc}[1;5B
+^Left::SendInput  {Esc}[1;5D
+^Right::SendInput {Esc}[1;5C
+^Home::SendInput  {ESC}[1;5H
+^End::SendInput   {ESC}[1;5F
 
 
 ;;** Ctrl+Shif+
-;;xterm-extra.el uses SS3 sequences
-^+Up::SendInput    {Esc}O6A
-^+Down::SendInput  {Esc}O6B
-^+Left::SendInput  {Esc}O6D
-^+Right::SendInput {Esc}O6C
-^+Home::SendInput  {ESC}O6H
-^+End::SendInput   {ESC}O6F
+^+Up::SendInput    {Esc}[1;6A
+^+Down::SendInput  {Esc}[1;6B
+^+Left::SendInput  {Esc}[1;6D
+^+Right::SendInput {Esc}[1;6C
+^+Home::SendInput  {ESC}[1;6H
+^+End::SendInput   {ESC}[1;6F
 
 
 ;;* ====== Ins/Del ==========
@@ -182,70 +237,126 @@ End::
 ;;Alft+Ins/Del/Home/End/PgUp/PgDwn work fine
 
 
-;;* ====== misc ==========
-;;; http://code.google.com/p/mintty/wiki/Keycodes#Special_keys
+                       ;;* ====== some punctions ==========
+;;translated from term/xterm.el
+;;(progn (load-library "term/xterm") (terminal-init-xterm))
 
-;;+Tab::SendInput ^[[Z
-;!Tab
-^Tab::SendInput {Esc}[1;5I
 
-;;; Shift+Enter -> C-j
-+Enter::SendInput ^j
+;;NOTE: by default, Ctrl+Shift is used for switching betweenn  different input methods
+;; to press C-!, C-# etc, maybe you need to disable this (or use other key combos)
+
+;;C-` (C-@ ?)
+^!::SendInput {Esc}[27;6;33~
+;;C-@
+^#::SendInput {Esc}[27;6;35~
+^$::SendInput {Esc}[27;6;36~
+^%::SendInput {Esc}[27;6;37~
+;;C-^
+^&::SendInput {Esc}[27;6;38~
+^*::SendInput {Esc}[27;6;42~
+^(::SendInput {Esc}[27;6;40~
+^)::SendInput {Esc}[27;6;41~
+
+;;C-_ (undo)
+^-::SendInput {Esc}[27;5;45~
+^=::SendInput {Esc}[27;5;61~
+^+::SendInput {Esc}[27;6;43~
+
+;;AHK bug here: how to set C-: as hotkey?
+;;^:::
+;;  SendInput {Esc}[27;6;58~
+;;  return
+
+;;^;::SendInput {Esc}[27;6;59~
+^'::SendInput {Esc}[27;5,39~
+;;^"::
+;;  SendInput {Esc}[27;6,24~
+;;  return
+;;
+^,::SendInput {Esc}[27;5;44~
+^.::SendInput {Esc}[27;5;46~
+;;C-/ => C-_
+^/::SendInput {Esc}[27;5;47~
+
+^<::SendInput {Esc}[27;6;60~
+^>::SendInput {Esc}[27;6;62~
+;;C-? => DEL
+^?::SendInput {Esc}[27;6;63~
+
+
+;;mintty
+;;      Key 	plain 	Shift 	Ctrl 	Ctrl+Shift
+;;      Tab 	^I 	^[[Z 	^[[1;5I	^[[1;6I
+;;      Enter 	^M 	^J 	^^ 	U+009E
+;;      Bksp 	^? 	^? 	^_ 	U+009F
+
++Tab::SendInput {Esc}[27;2;9~
+;;!Tab::SendInput {Esc}{Tab}
+^Tab::SendInput {Esc}[27;5;9~
+
++Enter::SendInput {Esc}[27;2;13~
+;;map C-Enter to M-Enter
+^Enter::SendInput {Esc}[27;3;13~
+;; Shift+Enter -> C-j
 ;;!Enter::SendInput {Esc}{Enter}
-^Enter::SendInput ^{^}
+
+;;NOTE:  Backspace => DEL  != Delete (=> <delete>)
+;; Alt+Bksp  = M-DEL
+;; map C-backspace to M-backspace
+^BackSpace::SendInput {Esc}{BackSpace}
 
 
-+BackSpace::SendInput {Esc}[3;2~
-;;; Alt+Bksp  = M-DEL  ^[[3;3~  or ^[^[[3~
-;!BackSpace::SendInput {Esc}^[[3~	
-;;; Ctrl+Bksp = ^_  (emacs: undo)
-^BackSpace::SendInput ^_
-;;; Ctrl+Shift+Bksp -> <C-S-delete>
-^+Backspace::SendInput {Esc}[3;6~
-
-
-;;* ==== for keypad ====
-;;http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings
-
-;;for the top row, putty sends \eOP, \eOQ,\eOR \eOS,
-;;  but they conflicts with xterm's F1..F4  (also used by mintty/gnome-terminal/xfce-terminal)
-;;  (putty itself uses \e[11~ ..\e[14~ for F1..F4)
-;;for other rows, putty sends \eOl ..\eOp
-
+;;* ===== keypad ========
+;;PuTTY original behavior:
+;;  - for the top row, putty sends \eOP, \eOQ,\eOR \eOS,
+;;    but they conflicts with xterm's F1..F4  (also used by mintty/gnome-terminal/xfce-terminal)
+;;    (putty itself uses \e[11~ ..\e[14~ for F1..F4)
+;;  - for other rows, putty sends \eOl ..\eOp
 ;;NOTE: Application keypad mode can be turned on and off by the server, depending on the application.
 ;;Emacs would turn on application keypad mode
 
-;;With the following scripts, keypad acts like normal PC keyboard:
+;;With the following scripts, keypad acts similar to normal PC keyboard:
 ;;when NumLock on, keypad sends 0-9 and +-*/
-;;when NumLock off, keypad send sequences \eOn .. \eOy (first row still sends 
+;;when NumLock off, keypad send sequences \eOj .. \eOy (refer term/xterm.el)
+
+;; see also
+;; http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings (wrong sequences for keypad +-*/ ?
+
 ~NumLock::return
-NumpadDiv::
-  if GetKeyState("Numlock", "T")  
-    SendInput /
-  else
-    SendInput {Esc}OQ
-  return
 NumpadMult::
   if GetKeyState("Numlock", "T")  
     SendInput *
   else
-    SendInput {Esc}OR
+    SendInput {Esc}Oj
   return
-NumpadSub::
-  if GetKeyState("Numlock", "T")  
-    SendInput -
-  else
-    SendInput {Esc}OS
-  return
-;NumpadAdd:: SendInput {Esc}Ol
 NumpadAdd::
   if GetKeyState("Numlock", "T")  
     SendInput +
   else
-    SendInput {Esc}OP
+    SendInput {Esc}Ok
   return
-NumpadEnter::SendInput {Enter}
-;NumpadEnter::SendInput {Esc}Om
+;;\e[0l         kp-separator ?  
+NumpadSub::
+  if GetKeyState("Numlock", "T")  
+    SendInput -
+  else
+    SendInput {Esc}Om
+  return
+NumpadDiv::
+  if GetKeyState("Numlock", "T")  
+    SendInput /
+  else
+    SendInput {Esc}Oo
+  return  
+
+
+NumpadEnter::
+  if GetKeyState("Numlock", "T")  
+    SendInput -
+  else
+    SendInput {Esc}OM
+  return
+
 
 NumpadDel::SendInput {Esc}On
 ;;to kp-0 .. kp-9                           
@@ -272,12 +383,50 @@ Numpad7::SendInput 7
 Numpad8::SendInput 8
 Numpad9::SendInput 9
 
+;;\e[OI         kp-tab
+
+
+
+;;* ====== misc ==========
+;;; http://code.google.com/p/mintty/wiki/Keycodes#Special_keys
+;;* =========== Misc ======================
+
+;;\e[1~         find
+;;\e[4~         select (end?)
+;;\e[28~        help
+;;\e[29~        print (menu?)
+
+
 ;;* =========== Misc ======================
 
 ;;super/hyper modifiers (only for Emacs)
 *RWin::SendInput ^x@s
 *AppsKey::SendInput ^x@h
 
+;;tmux/gnu-screen
+<#Tab::SendInput ^bn
+<#1::SendInput ^b1
+<#2::SendInput ^b2
+<#3::SendInput ^b3
+<#4::SendInput ^b4
 
 ;;on some system, <end> would be recognized as <select>
 ;End::SendInput {Esc}OF
+
+
+;;* =========== MobaXterm only ======================
+#if WinActive("ahk_class TMobaXtermForm")
+;;AutoHotkey:  Ctrl ^ Alt ! Shift +
+!x::SendInput {Esc}x
+!s::SendInput {Esc}s
+!g::SendInput {Esc}g
+!f::SendInput {Esc}f
+!b::SendInput {Esc}b
+!p::SendInput {Esc}p
+!n::SendInput {Esc}n
+!q::SendInput {Esc}q
+!v::SendInput {Esc}v
+!y::SendInput {Esc}y
+!/::SendInput {Esc}/
+
+^h::SendInput {f1}
