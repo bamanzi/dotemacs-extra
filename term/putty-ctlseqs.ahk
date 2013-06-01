@@ -9,7 +9,7 @@
 ;;          (load-library "term/xterm"))
 ;;   (terminal-init-xterm))
 
-;;with NumLock off, ambiguous keys would act as Xterm R6 compatibile
+;;with NumLock off, most ambiguous keys would act as Xterm R6 compatibile.
 ;;with NumLock on, thses keys would act as Putty default settings 
 ;;   (note: PuTTY's function key & keypad mode settings is not respected)
 
@@ -72,16 +72,41 @@ F4::
 ;;For F5..F12, most terminals sends ESC [15~ .. ESC[24~ (CSI sequences)
  
 ;;** Shift+Fx
-;;;;term/xterm.el maps both CSI and SS3 sequences for S-f1..S-f4 
-;;(but only SS3 for C-f1..C-f4, S-f1..S-f4, thus we use SS3 sequences
-;;+F1::SendInput  {ESC}[1;2P
-;;+F2::SendInput  {ESC}[1;2Q
-;;+F3::SendInput  {ESC}[1;2R
-;;+F4::SendInput  {ESC}[1;2S
-+F1::SendInput  {ESC}O2P
-+F2::SendInput  {ESC}O2Q
-+F3::SendInput  {ESC}O2R
-+F4::SendInput  {ESC}O2S
+;;** Shift+Fx
+;;for ctrl/shift/alt+f1/f2/f3/f4, xterm-r6, mintty emit CSI sequences
+
+;;NOTE: term/xterm.el maps both CSI and SS3 sequences for S-f1..S-f4 
+;;(but only SS3 for C-f1..C-f4, S-f1..S-f4)
+
+;;NOTE: xfce4-terminal & newer gnome-terminal emit wrong sequences for C/S/M-f1..f4
+;;       https://bugs.launchpad.net/ubuntu/+source/gnome-terminal/+bug/96676  
+;;      (gnome-terminal 2.16 proves to be correct (emiting SS3 sequences)
+
+
++F1::
+  if not GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;2P
+  else
+    SendInput  {ESC}O2P
+  return
++F2::
+  if not GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;2Q
+  else
+    SendInput  {ESC}O2Q
+  return
++F3::
+  if not GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;2R
+  else
+    SendInput  {ESC}O2R
+  return
++F4::
+  if not GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;2S
+  else
+    SendInput  {ESC}O2S
+  return
 
 +F5::SendInput  {Esc}[15;2~
 +F6::SendInput  {Esc}[17;2~
@@ -93,12 +118,37 @@ F4::
 +F12::SendInput {Esc}[24;2~
 
 ;;** Alt+Fx
-!F1::SendInput  {ESC}O3P
-!F2::SendInput  {ESC}O3Q
-!F3::SendInput  {ESC}O3R
-!F4::SendInput  {ESC}O3S
-!F5::SendInput  {Esc}[15;3~
+;;** Alt+Fx
+;;NOTE: When numlock off, M-f1..f4 not compatible with xterm when numlock off, 
+;;because xterm emits CSI sequences for M-f1..M-f12
+;;but term/xterm.el has only SS3 sequences for M-f1..M-f4, only CSI sequences for M-f5..M-f12
 
+!F1::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;3P
+  else
+    SendInput  {ESC}O3P
+  return
+!F2::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;3Q
+  else
+    SendInput  {ESC}O3Q
+  return
+!F3::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;3R
+  else
+    SendInput  {ESC}O3R
+  return
+!F4::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;3S
+  else
+    SendInput  {ESC}O3S
+  return
+
+!F5::SendInput  {Esc}[15;3~
 !F6::SendInput  {Esc}[17;3~
 !F7::SendInput  {Esc}[18;3~
 !F8::SendInput  {Esc}[19;3~
@@ -108,16 +158,40 @@ F4::
 !F12::SendInput {Esc}[24;3~
 
 ;;** Alt+Shift+F1
+;;FIXME
 +!F1::SendInput  {ESC}O4P
 +!F2::SendInput  {ESC}O4Q
 +!F3::SendInput  {ESC}O4R
 +!F4::SendInput  {ESC}O4S
 
 ;;** Ctrl+Fx
-^F1::SendInput  {ESC}O5P
-^F2::SendInput  {ESC}O5Q
-^F3::SendInput  {ESC}O5R
-^F4::SendInput  {ESC}O5S
+;;NOTE: C-f1..f4 not compatible with xterm when numlock off, because xterm emits CSI sequences for C-f1..C-f12
+;;but term/xterm.el has only SS3 sequences for C-f1..C-f4, only CSI sequences for C-f5..C-f12
+
+^F1::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;5P
+  else
+    SendInput  {ESC}O5P
+  return
+^F2::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;5Q
+  else
+    SendInput  {ESC}O5Q
+  return
+^F3::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;5R
+  else
+    SendInput  {ESC}O5R
+  return
+^F4::
+  if GetKeyState("Numlock", "T")
+    SendInput  {ESC}[1;5S
+  else
+    SendInput  {ESC}O5S
+  return
 
 ^F5::SendInput  {Esc}[15;5~
 ^F6::SendInput  {Esc}[17;5~
@@ -129,12 +203,13 @@ F4::
 ^F12::SendInput {Esc}[24;5~
 
 ;;** Ctrl+Shift+Fx
+;;FIXME
 ^+F1::SendInput  {ESC}[1;6P
 ^+F2::SendInput  {ESC}[1;6Q
 ^+F3::SendInput  {ESC}[1;6R
 ^+F4::SendInput  {ESC}[1;6S
-^+F5::SendInput  {Esc}[15;6~
 
+^+F5::SendInput  {Esc}[15;6~
 ^+F6::SendInput  {Esc}[17;6~
 ^+F7::SendInput  {Esc}[18;6~
 ^+F8::SendInput  {Esc}[19;6~
@@ -144,11 +219,12 @@ F4::
 ^+F12::SendInput {Esc}[24;6~
 
 ;;** Ctrl+Alt+Fx
-;;xterm-extra.el uses SS3 sequences
+;;FIXME
 ^!F1::SendInput  {ESC}O7P
 ^!F2::SendInput  {ESC}O7Q
 ^!F3::SendInput  {ESC}O7R
 ^!F4::SendInput  {ESC}O7S
+
 ^!F5::SendInput  {Esc}[15;7~
 ^!F6::SendInput  {Esc}[17;7~
 ^!F7::SendInput  {Esc}[18;7~
@@ -163,6 +239,11 @@ F4::
 ;;Cursor keycodes without modifier keys depend on whether "application cursor key mode" 
 ;;http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-appcursor
 ;;http://code.google.com/p/mintty/wiki/Keycodes#Cursor_keys
+
+
+;;NOTE: when numlock off, not xterm compatible, most terminals emit ^[OH or ^[[1~
+;;      (xterm/mintty emit ^[[H, but term/xterm.el has no mapping for ^[[H)
+
 Home::
   if GetKeyState("Numlock", "T") 
     ;; putty way
@@ -178,11 +259,16 @@ End::
     SendInput {Esc}OF
   return
 
+
 ;;** Shift+...
+
+;;NOTE: old gnome-terminal (at least 2.16) emits strange sequences for C/S/M-up/down/left/right/
+;;      (e.g. Shift-left emits ^[[2D  but SS3 sequences is ^[O2D, CSI sequences is ^[[1;2D)
 +Up::SendInput    {Esc}[1;2A
 +Down::SendInput  {Esc}[1;2B
 +Left::SendInput  {Esc}[1;2D
 +Right::SendInput {Esc}[1;2C
+
 +Home::SendInput  {ESC}[1;2H
 +End::SendInput   {ESC}[1;2F
 ;;Other versions of xterm might emit these.
@@ -224,8 +310,8 @@ End::
 ;;* Shift+...
 ;;^+nsert::SendInput {Esc}[2;5~    (Windows: paste from clipboard)
 +Delete::SendInput {Esc}[3;2~
-+PGUP::SendInput {Esc}[5;2~
-+PGDN::SendInput {Esc}[6;2~
+;;+PGUP::SendInput {Esc}[5;2~
+;;+PGDN::SendInput {Esc}[6;2~
 
 ;;** Ctrl+...
 ;;^Insert::SendInput {Esc}[2;5~    (Windows: copy selection)
@@ -237,10 +323,10 @@ End::
 ;;Alft+Ins/Del/Home/End/PgUp/PgDwn work fine
 
 
-                       ;;* ====== some punctions ==========
-;;translated from term/xterm.el
-;;(progn (load-library "term/xterm") (terminal-init-xterm))
-
+;;* ====== some punctions ==========
+;;Among Linux terminal emulators, only available on xterm>216, and need 
+;;special sequences to turn on this feature.
+;;emacs term/xterm.el would detect xterm version and let it turn on 
 
 ;;NOTE: by default, Ctrl+Shift is used for switching betweenn  different input methods
 ;; to press C-!, C-# etc, maybe you need to disable this (or use other key combos)
@@ -262,13 +348,14 @@ End::
 ^=::SendInput {Esc}[27;5;61~
 ^+::SendInput {Esc}[27;6;43~
 
-;;AHK bug here: how to set C-: as hotkey?
+;;FIXME: AHK bug here: how to set C-: as hotkey?
 ;;^:::
 ;;  SendInput {Esc}[27;6;58~
 ;;  return
 
 ;;^;::SendInput {Esc}[27;6;59~
 ^'::SendInput {Esc}[27;5,39~
+;;FIXME: this would affect ^ key
 ;;^"::
 ;;  SendInput {Esc}[27;6,24~
 ;;  return
@@ -290,14 +377,18 @@ End::
 ;;      Enter 	^M 	^J 	^^ 	U+009E
 ;;      Bksp 	^? 	^? 	^_ 	U+009F
 
-+Tab::SendInput {Esc}[27;2;9~
+;;most terminals emit ^[[Z for Shift-Tab
++Tab::
+  if not GetKeyState("Numlock", "T")
+     SendInput {Esc}[Z
+  else
+    SendInput {Esc}[27;2;9~
+  return
 ;;!Tab::SendInput {Esc}{Tab}
 ^Tab::SendInput {Esc}[27;5;9~
 
 +Enter::SendInput {Esc}[27;2;13~
-;;map C-Enter to M-Enter
-^Enter::SendInput {Esc}[27;3;13~
-;; Shift+Enter -> C-j
+^Enter::SendInput {Esc}[27;5;13~
 ;;!Enter::SendInput {Esc}{Enter}
 
 ;;NOTE:  Backspace => DEL  != Delete (=> <delete>)
@@ -389,10 +480,8 @@ Numpad9::SendInput 9
 
 ;;* ====== misc ==========
 ;;; http://code.google.com/p/mintty/wiki/Keycodes#Special_keys
-;;* =========== Misc ======================
 
 ;;\e[1~         find
-;;\e[4~         select (end?)
 ;;\e[28~        help
 ;;\e[29~        print (menu?)
 
