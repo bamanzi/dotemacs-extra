@@ -56,3 +56,13 @@
 (require 'viper-cmd)
 
 (define-key global-map (kbd "ESC ESC :") 'viper-ex)
+
+;;** scratch-ext
+
+(require 'scratch-ext nil t)
+
+(defun scratch-save ()
+  (interactive)
+  (require 'scratch-ext)
+  (scratch-ext-save-scratch-to-file)
+  )
