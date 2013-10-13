@@ -66,3 +66,27 @@
   (require 'scratch-ext)
   (scratch-ext-save-scratch-to-file)
   )
+
+;;*** set org-mode as major-mode of *scratch*
+(progn
+  (setq inhibit-startup-screen nil
+        initial-scratch-message
+        (concat (replace-regexp-in-string ";; " "# " initial-scratch-message)
+                "# (from scratch-ext.el: now you can use `scratch-save' to log content of this buffer.)\n\n"))
+
+  (eval-after-load "scratch-ext"
+    `(progn
+
+       ;;redefine `scratch-ext-initialize-buffer-as-scratch'
+       (defun scratch-ext-initialize-buffer-as-scratch (buffer)
+         (with-current-buffer buffer
+           (funcall 'org-mode) ;;hack: use `org-mode' as major mode
+           (local-set-key (kbd "C-x C-s") 'scratch-save) ;;hack: bind C-x C-s to `scratch-save'
+           (local-set-key (kbd "C-c i")   'scratch-ext-insert-newest-log) ;;hack
+           (erase-buffer)
+           (if (and initial-scratch-message
+                    (not inhibit-startup-screen))
+               (insert initial-scratch-message))))
+       ))
+  )
+
