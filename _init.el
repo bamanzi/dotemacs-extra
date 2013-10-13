@@ -17,6 +17,10 @@
   )
 
 
+(if (and (fboundp 'idle-require-mode) idle-require-mode) ;;`idle-require-mode' not finished yet
+    (defalias 'idle-require 'require))
+
+    
 ;;** yasnippet
 (autoload 'anything-yasnippet-2  "anything-yasnippet-2"
   "Find yasnippets." t)
@@ -90,3 +94,10 @@
        ))
   )
 
+;;** misc
+(idle-require 'dired+)
+(idle-require 'buff-menu+)
+(idle-require 'vc+)
+(idle-require 'menu-bar+)
+(idle-require 'info+)
+(idle-require 'mouse3)
