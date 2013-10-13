@@ -1,9 +1,10 @@
 ;;; ibuffer-vc.el --- Group ibuffer's list by VC project, or show VC status
 ;;
-;; Copyright (C) 2011 Steve Purcell
+;; Copyright (C) 2011-2012 Steve Purcell
 ;;
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; Keywords: themes
+;; Package-Requires: ((cl-lib "0.2"))
 ;; X-URL: http://github.com/purcell/ibuffer-vc
 ;; URL: http://github.com/purcell/ibuffer-vc
 ;; Version: DEV
@@ -38,7 +39,8 @@
 ;;   (add-hook 'ibuffer-hook
 ;;     (lambda ()
 ;;       (ibuffer-vc-set-filter-groups-by-vc-root)
-;;       (ibuffer-do-sort-by-alphabetic)))
+;;       (unless (eq ibuffer-sorting-mode 'alphabetic)
+;;         (ibuffer-do-sort-by-alphabetic))))
 ;;
 ;; Alternatively, use `ibuffer-vc-generate-filter-groups-by-vc-root'
 ;; to programmatically obtain a list of filter groups that you can
@@ -70,8 +72,8 @@
 (require 'ibuffer)
 (require 'ibuf-ext)
 (require 'vc-hooks)
-(eval-when-compile
-  (require 'cl))
+(require 'cl-lib)
+
 
 (defgroup ibuffer-vc nil
   "Group ibuffer entries according to their version control status."
@@ -86,18 +88,20 @@
 ;;; Group and filter ibuffer entries by parent vc directory
 
 (defun ibuffer-vc--include-file-p (file)
+  "Return t iff FILE should be included in ibuffer-vc's filtering."
   (and file (or (null ibuffer-vc-skip-if-remote)
                 (not (file-remote-p file)))))
 
 (defun ibuffer-vc--deduce-backend (file)
+  "Return the vc backend for FILE, or nil if not under VC supervision."
   (or (vc-backend file)
-      (loop for backend in vc-handled-backends
-            when (vc-call-backend backend 'responsible-p file)
-            return backend)))
+      (cl-loop for backend in vc-handled-backends
+               when (vc-call-backend backend 'responsible-p file)
+               return backend)))
 
 (defun ibuffer-vc-root (buf)
-  "Return a cons cell (backend-name . root-dir), or nil if the
-file is not under version control"
+  "Return a cons cell (backend-name . root-dir) for BUF.
+If the file is not under version control, nil is returned instead."
   (let ((file-name (with-current-buffer buf (or buffer-file-name default-directory))))
     (when (ibuffer-vc--include-file-p file-name)
       (let ((backend (ibuffer-vc--deduce-backend file-name)))
@@ -120,7 +124,7 @@ file is not under version control"
 
 ;;;###autoload
 (defun ibuffer-vc-generate-filter-groups-by-vc-root ()
-  "Create a set of ibuffer filter groups based on the vc root dirs of buffers"
+  "Create a set of ibuffer filter groups based on the vc root dirs of buffers."
   (let ((roots (ibuffer-remove-duplicates
                 (delq nil (mapcar 'ibuffer-vc-root (buffer-list))))))
     (mapcar (lambda (vc-root)
@@ -133,12 +137,18 @@ file is not under version control"
   "Set the current filter groups to filter by vc root dir."
   (interactive)
   (setq ibuffer-filter-groups (ibuffer-vc-generate-filter-groups-by-vc-root))
-  (ibuffer-update nil t))
+  (message "ibuffer-vc: groups set")
+  (let ((ibuf (get-buffer "*Ibuffer*")))
+    (when ibuf
+        (with-current-buffer ibuf
+          (pop-to-buffer ibuf)
+          (ibuffer-update nil t)))))
 
 
 ;;; Display vc status info in the ibuffer list
 
 (defun ibuffer-vc--status-string ()
+  "Return a short string to represent the current buffer's status."
   (when (and buffer-file-name (ibuffer-vc--include-file-p buffer-file-name))
     (let ((state (vc-state buffer-file-name)))
       (if state
@@ -158,7 +168,7 @@ file is not under version control"
         (cond
          ((eq 'added state) "A")
          ((eq 'removed state) "D")
-         ((eq 'up-to-date state) "@")
+         ((eq 'up-to-date state) "=")
          ((eq 'edited state) "*")
          ((eq 'needs-update state) "O")
          ((memq state '(conflict needs-merge unlocked-changes)) "!")
