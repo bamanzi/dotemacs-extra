@@ -94,10 +94,33 @@
        ))
   )
 
+
+;;** tempbuf: kill unused buffers in the background
+(idle-require 'tempbuf)
+(eval-after-load "tempbuf"
+  `(progn
+     (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)
+     (add-hook 'custom-mode-hook 'turn-on-tempbuf-mode)
+     (add-hook 'w3-mode-hook 'turn-on-tempbuf-mode)
+     (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode)
+     (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
+     (add-hook 'anything-mode-hook 'turn-on-tempbuf-mode)
+     (add-hook 'diff-mode-hook 'turn-on-tempbuf-mode)
+     (add-hook 'completion-list-mode 'turn-on-tempbf-mode)
+     ))
+
 ;;** misc
 (idle-require 'dired+)
+
 (idle-require 'buff-menu+)
-(idle-require 'vc+)
+(eval-after-load "buff-menu+"
+  `(progn
+     (load-library "buff-menu")))
+
+;;(idle-require 'vc+) ;;disabled as it's buggy
+
 (idle-require 'menu-bar+)
+
 (idle-require 'info+)
+
 (idle-require 'mouse3)
