@@ -6,8 +6,8 @@
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyleft (Ↄ) 2012, Joe Bloggs, all rites reversed.
 ;; Created: 2012-11-01 21:28:07
-;; Version: 1.4
-;; Last-Updated: 2013-10-02 17:00:00
+;; Version: 1.3
+;; Last-Updated: 2013-10-01 18:00:00
 ;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/simple-call-tree+.el
 ;;      https://github.com/vapniks/simple-call-tree-ext
@@ -16,7 +16,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `anaphora' `thingatpt' `outline-magic' `fm' `org' `cl'
+;; `thingatpt' `outline-magic' `fm'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -78,8 +78,8 @@
 
 ;;;; Exporting:
 ;; The tree can be exported in its current state with the `simple-call-tree-export-org-tree'
-;; command, and you can alter the types of links with the `simple-call-tree-org-link-style' option.
-;; This may be useful for project management.
+;; command, and you can alter the TODO state and types of links using options `simple-call-tree-org-todo-state',
+;; and `simple-call-tree-org-link-style'. This may be useful for project management.
 
 ;;;; Refactoring
 ;; You can perform `query-replace' or `query-replace-regexp' on the function at
@@ -122,6 +122,8 @@
 ;;    Alist of major modes, and information to use for identifying objects for the simple call tree.
 ;;  `simple-call-tree-org-link-style'
 ;;    Style used for links of child headers when exporting org tree using `simple-call-tree-export-org-tree'.
+;;  `simple-call-tree-org-todo-state'
+;;    TODO state to add to toplevel headers when exporting org tree using `simple-call-tree-export-org-tree'.
 ;;  `simple-call-tree-jump-ring-max'
 ;;    Maximum number of elements in `simple-call-tree-jump-ring', before old elements are removed.
 
@@ -149,12 +151,8 @@
 (require 'thingatpt)
 (require 'outline-magic nil t)
 (require 'fm nil t)
-(require 'anaphora)
-(eval-when-compile (require 'cl))
-(require 'org)
 ;;; Code:
 
-;; simple-call-tree-info: DELEGATED  
 (defgroup simple-call-tree nil
   "Simple call tree - display a simple call tree for functions in a buffer."
   :group 'tools
@@ -276,9 +274,8 @@ It is either nil, meaning the function locations will be determined by fonts and
 or a function of no args which moves point to the start of the next function in the buffer.
 
 END-FUNC indicates how to find the end of the current object when parsing a buffer for the call tree.
-It can be either a function taking no args which moves point to the end of the current function,
-or any non-nil value which means to use the `end-of-defun' function, or nil which means that font changes
-will be used to determine the end of an object.
+It is either nil, meaning that font changes will be used to determine the end of an object,
+or a function of no args which moves point to the end of the current function in the buffer.
 
 START-REGEXP a regular expression to match the beginning of a token, you can probably leave this blank.
 By default it is \"\\_<\".
@@ -299,41 +296,17 @@ END-REGEXP a regular expression to match the end of a token, by default this is 
                                (function :tag "Other function" :help-echo "Function for finding end of object"))))
   :link '(variable-link simple-call-tree-default-valid-fonts))
 
-;; simple-call-tree-info: DONE 
 (defcustom simple-call-tree-org-link-style 'radio
   "Style used for links of child headers when exporting org tree using `simple-call-tree-export-org-tree'."
   :group 'simple-call-tree
   :type '(choice (const :tag "internal radio link" radio)
                  (const :tag "link to source code" source)))
 
-;; simple-call-tree-info: APPT  :this:test:
-(defcustom simple-call-tree-org-todo-keywords nil
-  "List of different TODO keywords, if nil then `org-todo-keywords' will be used."
+(defcustom simple-call-tree-org-todo-state "TODO"
+  "TODO state to add to toplevel headers when exporting org tree using `simple-call-tree-export-org-tree'."
   :group 'simple-call-tree
-  :type 'list)
-
-(defcustom simple-call-tree-org-highest-priority org-highest-priority
-  "See `org-highest-priority'")
-
-(defcustom simple-call-tree-org-lowest-priority org-lowest-priority
-  "See `org-lowest-priority'")
-
-(defcustom simple-call-tree-org-tag-alist org-tag-alist
-  "See `org-tag-alist'")
-
-(defun simple-call-tree-org-todo-keywords nil
-  "Return list of all TODO states.
-If `simple-call-tree-org-todo-keywords' is nil then the states in `org-todo-keywords' are returned
-as a flat list."
-  (or simple-call-tree-org-todo-keywords
-      (remove-if (lambda (x) (or (symbolp x)
-                                 (equal x "|")))
-                 (mapcan 'identity org-todo-keywords))))
-
-(defcustom simple-call-tree-org-priority-levels nil
-  '("A" "B" "C" "D")
-  :group 'simple-call-tree
-  :type 'list)
+  :type '(choice (const :tag "None" nil)
+                 (string :tag "Value")))
 
 ;; Saves a little typing
 (defmacro whilelast (&rest forms)
@@ -341,17 +314,6 @@ as a flat list."
 
 (defmacro whilenotlast (&rest forms)
   `(while (not (progn ,@forms))))
-
-(defmacro simple-call-tree-get-item (func)
-  "Return the item in `simple-call-tree-alist' corresponding with function named FUNC."
-  `(assoc-if (lambda (x) (string= (car x) ,func)) simple-call-tree-alist))
-
-(defun simple-call-tree-tags-to-string (tags)
-  (if (> (length tags) 0)
-      (concat ":" (mapconcat 'identity tags ":") ":")))
-
-(defun simple-call-tree-string-to-tags (str)
-  (aif str (split-string (substring-no-properties it) "[ \f\t\n\r\v,;:]+" t)))
 
 ;; This is still not exactly right: it will match both abc & abc' on abc'
 ;; where ' could be any char in the expression prefix syntax class.
@@ -372,7 +334,7 @@ as a flat list."
   (setq simple-call-tree-mode-map (make-keymap)
         buffer-read-only nil)
   (outline-minor-mode 1)
-  (setq outline-regexp "^|\\([-<>]*\\)\\(\\( \\w+\\)?\\)\\(\\( \\[#.\\]\\)?\\) "
+  (setq outline-regexp "|\\([-<>]*\\) "
         outline-level 'simple-call-tree-outline-level)
   ;; Set keymap
   (define-key simple-call-tree-mode-map (kbd "q") 'simple-call-tree-quit)
@@ -427,12 +389,6 @@ as a flat list."
   (define-key simple-call-tree-mode-map (kbd "M-n") 'simple-call-tree-jump-next)
   (define-key simple-call-tree-mode-map (kbd "w") 'widen)
   (define-key simple-call-tree-mode-map (kbd "R") 'simple-call-tree-build-tree)
-  (define-key simple-call-tree-mode-map (kbd "<S-right>") 'simple-call-tree-next-todo)
-  (define-key simple-call-tree-mode-map (kbd "<S-left>") 'simple-call-tree-prev-todo)
-  (define-key simple-call-tree-mode-map (kbd "<S-up>") 'simple-call-tree-up-priority)
-  (define-key simple-call-tree-mode-map (kbd "<S-down>") 'simple-call-tree-down-priority)
-  (define-key simple-call-tree-mode-map (kbd "C-c C-c") 'simple-call-tree-set-tags)
-  (define-key simple-call-tree-mode-map (kbd "C-c C-q") 'simple-call-tree-set-tags)
   (use-local-map simple-call-tree-mode-map)
   (easy-menu-define nil simple-call-tree-mode-map "test"
     `("Simple Call Tree"
@@ -592,10 +548,6 @@ be shown in the tree.")
 (defvar simple-call-tree-buffers nil
   "Buffers analyzed to create the simple-call-tree.")
 
-(defvar simple-call-tree-tags-regexp
-  "simple-call-tree-info:\\s-*\\(\\w+\\)?\\s-*\\(\\[#[A-Z]\\]\\)?\\s-*\\(:[a-zA-Z0-9:,;-_]+:\\)?"
-  "Regular expression to match org properties (todo, priority & tags) in source code.")
-
 ;;; Functions from simple-call-tree.el (some are rewritten)
 (defun simple-call-tree-add (start end alist)
   "Add tokens between START and END to ALIST.
@@ -618,7 +570,7 @@ By default it is set to a list containing the current buffer."
   (interactive)
   (setq simple-call-tree-alist nil)
   ;; First add all the functions defined in the buffers to simple-call-tree-alist.
-  (let (pos oldpos count1 pair nextfunc item endtest oldpos startmark endmark tags)
+  (let (pos oldpos count1 pair nextfunc item endtest oldpos startmark endmark)
     (dolist (buf buffers)
       (with-current-buffer buf
         (font-lock-default-fontify-buffer)
@@ -630,7 +582,6 @@ By default it is set to a list containing the current buffer."
                        pos (car pair)
                        nextfunc (cdr pair))
             (goto-char pos)
-            (setq tags (simple-call-tree-get-tags))
             (setq startmark (point-marker))
             (cond ((functionp endtest) (funcall endtest))
                   (endtest (end-of-defun))
@@ -638,10 +589,7 @@ By default it is set to a list containing the current buffer."
                    (goto-char (- (car pair) (length (cdr pair)))))
                   (t (goto-char (point-max))))
             (setq endmark (point-marker))
-            (add-to-list 'simple-call-tree-alist (list (list nextfunc startmark endmark
-                                                             (car tags)
-                                                             (second tags)
-                                                             (third tags))))
+            (add-to-list 'simple-call-tree-alist (list (list nextfunc startmark endmark)))
             (setq count1 (1+ count1))
             (message "Identifying functions...%d:%s" count1 nextfunc)))))
     ;; Now find functions called
@@ -672,7 +620,8 @@ By default it is set to a list containing the current buffer."
         (dolist (callee callees)
           (let* ((calleename (first callee))
                  (callerpos (second callee))
-                 (calleeitem (car (simple-call-tree-get-item calleename)))
+                 (calleeitem (car (assoc-if (lambda (x) (string= (car x) calleename))
+                                            simple-call-tree-alist)))
                  (elem (assoc-if (lambda (x) (string= (car x) calleename)) result)))
             (if elem
                 (setcdr elem (cons (list callername callerpos) (cdr elem)))
@@ -699,15 +648,12 @@ If optional arg BUF is supplied then use BUF instead of the *Simple Call Tree* b
 If there is no function on this line of the *Simple Call Tree* buffer, return nil."
   (with-current-buffer buf
     (if (equal buf "*Simple Call Tree*")
-        (save-excursion
-          (goto-char (line-beginning-position))
-          (if (re-search-forward (concat outline-regexp "\\(\\S-+\\)")
-                                 (line-end-position) t)
-              (substring-no-properties (match-string 6))
-            (previous-line)
-            (re-search-forward (concat outline-regexp "\\(\\S-+\\)")
-                               (line-end-position) t)
-            (substring-no-properties (match-string 6))))
+        (let* ((start (or (next-single-property-change (line-beginning-position) 'face)
+                          (progn (previous-line)
+                                 (next-single-property-change (line-beginning-position) 'face))))
+               (end (or (next-single-property-change start 'face)
+                        (line-end-position))))
+          (buffer-substring-no-properties start end))
       (symbol-name (if (functionp 'symbol-nearest-point)
                        (symbol-nearest-point)
                      (symbol-at-point))))))
@@ -739,151 +685,6 @@ nil."
       (setq end (next-single-property-change start 'face))
       (unless (not end)
         (cons end (buffer-substring start end))))))
-
-;; simple-call-tree-info:  
-(defun* simple-call-tree-get-tags (&optional (lookback -5))
-  "Extract TODO state, priority, and tags from lines previous to the current one.
-The LOOKBACK argument indicates how many lines backwards to search and should be negative."
-  (let ((end (point)) todo priority tags)
-    (forward-line lookback)
-    (if (re-search-forward
-         "simple-call-tree-info:\\s-*\\(\\w+\\)?\\(\\s-*\\[#\\([A-Z]\\)\\]\\)?\\(\\s-*\\(:[a-zA-Z0-9:,;-_]+:\\)\\)?\\s-*$"
-         end t)
-        (progn
-          (aif (match-string 1) (setq todo (substring-no-properties it)))
-          (aif (match-string 3) (setq priority (substring-no-properties it)))
-          (setq tags (simple-call-tree-string-to-tags (match-string 5)))))
-    (goto-char end)
-    (list todo priority tags)))
-
-;; simple-call-tree-info:   
-(defun* simple-call-tree-set-attribute (attr value
-                                             &optional
-                                             (func (or (simple-call-tree-get-parent)
-                                                       (simple-call-tree-get-function-at-point)))
-                                             (updatesrc t))
-  "Set the todo, priority, or tags for an item in `simple-call-tree-alist', and update the buffer and source code.
-ATTR can be one of: 'todo, 'priority, or 'tags
-VALUE is the corresponding value: a string for 'todo or 'priority (a single letter), or a list of strings for 'tags.
-FUNC is the name of the function corresponding to the item to be updated.
-The *Simple Call Tree* buffer and comments in the source code (just before FUNC) will be updated with the corresponding
-information. If UPDATESRC is nil then don't bother updating the source code.
-"
-  (let* ((item (car (simple-call-tree-get-item func)))
-         (marker (second item))
-         (buf (marker-buffer marker))
-         (end (marker-position marker))
-         srcval)
-    (case attr
-      (todo (setf srcval (concat value " \\2 \\3")
-                  (fourth item) value))
-      (priority (setf srcval (concat "\\1" (if value (concat " [#" value "]") nil) " \\3")
-                      (fifth item) value))
-      (tags (setf srcval (concat "\\1 \\2 " (simple-call-tree-tags-to-string value))
-                  (sixth item) value)))
-    (if updatesrc
-        (with-current-buffer buf
-          (save-excursion
-            (goto-char end)
-            (forward-line -5)
-            (if (re-search-forward
-                 "simple-call-tree-info:\\s-*\\(\\w+\\)?\\s-*\\(\\[#[A-Z]\\]\\)?\\s-*\\(:[a-zA-Z0-9:,;-_]+:\\)?"
-                 end t)
-                (replace-match (concat "simple-call-tree-info: " srcval))
-              (goto-char end)
-              (forward-line -1)
-              (end-of-line)
-              (insert "\nsimple-call-tree-info: " value)
-              (setq end (point))
-              (beginning-of-line)
-              (comment-region (point) end)))))
-    (save-excursion
-      (goto-char (point-min))
-      (read-only-mode -1)
-      (if (re-search-forward            ;don't be tempted to use `outline-regexp' here!
-           (concat "^|\\(\\( \\w+\\)?\\)\\(\\( \\[#.\\]\\)?\\) " func
-                   "\\(\\s-*\\(:[a-zA-Z0-9:,;-_]+:\\)?\\)\\s-*$") nil t)
-          (progn (show-children)        ;hack! otherwise it doesn't always work properly
-                 (kill-line 0)
-                 (simple-call-tree-insert-item item 1 nil)))
-      (read-only-mode 1))))
-
-;; simple-call-tree-info: TODO  :a:b:
-(defun* simple-call-tree-set-todo (value &optional
-                                         (func (or (simple-call-tree-get-parent)
-                                                   (simple-call-tree-get-function-at-point))))
-  (interactive (list (org-icompleting-read
-                      "State: " (simple-call-tree-org-todo-keywords)
-                      nil t)))
-  (simple-call-tree-set-attribute 'todo value func t))
-
-(defun simple-call-tree-next-todo nil
-  "Move to next todo state for current function"
-  (interactive)
-  (let* ((func (or (simple-call-tree-get-parent)
-                   (simple-call-tree-get-function-at-point)))
-         (curtodo (fourth (car (simple-call-tree-get-item func))))
-         (states (simple-call-tree-org-todo-keywords))
-         (pos (position curtodo states :test 'equal)))
-    (simple-call-tree-set-attribute
-     'todo
-     (nth (if pos (mod (1+ pos) (length states)) 0) states)
-     func t)))
-
-(defun simple-call-tree-prev-todo nil
-  "Move to previous todo state for current function"
-  (interactive)
-  (let* ((func (or (simple-call-tree-get-parent)
-                   (simple-call-tree-get-function-at-point)))
-         (curtodo (fourth (car (simple-call-tree-get-item func))))
-         (states (simple-call-tree-org-todo-keywords))
-         (pos (position curtodo states)))
-    (simple-call-tree-set-attribute
-     'todo
-     (nth (if pos (mod (1- pos) (length states)) 0) states)
-     func t)))
-
-(defun simple-call-tree-up-priority nil
-  "Change current function to the next priority level."
-  (interactive)
-  (let* ((func (or (simple-call-tree-get-parent)
-                   (simple-call-tree-get-function-at-point)))
-         (curpriority (aand (fifth (car (simple-call-tree-get-item func)))
-                            (string-to-char it)))
-         (nextpriority (cond ((not curpriority) simple-call-tree-org-lowest-priority)
-                             ((and (<= curpriority simple-call-tree-org-lowest-priority)
-                                   (> curpriority simple-call-tree-org-highest-priority))
-                              (1- curpriority))
-                             ((= curpriority simple-call-tree-org-highest-priority) nil))))
-    (simple-call-tree-set-attribute 'priority (and nextpriority (char-to-string nextpriority)) func t)))
-
-(defun simple-call-tree-down-priority nil
-  "Change current function to the previous priority level."
-  (interactive)
-  (let* ((func (or (simple-call-tree-get-parent)
-                   (simple-call-tree-get-function-at-point)))
-         (curpriority (aand (fifth (car (simple-call-tree-get-item func)))
-                            (string-to-char it)))
-         (nextpriority (cond ((not curpriority) simple-call-tree-org-highest-priority)
-                             ((and (< curpriority simple-call-tree-org-lowest-priority)
-                                   (>= curpriority simple-call-tree-org-highest-priority))
-                              (1+ curpriority))
-                             ((= curpriority simple-call-tree-org-lowest-priority) nil))))
-    (simple-call-tree-set-attribute 'priority (and nextpriority (char-to-string nextpriority)) func t)))
-
-(defun* simple-call-tree-set-tags (value &optional
-                                         (func (or (simple-call-tree-get-parent)
-                                                   (simple-call-tree-get-function-at-point))))
-  "Set the org tags for the toplevel function at point"
-  (interactive (let* ((func (or (simple-call-tree-get-parent)
-                                (simple-call-tree-get-function-at-point)))
-                      (item (simple-call-tree-get-item func))
-                      (currenttags (sixth (car item))))
-                 (list (simple-call-tree-string-to-tags
-                        (org-fast-tag-selection
-                         currenttags nil
-                         simple-call-tree-org-tag-alist)))))
-  (simple-call-tree-set-attribute 'tags value func t))
 
 ;;;###autoload
 (defun* simple-call-tree-display-buffer (&optional files)
@@ -948,7 +749,7 @@ otherwise it will be narrowed around FUNC."
   (interactive (list (if current-prefix-arg
                          (which-function)
                        (simple-call-tree-get-function-at-point (current-buffer)))))
-  (if (simple-call-tree-get-item func)
+  (if (assoc-if (lambda (x) (string= (car x) func)) simple-call-tree-alist)
       (if (get-buffer "*Simple Call Tree*")
           (switch-to-buffer "*Simple Call Tree*")
         (simple-call-tree-list-callers-and-functions))
@@ -1002,39 +803,28 @@ FNAME must be the car of one of the elements of FUNCLIST which is set to `simple
 The optional arguments MAXDEPTH and CURDEPTH specify the maximum and current depth of the tree respectively.
 This is a recursive function, and you should not need to set CURDEPTH."
   (let* ((fname (first item))
-         (callees (cdr (simple-call-tree-get-item fname)))
+         (callees (cdr (assoc-if (lambda (x) (string= (car x) fname)) funclist)))
          done)
     (funcall displayfunc item curdepth inverted)
-    (insert "\n")
     (if (< curdepth maxdepth)
         (dolist (callee callees)
           (unless (and simple-call-tree-nodups (member (car callee) done))
             (simple-call-tree-list-callees-recursively callee maxdepth (1+ curdepth) funclist inverted displayfunc))
           (add-to-list 'done (car callee))))))
 
-;; Propertize todo, priority & tags appropriately
-;; simple-call-tree-info: DELEGATED  
 (defun simple-call-tree-insert-item (item curdepth inverted)
   "Display ITEM at depth CURDEPTH in the call tree."
   (let* ((fname (first item))
          (pos (second item))
-         (todo (fourth item))
-         (priority (fifth item))
-         (tags (simple-call-tree-tags-to-string (sixth item)))
-         (pre (concat (if todo (concat " " todo))
-                      (if priority (concat " [#" priority "]"))))
          (arrowtail (make-string (* 2 (1- curdepth)) 45))
-         (arrow (if inverted (concat (if (> curdepth 1) "<" pre) arrowtail " ")
-                  (concat arrowtail (if (> curdepth 1) ">" pre) " ")))
-         (face (get-text-property 0 'face fname))
-         (pre2 (concat "|" arrow
-                       (propertize fname
-                                   'font-lock-face (list :inherit face :underline t)
-                                   'mouse-face 'highlight
-                                   'location pos)))
-         (post (concat (make-string (max 0 (- (/ (window-width) 2) (length pre2))) 32)
-                       tags)))
-    (insert pre2 post)))
+         (arrow (if inverted (concat (if (> curdepth 1) "<") arrowtail " ")
+                  (concat arrowtail (if (> curdepth 1) "> " " "))))
+         (face (get-text-property 0 'face fname)))
+    (insert "|" arrow (propertize fname
+                                  'font-lock-face (list :inherit face :underline t)
+                                  'mouse-face 'highlight
+                                  'location pos)
+            "\n")))
 
 (defun simple-call-tree-insert-org-header (item curdepth inverted)
   "Display ITEM at depth CURDEPTH in the call tree."
@@ -1048,9 +838,11 @@ This is a recursive function, and you should not need to set CURDEPTH."
         (save-excursion
           (goto-char (marker-position marker))
           (call-interactively 'org-store-link)))
-      (insert stars " [[" (substring-no-properties (caar org-stored-links)) "][" fname "]]")
+      (insert stars " " (if (and simple-call-tree-org-todo-state (= curdepth 1))
+                            (concat simple-call-tree-org-todo-state " ") "")
+              "[[" (substring-no-properties (caar org-stored-links)) "][" fname "]]\n")
       (if (eq simple-call-tree-org-link-style 'radio)
-          (insert "\n<<<" fname ">>>"))
+          (insert "<<<" fname ">>>\n"))
       (setq org-stored-links (cdr org-stored-links)))))
 
 (defun simple-call-tree-outline-level nil
@@ -1092,7 +884,8 @@ If there is no parent, return nil."
   "Narrow the source buffer containing FUNC to that function.
 If optional arg POS is supplied then move point to POS after
 narrowing."
-  (let* ((trio (car (simple-call-tree-get-item func)))
+  (let* ((trio (car (assoc-if (lambda (x) (string= (car x) func))
+                              simple-call-tree-alist)))
          (buf (marker-buffer (second trio)))
          (start (marker-position (second trio)))
          (end (marker-position (third trio))))
@@ -1312,7 +1105,7 @@ prefix arg) then the function name will be added to `simple-call-tree-jump-ring'
     (widen)
     (with-current-buffer "*Simple Call Tree*"
       (goto-char (point-min))
-      (re-search-forward (concat "^|\\( \\w+\\)?\\( \\[#.\\]\\)? " (regexp-opt (list fnstr)) "\\s-*$"))
+      (re-search-forward (concat "^" (regexp-opt (list (concat "| " fnstr))) "$"))
       (unless skipring (simple-call-tree-jump-ring-add fnstr))
       (if narrowedp (simple-call-tree-toggle-narrowing)
         (case simple-call-tree-default-recenter
@@ -1443,7 +1236,8 @@ and narrowing the buffer around FUNC."
   (interactive (list (read-command "Command: ")
                      (simple-call-tree-get-function-at-point)))
   (let ((buf (marker-buffer
-              (second (car (simple-call-tree-get-item func))))))
+              (second (car (assoc-if (lambda (x) (string= (car x) func))
+                                     simple-call-tree-alist))))))
     (switch-to-buffer-other-window buf)
     (simple-call-tree-narrow-to-function func)
     (call-interactively cmd)
