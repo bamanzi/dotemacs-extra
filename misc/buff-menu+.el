@@ -4,15 +4,17 @@
 ;; Description: Extensions to `buff-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2012, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
-;; Version: 21.0
-;; Last-Updated: Sun Jan  1 15:13:35 2012 (-0800)
+;; Version: 0
+;; Package-Requires: ()
+;; Last-Updated: Tue Jul 23 15:32:05 2013 (-0700)
 ;;           By: dradams
-;;     Update #: 2744
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
+;;     Update #: 2841
+;; URL: http://www.emacswiki.org/buff-menu+.el
+;; Doc URL: http://www.emacswiki.org/BufferMenuPlus
 ;; Keywords: mouse, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.1
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -26,6 +28,23 @@
 ;;    Extensions to `buff-menu.el', including: new bindings, faces,
 ;;    and menus; selective column display; and directional column
 ;;    sorting.
+;;
+;;    NOTE: Emacs Dev rewrote `buff-menu.el' for Emacs 24.2, so that
+;;          it uses `tabulated-list-mode'.  I have not yet updated
+;;          `buff-menu+.el' to accommodate this vanilla rewrite, and I
+;;          do not know when I might get around to doing that.
+;;
+;;          If you want to use `buff-menu+.el' with Emacs 24.2 or
+;;          later, then you can download the Emacs 23 or Emacs 24.1
+;;          version of `buff-menu.el' and put that in your `load-path'
+;;          in such a way that it shadows the Emacs 24.2+ version.
+;;          You can get the Emacs 23.4 version here, for instance
+;;          (combine the URL into a single line):
+;;
+;;            http://bzr.savannah.gnu.org/lh/emacs/emacs-23/download/
+;;             head:/buffmenu.el-20091113204419-o5vbwnq5f7feedwu-197/buff-menu.el
+;;
+;;          Sorry for the inconvenience.
 ;;
 ;;    Note: By default, the buffer menu is shown in a different
 ;;          window.  If you prefer to show it in the current window,
@@ -51,16 +70,16 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `buffer-menu-decrease-max-buffer+size' (Emacs 22+),
+;;    `Buffer-menu-decrease-max-buffer+size' (Emacs 22+),
 ;;    `Buffer-menu-delete-flagged',
-;;    `buffer-menu-increase-max-buffer+size' (Emacs 22+),
+;;    `Buffer-menu-increase-max-buffer+size' (Emacs 22+),
 ;;    `Buffer-menu-mouse-3-menu', `Buffer-menu-mouse-delete',
 ;;    `Buffer-menu-mouse-execute', `Buffer-menu-mouse-modified',
 ;;    `Buffer-menu-mouse-other-window', `Buffer-menu-mouse-save',
-;;    `Buffer-menu-mouse-unmark', `buffer-menu-toggle-file-column'
-;;    (Emacs 22+), `buffer-menu-toggle-mode-column' (Emacs 22+),
-;;    `buffer-menu-toggle-time-column' (Emacs 22+),
-;;    `buffer-menu-toggle-time-format' (Emacs 22+).
+;;    `Buffer-menu-mouse-unmark', `Buffer-menu-toggle-file-column'
+;;    (Emacs 22+), `Buffer-menu-toggle-mode-column' (Emacs 22+),
+;;    `Buffer-menu-toggle-time-column' (Emacs 22+),
+;;    `Buffer-menu-toggle-time-format' (Emacs 22+).
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -78,6 +97,7 @@
 ;;  Other functions defined here:
 ;;
 ;;    `Buffer-menu-fontify-and-adjust-frame',
+;;    `buffer-menu-nb-marked-in-mode-name',
 ;;    `buffer-menu-set-default-value'.
 ;;
 ;;
@@ -90,7 +110,9 @@
 ;;  ***** NOTE: The following hook defined in `buff-menu.el'
 ;;              has been REDEFINED HERE:
 ;;
-;;  `buffer-menu-mode-hook' - Fontifies buffer and fits its frame.
+;;  `Buffer-menu-mode-hook' (aka `buffer-menu-mode-hook') -
+;;     Fontify buffer and fits its frame.
+;;     Add number of marked and flagged lines to mode in mode line.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `buff-menu.el'
@@ -138,10 +160,41 @@
 ;;     some keys, such as `q', will not be defined in the buffer list.
 ;;     (So byte-compile it using Emacs 23 or later.)
 ;;
+;;  3. Starting with Emacs 24.3, Emacs development changed
+;;     `buff-menu.el' so that it is based on `tabulated-list' mode.
+;;     Unfortunately, that breaks the `buff-menu+.el' enhancements.  I
+;;     have not had the time to update `buff-menu+.el' for
+;;     compatibility with Emacs 24.3 and later.  If you want to use
+;;     `buff-menu+.el' with Emacs 24.3 or later, you can download the
+;;     Emacs 23 version of `buff-menu.el' and put that in your
+;;     `load-path'.  You will lose no features if you do that: Emacs
+;;     24.3 and later add no enhancements to `buff-menu.el' - they
+;;     just base it on `tabulated-list.el'.  You can download Emacs 23
+;;     `buff-menu.el' here: http://ftp.gnu.org/gnu/emacs/ or here:
+;;     http://www.gnu.org/prep/ftp.html.  That version will work fine
+;;     with Emacs 24.3 and later and with `buff-menu+.el'.  I might
+;;     eventually get around to updating `buff-menu+.el' to
+;;     accommodate the `buff-menu.el' change, but it is not my first
+;;     priority.  Sorry for this annoyance.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;;
+;; 2013/04/20 dadams
+;;     list-buffers-noselect and globally:
+;;       Set Buffer-menu-buffer+size-width to 26 if nil or unbound.  Emacs 24.3+ defaults it to nil.
+;; 2012/08/28 dadams
+;;     Buffer-menu-select: Updated for Emacs 24.3+ (but I don't yet support > 24.2).
+;;     Handle Emacs 23 capitalization of buffer-menu-mode-hook.
+;; 2012/06/21 dadams
+;;     Added: buffer-menu-nb-marked-in-mode-name.
+;; 2012/01/15 dadams
+;;     Rename commands to capitalized Buffer-menu from buffer-menu.
+;;     Bind Buffer-menu-toggle-(file|mode|time)-column to M-f, M-m, M-t.
+;;     Bind Buffer-menu-toggle-time-format to C-M-t.
+;;     Bind Buffer-menu-delete-flagged to C-M-x for all Emacs versions.
+;;     Buffer-menu-mode: Use \\[...] for those commands.
 ;; 2011/12/19 dadams
 ;;     Buffer-menu-mode, Buffer-menu-mouse-3-menu: Use line-end-position, not end-of-line + point.
 ;; 2011/10/27 dadams
@@ -447,15 +500,10 @@ Don't forget to mention your Emacs and library versions."))
   (defvar Buffer-menu-buffer+size-computed-width 0
     "Max width of all buffer names, plus 4 for initial `CRM '.")
 
-  (defun buffer-menu-increase-max-buffer+size ()
-    "Increase option `Buffer-menu-buffer+size-width' by one."
-    (interactive)
-    (when (> (1+ Buffer-menu-buffer+size-width) 150) (error "Cannot increase further"))
-    (setq Buffer-menu-buffer+size-width  (1+ Buffer-menu-buffer+size-width))
-    (buffer-menu)
-    (message "New max width: %s" Buffer-menu-buffer+size-width))
 
-  (defun buffer-menu-decrease-max-buffer+size ()
+  (define-key Buffer-menu-mode-map "-" 'Buffer-menu-decrease-max-buffer+size)
+
+  (defun Buffer-menu-decrease-max-buffer+size () ; Bound to `-'.
     "Decrease option `Buffer-menu-buffer+size-width' by one."
     (interactive)
     (let ((orig  Buffer-menu-buffer+size-width))
@@ -468,30 +516,49 @@ Don't forget to mention your Emacs and library versions."))
                       (buffer-menu)
                       (error "Cannot decrease further"))))))
 
-  (define-key Buffer-menu-mode-map "+" 'buffer-menu-increase-max-buffer+size)
-  (define-key Buffer-menu-mode-map "-" 'buffer-menu-decrease-max-buffer+size)
-  (define-key Buffer-menu-mode-map "\C-\M-x" 'Buffer-menu-delete-flagged)
 
-  (defun buffer-menu-toggle-time-format ()
+  (define-key Buffer-menu-mode-map "+" 'Buffer-menu-increase-max-buffer+size)
+
+  (defun Buffer-menu-increase-max-buffer+size () ; Bound to `+'.
+    "Increase option `Buffer-menu-buffer+size-width' by one."
+    (interactive)
+    (when (> (1+ Buffer-menu-buffer+size-width) 150) (error "Cannot increase further"))
+    (setq Buffer-menu-buffer+size-width  (1+ Buffer-menu-buffer+size-width))
+    (buffer-menu)
+    (message "New max width: %s" Buffer-menu-buffer+size-width))
+
+
+  (define-key Buffer-menu-mode-map "\C-\M-t" 'Buffer-menu-toggle-time-format)
+
+  (defun Buffer-menu-toggle-time-format () ; Bound to `C-M-t'.
     "Toggle `Buffer-menu-time-format' and redisplay Buffer Menu."
     (interactive)
     (buffer-menu-set-default-value 'Buffer-menu-time-format
                                    (if (eq 'short Buffer-menu-time-format) 'long 'short))
     (buffer-menu))
 
-  (defun buffer-menu-toggle-time-column ()
+
+  (define-key Buffer-menu-mode-map "\M-t" 'Buffer-menu-toggle-time-column)
+
+  (defun Buffer-menu-toggle-time-column () ; Bound to `M-t'.
     "Toggle `Buffer-menu-time-flag' and redisplay Buffer Menu."
     (interactive)
     (buffer-menu-set-default-value 'Buffer-menu-time-flag (not Buffer-menu-time-flag))
     (buffer-menu))
 
-  (defun buffer-menu-toggle-mode-column ()
+
+  (define-key Buffer-menu-mode-map "\M-m" 'Buffer-menu-toggle-mode-column)
+
+  (defun Buffer-menu-toggle-mode-column () ; Bound to `M-m'.
     "Toggle `Buffer-menu-mode-flag' and redisplay Buffer Menu."
     (interactive)
     (buffer-menu-set-default-value 'Buffer-menu-mode-flag (not Buffer-menu-mode-flag))
     (buffer-menu))
 
-  (defun buffer-menu-toggle-file-column ()
+
+  (define-key Buffer-menu-mode-map "\M-f" 'Buffer-menu-toggle-file-column)
+
+  (defun Buffer-menu-toggle-file-column () ; Bound to `M-f'.
     "Toggle `Buffer-menu-file-flag' and redisplay Buffer Menu."
     (interactive)
     (buffer-menu-set-default-value 'Buffer-menu-file-flag (not Buffer-menu-file-flag))
@@ -634,6 +701,14 @@ Click a column heading to sort by that field and update this option."
                               ?\  )     ; ?\  instead of ?\s, so can be byte-compiled in Emacs 20.
             size))
   )
+
+
+;; Emacs 24.3+ sets the default value to nil.
+(unless (and (boundp 'Buffer-menu-buffer+size-width)  Buffer-menu-buffer+size-width)
+  (setq Buffer-menu-buffer+size-width  26))
+
+
+
 
 ;;; Faces used to fontify buffer.
 
@@ -826,7 +901,7 @@ Click a column heading to sort by that field and update this option."
       (goto-char (if eobp (point-max) opoint)))))
 
 (defun Buffer-menu-fontify-and-adjust-frame ()
-  "Use for `buffer-menu-mode-hook'.  Fontify, fit and raise frame."
+  "Use for `Buffer-menu-mode-hook'.  Fontify, fit and raise frame."
   (with-current-buffer (get-buffer-create "*Buffer List*")
     (when (< emacs-major-version 21) (make-local-variable 'font-lock-defaults))
     (setq font-lock-defaults  '(buffer-menu-font-lock-keywords t))
@@ -836,10 +911,13 @@ Click a column heading to sort by that field and update this option."
         (select-window (get-buffer-window (current-buffer) 'visible))
         (when (and (fboundp 'fit-frame) (one-window-p t)) (fit-frame))
         (raise-frame)))
+    ;; Refresh `font-lock-keywords' from `font-lock-defaults'
     (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))))
 
-;; Fontify buffer, then fit and raise its frame.
-(add-hook 'buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame)
+;; Fontify buffer, then fit and raise its frame.  (In Emacs 23 they capitalized the name.)
+(if (> emacs-major-version 22)
+    (add-hook 'Buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame)
+  (add-hook 'buffer-menu-mode-hook 'Buffer-menu-fontify-and-adjust-frame))
 
 
 ;; REPLACE ORIGINAL in `buff-menu.el'.
@@ -921,11 +999,13 @@ These features are available for Emacs 22 and later:
 
 * You can resize the Buffer and Size columns using `+' and `-'.
 
-* You can toggle the display of columns Time, Mode, and File using
-  commands `buffer-menu-toggle-time-column',
-  `buffer-menu-toggle-mode-column', and
-  `buffer-menu-toggle-file-column'.  You can toggle the Time format
-  using command `buffer-menu-toggle-time-format'.
+* You can toggle showing columns Time, Mode, and File using
+  `\\[Buffer-menu-toggle-time-column]',
+  `\\[Buffer-menu-toggle-mode-column]', and
+  `\\[Buffer-menu-toggle-file-column]'.
+  You can toggle the Time format using
+  `\\[Buffer-menu-toggle-time-format]]'.
+  (These re only for Emacs 21 and later.)
 
 Column `CRM':
  `C' shows `>' if you have marked the buffer to be displayed,
@@ -1010,7 +1090,9 @@ Bindings in Buffer Menu mode:
     (setq truncate-lines    t
           buffer-read-only  t)
     (if (> emacs-major-version 21)
-        (run-mode-hooks 'buffer-menu-mode-hook)
+        (if (> emacs-major-version 22)  ; Capitalized in Emacs 23.
+            (run-mode-hooks 'Buffer-menu-mode-hook)
+          (run-mode-hooks 'buffer-menu-mode-hook))
       (run-hooks 'buffer-menu-mode-hook))))
 
 
@@ -1049,11 +1131,9 @@ These features are available for Emacs 22 and later:
 
 * You can resize the Buffer and Size columns using `+' and `-'.
 
-* You can toggle the display of columns Time, Mode, and File using
-  commands `buffer-menu-toggle-time-column',
-  `buffer-menu-toggle-mode-column', and
-  `buffer-menu-toggle-file-column'.  You can toggle the Time format
-  using command `buffer-menu-toggle-time-format'.
+* You can toggle showing columns Time, Mode, and File using `\\[Buffer-menu-toggle-time-column]',
+  `\\[Buffer-menu-toggle-mode-column]', and `\\[Buffer-menu-toggle-file-column]'.  You can toggle \
+the Time format using `\\[Buffer-menu-toggle-time-format]'.
 
 Column `CRM':
  `C' shows `>' if you have marked the buffer to be displayed,
@@ -1133,8 +1213,11 @@ Bindings in Buffer Menu mode:
     (setq truncate-lines    t
           buffer-read-only  t)))
 
+
+(define-key Buffer-menu-mode-map "\C-\M-x" 'Buffer-menu-delete-flagged)
+
 ;;;###autoload
-(defun Buffer-menu-delete-flagged ()
+(defun Buffer-menu-delete-flagged ()    ; Bound to `C-M-x'.
   "Delete all buffers marked `D', even if they have been modified.
 If there are any file buffers that have been modified since the last
 save, then you must confirm the deletion of all at once.
@@ -1223,49 +1306,81 @@ Buffers can be so marked using commands `\\<Buffer-menu-mode-map>\
 ;;
 ;; When Buffer Menu is `window-dedicated-p', uses `pop-to-buffer' to display.
 ;;
-;;;###autoload
-(defun Buffer-menu-select ()
-  "Select this line's buffer; also display buffers marked with `>'.
+(when (or (> emacs-major-version 24)    ; Emacs 24.3+.
+          (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+  (defun Buffer-menu-select ()
+    "Select this line's buffer; also display buffers marked with `>'.
 You can mark buffers with command `\\<Buffer-menu-mode-map>\\[Buffer-menu-mark]'.
-If the window is `window-dedicated-p', then another window is used;
-else, all windows previously in the frame are replaced by this one."
-  (interactive)
-  (let ((buff    (Buffer-menu-buffer t))
-        (menu    (current-buffer))
-        (others  ())
-        tem)
-    (Buffer-menu-beginning)
-    (while (re-search-forward "^>" nil t)
-      (setq tem  (Buffer-menu-buffer t))
-      (let ((buffer-read-only  nil)) (delete-char -1) (insert ?\ ))
-      (or (eq tem buff) (memq tem others) (setq others  (cons tem others))))
-    (setq others  (nreverse others))
-    (cond ((window-dedicated-p (selected-window)) ; Can't split dedicated win.
-           (pop-to-buffer buff)
-           (unless (eq menu buff) (bury-buffer menu))
-           (while others
-             (pop-to-buffer (car others))
-             (pop others)))
-          (t
-           (setq tem  (/ (1- (frame-height)) (1+ (length others))))
-           (delete-other-windows)
-           (switch-to-buffer buff)
-           (unless (eq menu buff) (bury-buffer menu))
-           (if (equal (length others) 0)
-               (progn
+Delete and replace any previously existing windows in the selected
+frame.  But if the Buffer Menu window is dedicated, do not delete it."
+    (interactive)
+    (let* ((line-buffer  (Buffer-menu-buffer t))
+           (menu-buffer  (current-buffer))
+           (others       (delq line-buffer (Buffer-menu-marked-buffers t))))
+      (cond ((window-dedicated-p (selected-window)) ; Keep Buffer Menu if dedicated window.
+             (pop-to-buffer line-buffer)
+             (unless (eq menu-buffer line-buffer) (bury-buffer menu-buffer))
+             (dolist (buf others) (pop-to-buffer buf)))
+            (t
+             (delete-other-windows)
+             (switch-to-buffer line-buffer)
+             (unless (eq menu-buffer line-buffer) (bury-buffer menu-buffer))
+             (let ((height       (/ (1- (frame-height)) (1+ (length others)))))
+               (dolist (buf others)
+                 (split-window nil height)
+                 (other-window 1)
+                 (switch-to-buffer buf)))
+             (other-window 1))))))      ; Back to beginning.
+
+
+;; REPLACE ORIGINAL in `buff-menu.el'.
+;;
+;; When Buffer Menu is `window-dedicated-p', uses `pop-to-buffer' to display.
+;;
+(unless (or (> emacs-major-version 24)  ; Emacs 20-23.
+            (and (= emacs-major-version 24)  (> emacs-minor-version 2)))
+  (defun Buffer-menu-select ()
+    "Select this line's buffer; also display buffers marked with `>'.
+You can mark buffers with command `\\<Buffer-menu-mode-map>\\[Buffer-menu-mark]'.
+Delete and replace any previously existing windows in the selected
+frame.  But if the Buffer Menu window is dedicated, do not delete it."
+    (interactive)
+    (let ((buff    (Buffer-menu-buffer t))
+          (menu    (current-buffer))
+          (others  ())
+          tem)
+      (Buffer-menu-beginning)
+      (while (re-search-forward "^>" nil t)
+        (setq tem  (Buffer-menu-buffer t))
+        (let ((buffer-read-only  nil)) (delete-char -1) (insert ?\ ))
+        (or (eq tem buff) (memq tem others) (setq others  (cons tem others))))
+      (setq others  (nreverse others))
+      (cond ((window-dedicated-p (selected-window)) ; Can't split dedicated win.
+             (pop-to-buffer buff)
+             (unless (eq menu buff) (bury-buffer menu))
+             (while others
+               (pop-to-buffer (car others))
+               (pop others)))
+            (t
+             (setq tem  (/ (1- (frame-height)) (1+ (length others))))
+             (delete-other-windows)
+             (switch-to-buffer buff)
+             (unless (eq menu buff) (bury-buffer menu))
+             (if (equal (length others) 0)
+                 (progn
 ;;;              ;; Restore previous window configuration before displaying
 ;;;              ;; selected buffers.
 ;;;              (if Buffer-menu-window-config
 ;;;                  (progn (set-window-configuration
 ;;;                            Buffer-menu-window-config)
 ;;;                         (setq Buffer-menu-window-config  nil)))
-                 (switch-to-buffer buff))
-             (while others
-               (split-window nil tem)
-               (other-window 1)
-               (switch-to-buffer (car others))
-               (setq others  (cdr others)))
-             (other-window 1))))))      ;back to the beginning!      ; Back to the beginning.
+                   (switch-to-buffer buff))
+               (while others
+                 (split-window nil tem)
+                 (other-window 1)
+                 (switch-to-buffer (car others))
+                 (setq others  (cdr others)))
+               (other-window 1)))))))   ; Back to the beginning.
 
 
 ;; REPLACE ORIGINAL in `buff-menu.el'.
@@ -1381,6 +1496,8 @@ For more information, see the function `buffer-menu'."
     ;; $$$$$$ Could be costly if lots of buffers - maybe have an option to be able to not do it?
     (let ((len  0)
           buf+size)
+      ;; Emacs 24.3+ sets the default value of `Buffer-menu-buffer+size-width' to nil.
+      (unless Buffer-menu-buffer+size-width  (setq Buffer-menu-buffer+size-width  26))
       (setq Buffer-menu-buffer+size-computed-width  Buffer-menu-buffer+size-width)
       (dolist (buffer (buffer-list))
         (setq buf+size  (concat (buffer-name buffer) (number-to-string (buffer-size buffer))))
@@ -1774,6 +1891,63 @@ Buffers can be marked via commands `\\<Buffer-menu-mode-map>\
               (progn (delete-char 1) (insert ? ))
             (delete-region (point) (progn (forward-line 1) (point)))
             (unless (bobp) (forward-char -1))))))))
+
+(when (> emacs-major-version 21)
+  (defun buffer-menu-nb-marked-in-mode-name ()
+    "Add number of marked and flagged lines to mode name in the mode line.
+\(Flagged means flagged for deletion.)
+If the current line is marked/flagged and there are others
+marked/flagged after it then show `N/M', where N is the number
+marked/flagged through the current line and M is the total number
+marked/flagged."
+    (setq mode-name
+          `(,mode-name
+            (:eval (let* ((marked-regexp   "^>")
+                          (nb-marked       (count-matches marked-regexp
+                                                          (point-min) (point-max))))
+                     (if (not (> nb-marked 0))
+                         ""
+                       (propertize
+                        (format " %s%d>"
+                                (save-excursion
+                                  (forward-line 0)
+                                  (if (looking-at (concat marked-regexp ".*"))
+                                      (format "%d/" (1+ (count-matches marked-regexp
+                                                                       (point-min) (point))))
+                                    ""))
+                                nb-marked)
+                        'face 'buffer-menu-mode-line-marked))))
+            (:eval (let* ((flagged-regexp  "^D")
+                          (nb-flagged      (count-matches flagged-regexp
+                                                          (point-min) (point-max))))
+                     (if (not (> nb-flagged 0))
+                         ""
+                       (propertize
+                        (format " %s%dD"
+                                (save-excursion
+                                  (forward-line 0)
+                                  (if (looking-at (concat flagged-regexp ".*"))
+                                      (format "%d/" (1+ (count-matches flagged-regexp
+                                                                       (point-min) (point))))
+                                    ""))
+                                nb-flagged)
+                        'face 'buffer-menu-mode-line-flagged)))))))
+
+  (defface buffer-menu-mode-line-marked
+      ;; '((t (:inherit buffer-menu-view-mark)))
+      '((t (:foreground "Blue")))
+    "*Face for marked number in mode line `mode-name' for Dired buffers."
+    :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
+
+  (defface buffer-menu-mode-line-flagged
+      ;;  '((t (:inherit buffer-menu-delete-mark)))
+      '((t (:foreground "Red")))
+    "*Face for flagged number in mode line `mode-name' for Dired buffers."
+    :group 'Buffer-Menu-Plus :group 'font-lock-highlighting-faces)
+
+  (if (> emacs-major-version 22)
+      (add-hook 'Buffer-menu-mode-hook 'buffer-menu-nb-marked-in-mode-name)
+    (add-hook 'buffer-menu-mode-hook 'buffer-menu-nb-marked-in-mode-name)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

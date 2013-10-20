@@ -1,15 +1,15 @@
 ;;; volatile-highlights.el --- Minor mode for visual feedback on some operations.
 
-;; Copyright (C) 2001, 2010-2012 K-talo Miyazaki, all rights reserved.
+;; Copyright (C) 2001, 2010-2013 K-talo Miyazaki, all rights reserved.
 
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 03 October 2001. (as utility functions in my `.emacs' file.)
 ;;          14 March   2010. (re-written as library `volatile-highlights.el')
 ;; Keywords: emulations convenience wp
-;; Revision: $Id: bcd29d2f9e70d19b888a654bb8086d26e250faa4 $
+;; Revision: $Id: 05a87ee2b07b56d0d15be57cea3d77f30da5411e $
 ;; URL: http://www.emacswiki.org/emacs/download/volatile-highlights.el
 ;; GitHub: http://github.com/k-talo/volatile-highlights.el
-;; Version: 1.8
+;; Version: 1.10
 ;; Contributed by: Ryan Thompson.
 
 ;; This file is not part of GNU Emacs.
@@ -98,6 +98,14 @@
 
 ;;; Change Log:
 
+;; v1.10  Thu Mar 21 22:37:27 2013 JST
+;;   - Use inherit in face definition when detected.
+;;   - Suppress compiler warnings regarding to emacs/xemacs private
+;;     functions by file local variable.
+;;
+;; v1.9  Tue Mar  5 00:52:35 2013 JST
+;;   - Fixed errors in shell caused by dummy functions.
+;;
 ;; v1.8  Wed Feb 15 00:08:14 2012 JST
 ;;   - Added "Contributed by: " line in header.
 ;;   - Added extension for hideshow.
@@ -149,7 +157,7 @@
 
 (provide 'volatile-highlights)
 
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Private Variables.
@@ -163,36 +171,7 @@
 (defvar vhl/.hl-lst nil
   "List of volatile highlights.")
 
-
-;;;============================================================================
-;;;
-;;;  Suppress compiler warnings regarding to emacs/xemacs private functions.
-;;;
-;;;============================================================================
-(eval-when-compile
-  (dolist (func (cond (vhl/.xemacsp
-                       '(delete-overlay
-                         make-overlay
-                         overlay-end
-                         overlay-get
-                         overlay-put
-                         overlay-start
-                         overlays-at
-                         overlayp
-                         overlays-in))
-                      (t
-                       '(delete-extent
-                         extent-property
-                         extentp
-                         highlight-extent
-                         make-extent
-                         map-extents
-                         set-extent-face
-                         set-extent-property))))
-      (when (not (fboundp func))
-        (setf (symbol-function func) (lambda (&rest args))))))
-
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Faces.
@@ -212,7 +191,7 @@
 (defface vhl/default-face
   (cond
    ((or vhl/.xemacsp
-        (vhl/.face-inheritance-possible-p))
+        (not (vhl/.face-inheritance-possible-p)))
     '((((class color) (background light))
        (:background "yellow1"))
       (((class color) (background dark))
@@ -225,7 +204,7 @@
     "Face used for volatile highlights."
     :group 'volatile-highlights)
 
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Minor Mode Definition.
@@ -249,7 +228,7 @@ where the deleted text used to be would be highlighted."
   :type 'boolean
   :group 'volatile-highlights)
 
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Public Functions/Commands.
@@ -310,7 +289,7 @@ Optional args are the same as `vhl/add-range'."
   (interactive)
   (vhl/.force-clear-all-hl))
 
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Private Functions.
@@ -373,7 +352,7 @@ Optional args are the same as `vhl/add-range'."
 					 (vhl/.clear-hl hl)))
 			  (overlays-in (point-min) (point-max)))))))
 
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Functions to manage extensions.
@@ -420,7 +399,7 @@ Optional args are the same as `vhl/add-range'."
   (dolist (sym vhl/.installed-extensions)
     (vhl/unload-extension sym)))
 
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Utility functions/macros for extensions.
@@ -544,13 +523,13 @@ extensions."
          ,off-body-form)
        nil)))
 
-
+ 
 ;;;============================================================================
 ;;;
 ;;;  Extensions.
 ;;;
 ;;;============================================================================
-
+ 
 ;;-----------------------------------------------------------------------------
 ;; Extension for supporting undo.
 ;;   -- Put volatile highlights on the text inserted by `undo'.
@@ -560,7 +539,7 @@ extensions."
 (vhl/define-extension 'undo 'primitive-undo)
 (vhl/install-extension 'undo)
 
-
+ 
 ;;-----------------------------------------------------------------------------
 ;; Extension for supporting yank/yank-pop.
 ;;   -- Put volatile highlights on the text inserted by `yank' or `yank-pop'.
@@ -589,7 +568,7 @@ extensions."
 (vhl/define-extension 'delete 'delete-region)
 (vhl/install-extension 'delete)
 
-
+ 
 ;;-----------------------------------------------------------------------------
 ;; Extension for supporting etags.
 ;;   -- Put volatile highlights on the tag name which was found by `find-tag'.
@@ -615,7 +594,7 @@ extensions."
 
 (vhl/install-extension 'etags)
 
-
+ 
 ;;-----------------------------------------------------------------------------
 ;; Extension for supporting occur.
 ;;   -- Put volatile highlights on occurrence which is selected by
@@ -722,7 +701,7 @@ extensions."
 
 (vhl/install-extension 'occur)
 
-
+ 
 ;;-----------------------------------------------------------------------------
 ;; Extension for non-incremental search operations.
 ;;   -- Put volatile highlights on the text found by non-incremental search
@@ -769,7 +748,7 @@ extensions."
 
 (vhl/install-extension 'nonincremental-search)
 
-
+ 
 ;;-----------------------------------------------------------------------------
 ;; Extension for hideshow.
 ;;   -- Put volatile highlights on the text blocks which are shown/hidden
@@ -808,5 +787,16 @@ extensions."
                                  'vhl/ext/hideshow/vhl/around-hook))
 
 (vhl/install-extension 'hideshow)
+
+ 
+;;;============================================================================
+;;;
+;;;  Suppress compiler warnings regarding to emacs/xemacs private functions.
+;;;
+;;;============================================================================
+
+;; Local variables:
+;; byte-compile-warnings: (not unresolved)
+;; End:
 
 ;;; volatile-highlights.el ends here
