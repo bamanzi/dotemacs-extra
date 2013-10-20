@@ -109,7 +109,35 @@
      (add-hook 'completion-list-mode 'turn-on-tempbf-mode)
      ))
 
+;;** folding
+;;*** outline
+(autoload 'outline-cycle  "outline-magic"
+  "Visibility cycling for outline(-minor)-mode." t)
+(autoload 'outline-move-subtree-up  "outline-magic"
+  "Move the currrent subtree up past ARG headlines of the same level." t)
+(autoload 'outline-move-subtree-down  "outline-magic"
+  "Move the currrent subtree down past ARG headlines of the same level." t)
+
+
+;;*** other folding
+(autoload 'hide-region-hide  "hide-region"
+  "Hides a region by making an invisible overlay over it and save the" t)
+(autoload 'hide-region-unhide  "hide-region"
+  "Unhide a region at a time, starting with the last one hidden and" t)
+
+
+;;** rectangle
+(autoload 'rectplus-copy-rectangle  "rect+"
+  "Copy rectangle area." t)
+(autoload 'rectplus-insert-number-rectangle  "rect+"
+  "Insert incremental number into each left edges of rectangle's line." t)
+
+(define-key ctl-x-r-map (kbd "M-w") 'rectplus-copy-rectangle)
+(define-key ctl-x-r-map (kbd "M-n") 'rectplus-insert-number-rectangle)
+
 ;;** misc
+(idle-require 'volatile-highlights)
+
 (idle-require 'dired+)
 
 (idle-require 'buff-menu+)
