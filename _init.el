@@ -65,18 +65,49 @@
 
 (require 'scratch-ext nil t)
 
-(defun scratch-save ()
+(setq inhibit-startup-screen nil)
+(setq initial-major-mode 'org-mode)
+(run-with-timer 4 nil 'scratch-load/bmz)
+
+(defun scratch-load/bmz ()
+   "Load today's scratch content."
+   (interactive)
+   (let* ((scratch-ext-log-name-format "%Y/%m/%d.org")
+          (buffer (get-buffer-create "*scratch*"))
+          (file (expand-file-name (format-time-string scratch-ext-log-name-format (current-time))
+                                   scratch-ext-log-directory)))
+     (with-current-buffer buffer
+       (if (file-readable-p file)
+           (progn
+             (erase-buffer)
+             (insert-file-contents file)
+             (funcall initial-major-mode))
+         (message "Scratch log not found. %s" file)
+         (end-of-buffer)
+         (insert-string "# C-x C-s : (scratch-save/bmz) -- save to daily log\n")
+         (insert-string "# C-x C-v : (scratch-load/bmz) -- load from daily log\n")
+         (insert-string "# C-c i   : (scratch-ext-insert-newest-log) -- load last log\n")
+         )
+       (local-set-key (kbd "C-x C-s") 'scratch-save/bmz)
+       (local-set-key (kbd "C-x C-v") 'scratch-load/bmz)    
+       (local-set-key (kbd "C-c i")   'scratch-ext-insert-newest-log))))
+
+(defun scratch-save/bmz ()
+  "Save scratch to daily log."
   (interactive)
   (require 'scratch-ext)
-  (scratch-ext-save-scratch-to-file)
-  )
+  ;;by default, save by timestamp
+  (let ((scratch-ext-log-directory "~/.scratch.verbose/")
+        (scratch-ext-log-name-format "%Y/%m/%d-%H%M%S"))
+    (scratch-ext-save-scratch-to-file))
+  
+  ;;manually save to daily log
+  (let ((scratch-ext-log-name-format "%Y/%m/%d.org"))
+    (scratch-ext-save-scratch-to-file)))
+
 
 ;;*** set org-mode as major-mode of *scratch*
 (progn
-  (setq inhibit-startup-screen nil
-        initial-scratch-message
-        (concat (replace-regexp-in-string ";; " "# " initial-scratch-message)
-                "# (from scratch-ext.el: now you can use `scratch-save' to log content of this buffer.)\n\n"))
 
   (eval-after-load "scratch-ext"
     `(progn
