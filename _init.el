@@ -101,13 +101,20 @@
   `(progn
      (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)
      (add-hook 'custom-mode-hook 'turn-on-tempbuf-mode)
-     (add-hook 'w3-mode-hook 'turn-on-tempbuf-mode)
-     (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode)
+     (if (require 'man nil t)
+         (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode))
      (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
-     (add-hook 'anything-mode-hook 'turn-on-tempbuf-mode)
      (add-hook 'diff-mode-hook 'turn-on-tempbuf-mode)
      (add-hook 'completion-list-mode 'turn-on-tempbf-mode)
+     (add-hook 'occur-mode-hoo 'turn-on-tempbuf-mode)
+     
+     (if (require 'anything nil t)
+         (add-hook 'anything-mode-hook 'turn-on-tempbuf-mode))
+     
+     ;;(add-hook 'w3-mode-hook 'turn-on-tempbuf-mode)
+     
      ))
+
 
 ;;** folding
 ;;*** outline
@@ -135,6 +142,18 @@
 (define-key ctl-x-r-map (kbd "M-w") 'rectplus-copy-rectangle)
 (define-key ctl-x-r-map (kbd "M-n") 'rectplus-insert-number-rectangle)
 
+
+;;**  recent-jump
+(setq rj-column-threshold 100)
+(if (load "recent-jump" t)
+    (recent-jump-mode t)
+  (message "Warning: failed to load `recent-jump' (%s)." load-file-name))
+
+(global-set-key (kbd "C-c <") 'recent-jump-backward)
+(global-set-key (kbd "C-c >") 'recent-jump-forward)
+
+
+
 ;;** misc
 (idle-require 'volatile-highlights)
 
@@ -152,3 +171,5 @@
 (idle-require 'info+)
 
 (idle-require 'mouse3)
+
+

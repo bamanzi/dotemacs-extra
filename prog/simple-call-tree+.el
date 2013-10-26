@@ -557,10 +557,10 @@ ALIST is an item of simple-call-tree-alist."
     (while (re-search-forward (simple-call-tree-symbol-as-regexp (caar item))
                               end t)
       ;; need to go back so that the text properties are read correctly
-      (left-word 1)
+      (backward-word 1)
       (if (simple-call-tree-valid-face-p)
           (setcdr alist (cons (list (caar item) (point-marker)) (cdr alist))))
-      (right-word 1))))
+      (forward-word 1))))
 
 (defun* simple-call-tree-analyze (&optional (buffers (list (current-buffer))))
   "Analyze the current buffer, or the buffers in list BUFFERS.
