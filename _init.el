@@ -107,11 +107,9 @@
 
 
 ;;*** set org-mode as major-mode of *scratch*
-(progn
-
+(if t
   (eval-after-load "scratch-ext"
     `(progn
-
        ;;redefine `scratch-ext-initialize-buffer-as-scratch'
        (defun scratch-ext-initialize-buffer-as-scratch (buffer)
          (with-current-buffer buffer
@@ -183,6 +181,19 @@
 (global-set-key (kbd "C-c <") 'recent-jump-backward)
 (global-set-key (kbd "C-c >") 'recent-jump-forward)
 
+;;** smart-mode-line
+(idle-require 'smart-mode-line)
+(eval-after-load "smart-mode-line"
+  `(progn
+     (sml/setup)
+     (setq sml/hidden-modes '(" RJ"
+                              " drag"
+                              " back"
+                              " org-link"
+                              " Hi"
+                              " -Chg"
+                              " Undo-Tree"))
+     ))
 
 
 ;;** misc
