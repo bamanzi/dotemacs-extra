@@ -61,6 +61,12 @@
 
 (define-key global-map (kbd "ESC ESC :") 'viper-ex)
 
+;;*** god-mode
+(autoload 'god-mode "god-mode"
+  "Toggle global God mode." t)
+
+
+
 ;;** scratch-ext
 
 (require 'scratch-ext nil t)
@@ -194,6 +200,13 @@
                               " -Chg"
                               " Undo-Tree"))
      ))
+
+
+;;** hide some lines
+(autoload 'hide-matching-lines "hide-lines"
+  "Hide lines matching the specified regexp." t)
+(autoload 'hide-non-matching-lines "hide-lines"
+  "Hide lines that don't match the specified regexp." t)
 
 
 ;;** misc
