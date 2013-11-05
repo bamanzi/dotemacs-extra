@@ -72,7 +72,7 @@
 (require 'scratch-ext nil t)
 
 (setq inhibit-startup-screen nil)
-(setq initial-major-mode 'org-mode)
+;;(setq initial-major-mode 'org-mode)
 (run-with-timer 4 nil 'scratch-load/bmz)
 
 (defun scratch-load/bmz ()
@@ -90,9 +90,11 @@
              (funcall initial-major-mode))
          (message "Scratch log not found. %s" file)
          (end-of-buffer)
-         (insert-string "# C-x C-s : (scratch-save/bmz) -- save to daily log\n")
-         (insert-string "# C-x C-v : (scratch-load/bmz) -- load from daily log\n")
-         (insert-string "# C-c i   : (scratch-ext-insert-newest-log) -- load last log\n")
+         (insert-string "(progn\n")
+         (insert-string "  (local-set-key (kbd \"C-x C-s\") 'scratch-save/bmz) ;; save to daily log\n")
+         (insert-string "  (local-set-key (kbd \"C-x C-v\") 'scratch-load/bmz) ;; load from daily log\n")
+         (insert-string "  (local-set-key (kbd \"C-c i\")   'scratch-ext-insert-newest-log) ;; load last log\n")
+         (insert-string "  )\n\n")
          )
        (local-set-key (kbd "C-x C-s") 'scratch-save/bmz)
        (local-set-key (kbd "C-x C-v") 'scratch-load/bmz)    
