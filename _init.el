@@ -118,7 +118,7 @@
 (if t
   (eval-after-load "scratch-ext"
     `(progn
-       ;;redefine `scratch-ext-initialize-buffer-as-scratch'
+       ;;redefine this function to add my own keybindings
        (defun scratch-ext-initialize-buffer-as-scratch (buffer)
          (with-current-buffer buffer
            (funcall 'org-mode) ;;hack: use `org-mode' as major mode
@@ -201,6 +201,11 @@
                               " Hi"
                               " -Chg"
                               " Undo-Tree"))
+
+     (setq-default mode-line-format
+                   (cons " "
+                         (cons '(which-func-mode which-func-format)
+                                (default-value 'mode-line-format))))
      ))
 
 
