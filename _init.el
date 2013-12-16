@@ -35,36 +35,43 @@
 
 ;;** vi emulation (viper)
 
-;;*** viper 
-(setq viper-expert-level '3)
-(setq viper-inhibit-startup-message 't)
+;; ;;*** viper 
+;; (setq viper-expert-level '3)
+;; (setq viper-inhibit-startup-message 't)
 
-(defun viper-cua-region-fix()
-  (define-key viper-vi-global-user-map [backspace] 'backward-delete-char-untabify)
-  (define-key viper-vi-global-user-map "\C-d" 'delete-char)
-  (define-key viper-insert-global-user-map [backspace] 'backward-delete-char-untabify)
-  (define-key viper-insert-global-user-map "\C-d" 'delete-char))
+;; (defun viper-cua-region-fix()
+;;   (define-key viper-vi-global-user-map [backspace] 'backward-delete-char-untabify)
+;;   (define-key viper-vi-global-user-map "\C-d" 'delete-char)
+;;   (define-key viper-insert-global-user-map [backspace] 'backward-delete-char-untabify)
+;;   (define-key viper-insert-global-user-map "\C-d" 'delete-char))
 
-(eval-after-load "viper" `(viper-cua-region-fix))
+;; (eval-after-load "viper" `(viper-cua-region-fix))
 
-;;*** vimpulse
-(eval-after-load "viper"
-  '(require 'vimpulse))
+;; ;;*** vimpulse
+;; (eval-after-load "viper"
+;;   '(require 'vimpulse))
 
-;;***Ex commands without entering viper-mode
-;; stoem from http://www.advogato.org/person/chalst/diary/277.html
-;;for ex commands supported by viper, refer `ex-token-alist'
+;; ;;*** Ex commands without entering viper-mode
+;; ;; stoem from http://www.advogato.org/person/chalst/diary/277.html
+;; ;;for ex commands supported by viper, refer `ex-token-alist'
 
-(require 'viper-ex)
-(require 'viper-keym)
-(require 'viper-cmd)
+;; (require 'viper-ex)
+;; (require 'viper-keym)
+;; (require 'viper-cmd)
 
-(define-key global-map (kbd "ESC ESC :") 'viper-ex)
+;; (define-key global-map (kbd "ESC ESC :") 'viper-ex)
+
+;;*** viper/vimpulse addons
+(eval-after-load "vimpulse"
+  `(progn
+     (require 'vimpulse-cjk nil t)
+     (require 'vimpulse-textobj-between nil t)
+     (require 'vimpulse-surround nil t)
+     ))
 
 ;;*** god-mode
 (autoload 'god-mode "god-mode"
   "Toggle global God mode." t)
-
 
 
 ;;** scratch-ext
