@@ -177,6 +177,23 @@
 
 (idle-require 'vlf)
 
+;;** back-button: Visual navigation through mark rings
+;;https://github.com/rolandwalker/back-button
+(idle-require 'back-button)
+(eval-after-load "back-button"
+  `(progn
+     (back-button-mode 1)
+     (define-key goto-map (kbd "<left>")    'back-button-local-backward)
+     (define-key goto-map (kbd "<right>")   'back-button-local-backward)
+     (define-key goto-map (kbd "<M-left>")  'back-button-global-backward)
+     (define-key goto-map (kbd "<M-right>") 'back-button-global-backward)
+
+     (if (and (< emacs-major-version 24)
+              (locate-library "smartrep"))
+         (message "WARNING: smartrep isn't compatible with emacs < 23 yet. you should remove it: %s"
+                  (locate-library "smartrep")))
+     ))
+
 
 ;;** misc
 (idle-require 'volatile-highlights)
