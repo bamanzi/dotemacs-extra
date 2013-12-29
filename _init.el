@@ -199,6 +199,31 @@
 (idle-require 'vlf)
 
 
+;;** desktop-registry
+(autoload 'desktop-registry-change-desktop  "desktop-registry"
+  "Change to the desktop named NAME." t)
+
+(global-set-key (kbd "<f12> <f12>") 'desktop-registry-change-desktop)
+
+(idle-require 'desktop-registry)
+
+(eval-after-load "desktop-registry"
+  `(progn
+     (desktop-registry-auto-register 1)
+     ))
+
+(unless (fboundp 'file-name-base)
+  (defun file-name-base (&optional filename)
+    "Return the base name of the FILENAME: no directory, no extension.
+FILENAME defaults to `buffer-file-name'."
+    (file-name-sans-extension
+     (file-name-nondirectory (or filename (buffer-file-name))))))
+
+(require 'cl-lib)
+(unless (fboundp 'cl-find)
+  (defalias 'cl-find 'find))
+
+
 ;;** misc
 (idle-require 'volatile-highlights)
 
