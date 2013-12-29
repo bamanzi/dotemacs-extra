@@ -43,10 +43,6 @@
      (require 'vimpulse-surround nil t)
      ))
 
-;;*** god-mode
-(autoload 'god-mode "god-mode"
-  "Toggle global God mode." t)
-
 
 
 ;;** log scratch contents
@@ -112,18 +108,42 @@
 (define-key ctl-x-r-map (kbd "M-n") 'rectplus-insert-number-rectangle)
 
 
-;;** recent-jump
-(setq rj-column-threshold 100)
-(if (load "recent-jump" t)
-    (recent-jump-mode t)
-  (message "Warning: failed to load `recent-jump' (%s)." load-file-name))
+;;** back-button: Visual navigation through mark rings
+;;https://github.com/rolandwalker/back-button
+(if (and (< emacs-major-version 24)
+         (locate-library "smartrep"))
+    (message "WARNING: smartrep isn't compatible with emacs < 23 yet. you should remove it: %s"
+             (locate-library "smartrep"))
+  (idle-require 'back-button))
 
-(global-set-key (kbd "C-c <") 'recent-jump-backward)
-(global-set-key (kbd "C-c >") 'recent-jump-forward)
+(eval-after-load "back-button"
+  `(progn
+     (back-button-mode 1)
+     (define-key goto-map (kbd "<left>")    'back-button-local-backward)
+     (define-key goto-map (kbd "<right>")   'back-button-local-backward)
+     (define-key goto-map (kbd "<M-left>")  'back-button-global-backward)
+     (define-key goto-map (kbd "<M-right>") 'back-button-global-backward)
+
+     ))
+
+;;*** recent-jump
+;;(idle-require 'recent-jump)
+(setq rj-column-threshold 100)
+(eval-after-load "recent-jump"
+  `(progn
+     (define-key goto-map (kbd "<left>")  'recent-jump-backward)
+     (define-key goto-map (kbd "<right>") 'recent-jump-forward)
+     ))
 
 
 ;;** smart-mode-line
-(idle-require 'smart-mode-line)
+(if (>= emacs-major-version 24)
+    (idle-require 'smart-mode-line)
+  )
+
+(autoload 'sml/setup "smart-mode-line"
+  "Setup the mode-line, or revert it." t)
+
 (eval-after-load "smart-mode-line"
   `(progn
      (sml/setup)
@@ -147,6 +167,7 @@
   "Hide lines matching the specified regexp." t)
 (autoload 'hide-non-matching-lines "hide-lines"
   "Hide lines that don't match the specified regexp." t)
+
 
 ;;** ibuffer-vc
 
@@ -176,23 +197,6 @@
 (autoload 'vlf "vlf"  "View Large FILE." t)
 
 (idle-require 'vlf)
-
-;;** back-button: Visual navigation through mark rings
-;;https://github.com/rolandwalker/back-button
-(idle-require 'back-button)
-(eval-after-load "back-button"
-  `(progn
-     (back-button-mode 1)
-     (define-key goto-map (kbd "<left>")    'back-button-local-backward)
-     (define-key goto-map (kbd "<right>")   'back-button-local-backward)
-     (define-key goto-map (kbd "<M-left>")  'back-button-global-backward)
-     (define-key goto-map (kbd "<M-right>") 'back-button-global-backward)
-
-     (if (and (< emacs-major-version 24)
-              (locate-library "smartrep"))
-         (message "WARNING: smartrep isn't compatible with emacs < 23 yet. you should remove it: %s"
-                  (locate-library "smartrep")))
-     ))
 
 
 ;;** misc
