@@ -254,6 +254,9 @@ FILENAME defaults to `buffer-file-name'."
 
 
 ;;** misc
+(autoload 'yagist-list "yagist"
+  "Displays a list of all of the current user's gists in a new buffer." t)
+
 (idle-require 'volatile-highlights)
 
 (idle-require 'dired+)
