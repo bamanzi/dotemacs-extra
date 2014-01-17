@@ -157,6 +157,10 @@
 
 ;;*** recent-jump
 ;;(idle-require 'recent-jump)
+
+(autoload 'recent-jump-mode "recent-jump"
+  "Toggle recent-jump mode." t)
+
 (setq rj-column-threshold 100)
 (eval-after-load "recent-jump"
   `(progn
