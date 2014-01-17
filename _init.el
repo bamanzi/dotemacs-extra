@@ -84,17 +84,46 @@
      (define-key outline-mode-prefix-map (kbd "TAB") 'outline-cycle)
      ))
 
-;;*** outline-org-like
-(autoload 'outline-org-mode  "outline-org-like"
-  "A special `outline-minor-mode' that use org-mode-style headings." t)
-(autoload 'outline-org-heading-mode "outline-org-like"
-  "eldoc" t)
 
 ;;*** other folding
 (autoload 'hide-region-hide  "hide-region"
   "Hides a region by making an invisible overlay over it and save the" t)
 (autoload 'hide-region-unhide  "hide-region"
   "Unhide a region at a time, starting with the last one hidden and" t)
+
+
+;;** outshine = outline + org-mode
+;;TAB key for org-mode like folding
+
+(eval-after-load "outshine"
+  `(progn
+     ;;(add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+
+     (set-face-attribute 'outshine-level-1 nil :inherit 'org-level-1)
+     (set-face-attribute 'outshine-level-2 nil :inherit 'org-level-2)
+     (set-face-attribute 'outshine-level-3 nil :inherit 'org-level-3)
+     (set-face-attribute 'outshine-level-4 nil :inherit 'org-level-4)
+     (set-face-attribute 'outshine-level-5 nil :inherit 'org-level-5)
+     (set-face-attribute 'outshine-level-6 nil :inherit 'org-level-6)     
+     ))
+
+;; outorg is like "reverse Org-Babel":
+;; call `outorg-edit-as-org' (C-z ') to edit outline(outshine) section in `org-mode',
+;; and `outorg-copy-edits-and-exit' (M-#) to convert back.
+
+(autoload 'outorg-edit-as-org "outorg"
+  "Convert and copy to temporary Org buffer" t)
+
+(eval-after-load "outorg"
+  `(progn
+     (load-library "outshine")
+     ))
+
+;;*** outline-org-like (my old package similar to `outshine')
+(autoload 'outline-org-mode  "outline-org-like"
+  "A special `outline-minor-mode' that use org-mode-style headings." t)
+(autoload 'outline-org-heading-mode "outline-org-like"
+  "eldoc" t)
 
 
 ;;** rectangle
