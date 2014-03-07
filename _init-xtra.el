@@ -1,4 +1,4 @@
-;;** eim
+;; ** eim
 ;;https://github.com/wenbinye/emacs-eim
 
 (add-to-list 'load-path "~/.emacs.d/packages/eim")
@@ -22,7 +22,7 @@
      ))
 
 
-;;** realgud
+;; ** realgud
 ;;https://github.com/rocky/emacs-dbgr
 
 (add-to-list 'load-path "~/.emacs.d/packages/realgud")
@@ -41,7 +41,7 @@
 (autoload 'realgud-track-mode "realgud" nil t)
 
 
-;;** w3m
+;; ** w3m
 
 ;;a recommended to download latest snapshot:
 ;;http://packages.debian.org/sid/w3m-el-snapshot

@@ -1,18 +1,18 @@
-;;** yasnippet
+;; ** yasnippet
 (autoload 'anything-yasnippet-2  "anything-yasnippet-2"
   "Find yasnippets." t)
 
 (global-set-key (kbd "<f5> s")  'anything-yasnippet-2)
 
-;;** scite-api
+;; ** scite-api
 (eval-after-load "auto-complete-config"
   `(if (load "auto-complete-scite-api" t)
        (add-to-list 'ac-sources 'ac-source-scite-api)
      (message "%s: failed to load `auto-complete-scite-api'." load-file-name)))
 
-;;** vi emulation (viper)
+;; ** vi emulation (viper)
 
-;;*** viper/vimpulse addons
+;; *** viper/vimpulse addons
 (eval-after-load "vimpulse"
   `(progn
      (require 'vimpulse-cjk nil t)
@@ -22,11 +22,11 @@
 
 
 
-;;** log scratch contents
+;; ** log scratch contents
 (idle-require 'scratch-log)
 
 
-;;** tempbuf: kill unused buffers in the background
+;; ** tempbuf: kill unused buffers in the background
 (idle-require 'tempbuf)
 (eval-after-load "tempbuf"
   `(progn
@@ -47,8 +47,8 @@
      ))
 
 
-;;** folding
-;;*** outline
+;; ** folding
+;; *** outline
 (autoload 'outline-cycle  "outline-magic"
   "Visibility cycling for outline(-minor)-mode." t)
 (autoload 'outline-move-subtree-up  "outline-magic"
@@ -62,14 +62,14 @@
      ))
 
 
-;;*** other folding
+;; *** other folding
 (autoload 'hide-region-hide  "hide-region"
   "Hides a region by making an invisible overlay over it and save the" t)
 (autoload 'hide-region-unhide  "hide-region"
   "Unhide a region at a time, starting with the last one hidden and" t)
 
 
-;;** outshine = outline + org-mode
+;; ** outshine = outline + org-mode
 ;;TAB key for org-mode like folding
 
 (eval-after-load "outshine"
@@ -96,14 +96,14 @@
      (load-library "outshine")
      ))
 
-;;*** outline-org-like (my old package similar to `outshine')
+;; *** outline-org-like (my old package similar to `outshine')
 (autoload 'outline-org-mode  "outline-org-like"
   "A special `outline-minor-mode' that use org-mode-style headings." t)
 (autoload 'outline-org-heading-mode "outline-org-like"
   "eldoc" t)
 
 
-;;** rectangle
+;; ** rectangle
 
 (autoload 'rectplus-copy-rectangle  "rect+"
   "Copy rectangle area." t)
@@ -114,7 +114,7 @@
 (define-key ctl-x-r-map (kbd "M-n") 'rectplus-insert-number-rectangle)
 
 
-;;** back-button: Visual navigation through mark rings
+;; ** back-button: Visual navigation through mark rings
 ;;https://github.com/rolandwalker/back-button
 (if (and (< emacs-major-version 24)
          (locate-library "smartrep"))
@@ -132,7 +132,7 @@
 
      ))
 
-;;*** recent-jump
+;; *** recent-jump
 ;;(idle-require 'recent-jump)
 
 (autoload 'recent-jump-mode "recent-jump"
@@ -146,7 +146,7 @@
      ))
 
 
-;;** smart-mode-line
+;; ** smart-mode-line
 (if (>= emacs-major-version 24)
     (idle-require 'smart-mode-line)
   )
@@ -172,14 +172,14 @@
      ))
 
 
-;;** hide some lines
+;; ** hide some lines
 (autoload 'hide-matching-lines "hide-lines"
   "Hide lines matching the specified regexp." t)
 (autoload 'hide-non-matching-lines "hide-lines"
   "Hide lines that don't match the specified regexp." t)
 
 
-;;** ibuffer-vc
+;; ** ibuffer-vc
 
 (eval-after-load "ibuffer-vc"
   `(progn     
@@ -203,13 +203,13 @@
      ))
 
 
-;;** vlf
+;; ** vlf
 (autoload 'vlf "vlf"  "View Large FILE." t)
 
 (idle-require 'vlf)
 
 
-;;** desktop-registry
+;; ** desktop-registry
 (autoload 'desktop-registry-change-desktop  "desktop-registry"
   "Change to the desktop named NAME." t)
 
@@ -234,7 +234,7 @@ FILENAME defaults to `buffer-file-name'."
   (defalias 'cl-find 'find))
 
 
-;;** misc
+;; ** misc
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
 
