@@ -34,8 +34,6 @@
   "Unhide a region at a time, starting with the last one hidden and" t)
 
 
-
-
 ;; ** rectangle
 
 (autoload 'rectplus-copy-rectangle  "rect+"
