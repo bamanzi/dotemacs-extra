@@ -27,7 +27,8 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/realgud")
 
-(idle-require 'realgud)
+(ignore-errors
+  (idle-require 'realgud))
 
 (autoload 'realgud-gdb    "realgud" nil t)
 
@@ -48,7 +49,8 @@
 
 (add-to-list 'load-path "~/.emacs.d/packages/w3m")
 
-(idle-require 'w3m-load)
+(ignore-errors
+  (idle-require 'w3m-load))
 
 (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
 ;;(setq browse-url-browser-function 'w3m-browse-url)
