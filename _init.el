@@ -22,4 +22,5 @@
 
     
 (load-file (concat dotemacs-extra-dir "_init-misc.el"))
+(load-file (concat dotemacs-extra-dir "_init-useful.el"))
 (load-file (concat dotemacs-extra-dir "_init-xtra.el"))
