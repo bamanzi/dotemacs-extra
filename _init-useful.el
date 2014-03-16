@@ -109,3 +109,10 @@
 (autoload 'persp-mode  "persp-mode"
   "Toggle perspective mode." t)
 
+
+;; ** nav
+(autoload 'nav "nav"
+  "Opens Nav in a new window to the left of the current one." t)
+
+(autoload 'nav-toggle "nav"
+  "Toggles the nav panel." t)
