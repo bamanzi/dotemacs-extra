@@ -102,3 +102,10 @@
   "A special `outline-minor-mode' that use org-mode-style headings." t)
 (autoload 'outline-org-heading-mode "outline-org-like"
   "eldoc" t)
+
+;; ** perspectives
+
+;; *** persp-mode
+(autoload 'persp-mode  "persp-mode"
+  "Toggle perspective mode." t)
+
