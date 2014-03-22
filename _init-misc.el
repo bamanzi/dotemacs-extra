@@ -173,6 +173,9 @@ FILENAME defaults to `buffer-file-name'."
 
 (idle-require 'volatile-highlights)
 
+(when (eq system-type 'windows-nt)
+  (idle-require 'w32-browser))
+
 (idle-require 'dired+)
 
 (idle-require 'buff-menu+)
