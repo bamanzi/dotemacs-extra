@@ -167,6 +167,13 @@ FILENAME defaults to `buffer-file-name'."
   (defalias 'cl-find 'find))
 
 
+;; ** mark-thing
+(autoload 'mark-thing "thing-cmds"
+  "Set point at one end of THING and set mark ARG THINGs from point." t)
+
+(global-set-key (kbd "C-`") 'mark-thing)
+
+
 ;; ** misc
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
