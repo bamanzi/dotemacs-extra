@@ -171,8 +171,39 @@ FILENAME defaults to `buffer-file-name'."
 (autoload 'mark-thing "thing-cmds"
   "Set point at one end of THING and set mark ARG THINGs from point." t)
 
-(global-set-key (kbd "C-`") 'mark-thing)
+(global-set-key (kbd "C-x `") 'mark-thing)
 
+
+;; this one works for THING without `forward-op' (such as number, string)
+;; but it lacks continous marking capability (it can't mark several things)
+(defun mark-thing/my (thing)
+  (interactive (list
+                (intern (completing-read "Thing (type): " (thgcmd-things-alist) nil nil nil nil
+                                         (symbol-name thgcmd-last-thing-type)))))
+  (if (stringp thing)
+      (setq thing (intern thing)))
+  (let ((bounds (bounds-of-thing-at-point thing)))
+    (when bounds
+      (goto-char (car bounds))
+      (push-mark (cdr bounds) nil transient-mark-mode)
+      (setq deactivate-mark nil))))
+
+;; ** popwin
+(defun popwin-mode ()
+  (interactive)
+  (if display-buffer-function
+      ;; turn off
+      (progn
+        (setq display-buffer-function nil)
+        (message "popwin deactivated."))
+    (require 'popwin)
+    (setq display-buffer-function 'popwin:display-buffer)
+    (global-set-key (kbd "<f11> `") popwin:keymap)
+    (message "popwin activated.")
+    ))
+
+(global-set-key (kbd "<f11> `") 'popwin-mode)
+    
 
 ;; ** misc
 (autoload 'yagist-list "yagist"
