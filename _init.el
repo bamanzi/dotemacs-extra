@@ -14,6 +14,8 @@
 
   (if (>= emacs-major-version 24)
       (add-to-list 'custom-theme-load-path (concat dotemacs-extra-dir "themes")))
+  (if (<= emacs-major-version 24)
+      (add-to-list 'load-path (concat dotemacs-extra-dir "_emacs23")))
   )
 
 
