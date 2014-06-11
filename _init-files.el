@@ -56,7 +56,27 @@
      
      ))
 
-;; ** files
+
+;; ** dired
+(idle-require 'dired+)
+
+(when (eq system-type 'windows-nt)
+  (idle-require 'w32-browser))
+
+;; *** dired-k
+(autoload 'dired-k  "dired-k"
+  "Highlighting dired buffer by file size, last modified time, and git status." t)
+
+(eval-after-load "dired"
+  `(progn
+     (define-key dired-mode-map (kbd "K") 'dired-k)
+
+     ;; always execute dired-k when dired buffer is opened
+     ;; (add-hook 'dired-initial-position-hook 'dired-k)
+     ))
+
+
+;; ** nav (file browser)
 
 (autoload 'nav "nav"
   "Opens Nav in a new window to the left of the current one." t)
@@ -64,11 +84,6 @@
 (autoload 'nav-toggle "nav"
   "Toggles the nav panel." t)
 
-
-(when (eq system-type 'windows-nt)
-  (idle-require 'w32-browser))
-
-(idle-require 'dired+)
 
 
 ;; ** vlf
