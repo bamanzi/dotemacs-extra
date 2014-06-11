@@ -188,21 +188,6 @@ FILENAME defaults to `buffer-file-name'."
       (push-mark (cdr bounds) nil transient-mark-mode)
       (setq deactivate-mark nil))))
 
-;; ** popwin
-(defun popwin-mode ()
-  (interactive)
-  (if display-buffer-function
-      ;; turn off
-      (progn
-        (setq display-buffer-function nil)
-        (message "popwin deactivated."))
-    (require 'popwin)
-    (setq display-buffer-function 'popwin:display-buffer)
-    (global-set-key (kbd "<f11> `") popwin:keymap)
-    (message "popwin activated.")
-    ))
-
-(global-set-key (kbd "<f11> `") 'popwin-mode)
     
 
 ;; ** misc

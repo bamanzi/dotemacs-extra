@@ -103,15 +103,6 @@
 (autoload 'outline-org-heading-mode "outline-org-like"
   "eldoc" t)
 
-;; ** perspectives
-
-;; *** persp-mode
-(autoload 'persp-mode  "persp-mode"
-  "Toggle perspective mode." t)
-
-;; *** frame-bufs
-(autoload 'frame-bufs-mode "frame-bufs"
-  "Toggle frame-bufs-mode on and off." t)
 
 ;; ** nav
 (autoload 'nav "nav"
