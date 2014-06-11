@@ -1,50 +1,3 @@
-;; ** yasnippet
-(autoload 'anything-yasnippet-2  "anything-yasnippet-2"
-  "Find yasnippets." t)
-
-(global-set-key (kbd "<f5> s")  'anything-yasnippet-2)
-
-;; ** scite-api
-(eval-after-load "auto-complete-config"
-  `(if (load "auto-complete-scite-api" t)
-       (add-to-list 'ac-sources 'ac-source-scite-api)
-     (message "%s: failed to load `auto-complete-scite-api'." load-file-name)))
-
-
-
-;; ** folding
-;; *** outline
-(autoload 'outline-cycle  "outline-magic"
-  "Visibility cycling for outline(-minor)-mode." t)
-(autoload 'outline-move-subtree-up  "outline-magic"
-  "Move the currrent subtree up past ARG headlines of the same level." t)
-(autoload 'outline-move-subtree-down  "outline-magic"
-  "Move the currrent subtree down past ARG headlines of the same level." t)
-
-(eval-after-load "outline-cycle"
-  `(progn
-     (define-key outline-mode-prefix-map (kbd "TAB") 'outline-cycle)
-     ))
-
-
-;; *** other folding
-(autoload 'hide-region-hide  "hide-region"
-  "Hides a region by making an invisible overlay over it and save the" t)
-(autoload 'hide-region-unhide  "hide-region"
-  "Unhide a region at a time, starting with the last one hidden and" t)
-
-
-
-
-;; ** rectangle
-
-(autoload 'rectplus-copy-rectangle  "rect+"
-  "Copy rectangle area." t)
-(autoload 'rectplus-insert-number-rectangle  "rect+"
-  "Insert incremental number into each left edges of rectangle's line." t)
-
-(define-key ctl-x-r-map (kbd "M-w") 'rectplus-copy-rectangle)
-(define-key ctl-x-r-map (kbd "M-n") 'rectplus-insert-number-rectangle)
 
 
 ;; ** back-button: Visual navigation through mark rings
@@ -105,11 +58,6 @@
      ))
 
 
-;; ** hide some lines
-(autoload 'hide-matching-lines "hide-lines"
-  "Hide lines matching the specified regexp." t)
-(autoload 'hide-non-matching-lines "hide-lines"
-  "Hide lines that don't match the specified regexp." t)
 
 
 ;; ** ibuffer-vc
@@ -136,10 +84,6 @@
      ))
 
 
-;; ** vlf
-(autoload 'vlf "vlf"  "View Large FILE." t)
-
-(idle-require 'vlf)
 
 
 ;; ** desktop-registry
@@ -167,28 +111,23 @@ FILENAME defaults to `buffer-file-name'."
   (defalias 'cl-find 'find))
 
 
-;; ** mark-thing
-(autoload 'mark-thing "thing-cmds"
-  "Set point at one end of THING and set mark ARG THINGs from point." t)
 
-(global-set-key (kbd "C-x `") 'mark-thing)
+;; ** vi emulation (viper)
+
+;; *** viper/vimpulse addons
+(eval-after-load "vimpulse"
+  `(progn
+     (require 'vimpulse-cjk nil t)
+     (require 'vimpulse-textobj-between nil t)
+     (require 'vimpulse-surround nil t)
+     ))
 
 
-;; this one works for THING without `forward-op' (such as number, string)
-;; but it lacks continous marking capability (it can't mark several things)
-(defun mark-thing/my (thing)
-  (interactive (list
-                (intern (completing-read "Thing (type): " (thgcmd-things-alist) nil nil nil nil
-                                         (symbol-name thgcmd-last-thing-type)))))
-  (if (stringp thing)
-      (setq thing (intern thing)))
-  (let ((bounds (bounds-of-thing-at-point thing)))
-    (when bounds
-      (goto-char (car bounds))
-      (push-mark (cdr bounds) nil transient-mark-mode)
-      (setq deactivate-mark nil))))
 
-    
+;; ** log scratch contents
+(idle-require 'scratch-log)
+
+
 
 ;; ** misc
 (autoload 'yagist-list "yagist"
@@ -196,10 +135,6 @@ FILENAME defaults to `buffer-file-name'."
 
 (idle-require 'volatile-highlights)
 
-(when (eq system-type 'windows-nt)
-  (idle-require 'w32-browser))
-
-(idle-require 'dired+)
 
 (idle-require 'buff-menu+)
 (eval-after-load "buff-menu+"

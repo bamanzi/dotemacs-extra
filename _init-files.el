@@ -1,3 +1,4 @@
+;; * files & buffers
 ;; ** backup-each-save (and keeping folder structure)
 (idle-require 'backup-each-save)
 
@@ -34,21 +35,6 @@
        )
      ))
 
-;; ** vi emulation (viper)
-
-;; *** viper/vimpulse addons
-(eval-after-load "vimpulse"
-  `(progn
-     (require 'vimpulse-cjk nil t)
-     (require 'vimpulse-textobj-between nil t)
-     (require 'vimpulse-surround nil t)
-     ))
-
-
-
-;; ** log scratch contents
-(idle-require 'scratch-log)
-
 
 ;; ** tempbuf: kill unused buffers in the background
 (idle-require 'tempbuf)
@@ -70,43 +56,22 @@
      
      ))
 
-;; ** outshine = outline + org-mode
-;;TAB key for org-mode like folding
+;; ** files
 
-(eval-after-load "outshine"
-  `(progn
-     ;;(add-hook 'outline-minor-mode-hook 'outshine-hook-function)
-
-     (set-face-attribute 'outshine-level-1 nil :inherit 'org-level-1)
-     (set-face-attribute 'outshine-level-2 nil :inherit 'org-level-2)
-     (set-face-attribute 'outshine-level-3 nil :inherit 'org-level-3)
-     (set-face-attribute 'outshine-level-4 nil :inherit 'org-level-4)
-     (set-face-attribute 'outshine-level-5 nil :inherit 'org-level-5)
-     (set-face-attribute 'outshine-level-6 nil :inherit 'org-level-6)     
-     ))
-
-;; outorg is like "reverse Org-Babel":
-;; call `outorg-edit-as-org' (C-z ') to edit outline(outshine) section in `org-mode',
-;; and `outorg-copy-edits-and-exit' (M-#) to convert back.
-
-(autoload 'outorg-edit-as-org "outorg"
-  "Convert and copy to temporary Org buffer" t)
-
-(eval-after-load "outorg"
-  `(progn
-     (load-library "outshine")
-     ))
-
-;; *** outline-org-like (my old package similar to `outshine')
-(autoload 'outline-org-mode  "outline-org-like"
-  "A special `outline-minor-mode' that use org-mode-style headings." t)
-(autoload 'outline-org-heading-mode "outline-org-like"
-  "eldoc" t)
-
-
-;; ** nav
 (autoload 'nav "nav"
   "Opens Nav in a new window to the left of the current one." t)
 
 (autoload 'nav-toggle "nav"
   "Toggles the nav panel." t)
+
+
+(when (eq system-type 'windows-nt)
+  (idle-require 'w32-browser))
+
+(idle-require 'dired+)
+
+
+;; ** vlf
+(autoload 'vlf "vlf"  "View Large FILE." t)
+
+(idle-require 'vlf)
