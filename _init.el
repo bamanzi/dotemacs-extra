@@ -22,7 +22,8 @@
 (if (and (fboundp 'idle-require-mode) idle-require-mode) ;;`idle-require-mode' not finished yet
     (defalias 'idle-require 'require))
 
-    
-(load-file (concat dotemacs-extra-dir "_init-misc.el"))
-(load-file (concat dotemacs-extra-dir "_init-useful.el"))
-(load-file (concat dotemacs-extra-dir "_init-xtra.el"))
+
+(mapc #'(lambda (file)
+	  (load-file file))
+      (directory-files dotemacs-extra-dir 'full "^_init-.*.el$"))
+
