@@ -90,7 +90,7 @@
 (autoload 'desktop-registry-change-desktop  "desktop-registry"
   "Change to the desktop named NAME." t)
 
-(global-set-key (kbd "<f12> <f12>") 'desktop-registry-change-desktop)
+(global-set-key (kbd "<f12> C-l") 'desktop-registry-change-desktop)
 
 (idle-require 'desktop-registry)
 
@@ -127,6 +127,12 @@ FILENAME defaults to `buffer-file-name'."
 ;; ** log scratch contents
 (idle-require 'scratch-log)
 
+(idle-require 'ipretty)
+(eval-after-load "ipretty"
+  `(progn
+     (define-key emacs-lisp-mode-map [remap eval-print-last-sexp] 'ipretty-last-sexp)
+     (define-key lisp-interaction-mode-map [remap eval-print-last-sexp] 'ipretty-last-sexp)
+     ))
 
 
 ;; ** misc
