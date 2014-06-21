@@ -6,33 +6,36 @@
   `(progn
      (add-hook 'after-save-hook 'backup-each-save)
 
-     (when (memq system-type '(windows-nt ms-dos cygwin))
+     ;; make `backup-each-save' work for files on tramp/remote or in archive
+     (defun backup-each-save ()
+       (let* ((bfn (buffer-file-name))
+              (backup-filename (backup-each-save-compute-location bfn)))
+         (when (and (or backup-each-save-remote-files
+                        (not (file-remote-p bfn)))
+                    (funcall backup-each-save-filter-function bfn)
+                    (or (not backup-each-save-size-limit)
+                        (<= (buffer-size) backup-each-save-size-limit)))
+           (if (file-exists-p bfn)
+               (copy-file bfn backup-filename t t t)
+             ;; file lives on tramp or in archive
+             (let ((buffer-file-name backup-filename))
+               (basic-save-buffer-1))))))
 
-         (defun backup-each-save ()
-           (let ((bfn (buffer-file-name)))
-             (when (and (file-exists-p bfn)
-                        (or backup-each-save-remote-files
-                            (not (file-remote-p bfn)))
-                        (funcall backup-each-save-filter-function bfn)
-                        (or (not backup-each-save-size-limit)
-                            (<= (buffer-size) backup-each-save-size-limit)))
-               (copy-file bfn (backup-each-save-compute-location bfn) t t t))))
-
-
-         ;; for windows, remove ':' in backup filename 
-         (defun backup-each-save-compute-location (filename)
-           ;;(let* ((containing-dir (file-name-directory filename))
-           (let* ((containing-dir (replace-regexp-in-string ":" "" (file-name-directory filename)))
-                  (basename (file-name-nondirectory filename))
-                  (backup-container
-                   (format "%s/%s"
-                           backup-each-save-mirror-location
-                           containing-dir)))
-             (when (not (file-exists-p backup-container))
-               (make-directory backup-container t))
-             (format "%s/%s-%s" backup-container basename
-                     (format-time-string backup-each-save-time-format))))
-       )
+     ;; for windows, remove ':' in backup filename 
+     (defun backup-each-save-compute-location (filename)
+       ;;(let* ((containing-dir (file-name-directory filename))
+       (let* ((filename-norm (replace-regexp-in-string ":" "/" filename))
+              (containing-dir (file-name-directory filename-norm)) ;;modified: 
+              (basename (file-name-nondirectory filename-norm))
+              (backup-container
+               (format "%s/%s"
+                       backup-each-save-mirror-location
+                       containing-dir)))
+         (when (not (file-exists-p backup-container))
+           (make-directory backup-container t))
+         (format "%s/%s-%s" backup-container basename
+                 (format-time-string backup-each-save-time-format))))
+     
      ))
 
 
