@@ -1,0 +1,26 @@
+** 23.1
+
+| xpm    | libxpm.dll, xpm4.dll or libxpm-nox4.dll                  | (libxpm.dll included in emacs zip)                    |
+| png    | libpng12d.dll, libpng12.dll, libpng.dll or libpng13d.dll | http://gnuwin32.sourceforge.net/packages/libpng.htm   |
+| jpeg   | jpeg62.dll, libjpeg.dll, jpeg-62.dll or jpeg.dll         | http://gnuwin32.sourceforge.net/packages/jpeg.htm     |
+| tiff   | libtiff3.dll, libtiff.dll                                | http://gnuwin32.sourceforge.net/packages/tiff.htm     |
+|        |                                                          | (note it requires jpeg62.dll & zlib.dll)              |
+|        |                                                          | http://gnuwin32.sourceforge.net/packages/zlib.htm     |
+| gif    | giflib4.dll, libungif4.dll or libungif.dll               | http://gnuwin32.sourceforge.net/packages/giflib.htm   |
+|        |                                                          | http://gnuwin32.sourceforge.net/packages/libungif.htm |
+
+** 23.3
+
+
+
+** 24.3
+
+| xpm  | libxpm.dll, xpm4.dll or libxpm-nox4.dll               | (libxpm.dll included in emacs zip)                          |
+| png  | libpng14-14.dll or libpng14.dll (libpng12 won't work) | http://ftp.cn.debian.org/gnome/binaries/win32/dependencies/ |
+| jpeg | jpeg62.dll, libjpeg.dll, jpeg-62.dll or jpeg.dll      | http://gnuwin32.sourceforge.net/packages/jpeg.htm           |
+| tiff | libtiff3.dll, libtiff.dll                             | http://gnuwin32.sourceforge.net/packages/tiff.htm           |
+|      |                                                       | (note it requires jpeg62.dll & zlib1.dll)                   |
+|      |                                                       | http://gnuwin32.sourceforge.net/packages/zlib.htm           |
+| gif  | giflib4.dll, libungif4.dll or libungif.dll            | http://gnuwin32.sourceforge.net/packages/giflib.htm         |
+|      |                                                       | http://gnuwin32.sourceforge.net/packages/libungif.htm       |
+
