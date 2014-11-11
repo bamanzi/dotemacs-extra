@@ -135,6 +135,14 @@ FILENAME defaults to `buffer-file-name'."
      ))
 
 
+;; ** eshell enhancements
+;; *** autojump
+(eval-after-load "eshell"
+  '(require 'eshell-autojump nil t))
+;;use command `j' to list your MRU path,
+;;use command `j regexp' to jump to one
+
+
 ;; ** misc
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
