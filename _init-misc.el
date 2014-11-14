@@ -143,11 +143,20 @@ FILENAME defaults to `buffer-file-name'."
 ;;use command `j regexp' to jump to one
 
 
+;; ** repl-toggle
+(autoload 'repl-toggle "bmz-repl-toggle"
+  "Toggle between the REPL buffer and the source buffer." t)
+
+
 ;; ** misc
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
 
 (idle-require 'volatile-highlights)
+(eval-after-load "volatile-highlights"
+  `(progn
+     (volatile-highlights-mode t)
+     ))
 
 
 (idle-require 'buff-menu+)

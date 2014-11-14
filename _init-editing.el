@@ -76,7 +76,7 @@
 
 
 ;; ** rectangle
-
+;; *** C-x r ...
 (autoload 'rectplus-copy-rectangle  "rect+"
   "Copy rectangle area." t)
 (autoload 'rectplus-insert-number-rectangle  "rect+"
@@ -84,6 +84,9 @@
 
 (define-key ctl-x-r-map (kbd "M-w") 'rectplus-copy-rectangle)
 (define-key ctl-x-r-map (kbd "M-n") 'rectplus-insert-number-rectangle)
+
+;; *** cua rectangle (visual)
+
 
 
 ;; ** mark-thing

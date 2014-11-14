@@ -73,7 +73,7 @@
  (eval-after-load "w3m"
    `(progn
       (setq w3m-use-title-buffer-name nil)
-      (setq browse-url-browser-function 'w3m-browse-url)
+      ;;(setq browse-url-browser-function 'w3m-browse-url)
 	 
       (define-key w3m-mode-map (kbd "<down>") 'next-line)
       (define-key w3m-mode-map (kbd "<up>") 'previous-line)
