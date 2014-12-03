@@ -1,4 +1,4 @@
-;;; mark-copy-something.el --- mark (and copy) something
+;;; bmz-things.el --- mark (and copy) something
 
 ;; Maintainer: BaManzi <bamanzi@gmail.com>
 ;; Keywords: mark, copy
@@ -318,7 +318,7 @@ the PATTERN is included."
 (defvar copy-sth-to-mark-map (make-sparse-keymap "Copy something to mark..."))
  
 
-(defun mark-copy-something--bind-keys ()
+(defun bmz-things--bind-keys ()
   (global-set-key (read-kbd-macro mark-sth-map-prefix-key) mark-sth-map)
 
   (define-key mark-sth-map "w" 'mark-whole-word)
@@ -372,12 +372,12 @@ the PATTERN is included."
   t
   )
 
-(defvar mark-copy-something--dont-bind-keys nil
+(defvar bmz-things--dont-bind-keys nil
   "Whether to use key bindings provided in this file.")
 
-(unless mark-copy-something--dont-bind-keys
-    (mark-copy-something--bind-keys))
+(unless bmz-things--dont-bind-keys
+    (bmz-things--bind-keys))
 
-(provide 'mark-copy-something)
+(provide 'bmz-things)
 
-;;;mark-copy-something.el ends here
+;;;bmz-things.el ends here
