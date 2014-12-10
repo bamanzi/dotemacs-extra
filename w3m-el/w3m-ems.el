@@ -1,6 +1,6 @@
 ;;; w3m-ems.el --- GNU Emacs stuff for emacs-w3m
 
-;; Copyright (C) 2001-2011 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 2001-2012 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Authors: Yuuichi Teranishi  <teranisi@gohome.org>,
 ;;          TSUCHIYA Masatoshi <tsuchiya@namazu.org>,
@@ -432,6 +432,12 @@ Buffer string between BEG and END are replaced with IMAGE."
 		 (insert " ")
 		 (setq start (1+ start)
 		       end (1- end)))))
+	;; Empty text won't be buttonized, so we fill it with something.
+	;; "submit" seems to be a proper choice in nine cases out of ten.
+	(when (= start end)
+	  (goto-char start)
+	  (insert "submit")
+	  (setq end (point)))
 	(let ((w (widget-convert-button
 		  'w3m-form-button start end
 		  :w3m-form-action (plist-get properties 'w3m-action))))
@@ -844,13 +850,13 @@ Wobble the selected window to force redisplay of the header-line."
 	(setq window (next-window))))
     (unless (eq (window-buffer window) buffer)
       (select-window window)
-      (w3m-switch-to-buffer buffer)
+      (switch-to-buffer buffer)
       (w3m-force-window-update window))))
 
 (defun w3m-tab-click-mouse-function (event buffer)
   (let ((window (posn-window (event-start event))))
     (select-window window)
-    (w3m-switch-to-buffer buffer)
+    (switch-to-buffer buffer)
     (w3m-force-window-update window)))
 
 (defun w3m-tab-double-click-mouse1-function (event buffer)
@@ -977,7 +983,7 @@ is non-nil means not to respond to too fast operation of mouse wheel."
   (unless n (setq n 1))
   (when (and (/= n 0) (eq major-mode 'w3m-mode))
     (let ((buffers (w3m-list-buffers)))
-      (w3m-switch-to-buffer
+      (switch-to-buffer
        (nth (mod (+ n (w3m-buffer-number (current-buffer)) -1)
 		 (length buffers))
 	    buffers))
@@ -1033,7 +1039,7 @@ is non-nil means not to respond to too fast operation of mouse wheel."
 	   (f2 (lambda (fn) `(lambda (e)
 			       (interactive "e")
 			       (select-window (posn-window (event-start e)))
-			       (w3m-switch-to-buffer ,cur)
+			       (switch-to-buffer ,cur)
 			       (setq this-command ',fn)
 			       (,fn 1 e))))
 	   (drag-action (funcall f1 'w3m-tab-drag-mouse-function))

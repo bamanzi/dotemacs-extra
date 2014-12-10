@@ -1,6 +1,6 @@
 ;;; w3m-form.el --- Stuffs to handle <form> tag
 
-;; Copyright (C) 2001-2011 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 2001-2012 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Authors: TSUCHIYA Masatoshi <tsuchiya@namazu.org>,
 ;;          Yuuichi Teranishi  <teranisi@gohome.org>,
@@ -629,8 +629,7 @@ If optional REUSE-FORMS is non-nil, reuse it as `w3m-current-form'."
 	      (setq action (w3m-url-transfer-encode-string
 			    (w3m-decode-anchor-string action)
 			    (if charset
-				(w3m-charset-to-coding-system charset)
-			      w3m-current-coding-system))))
+				(w3m-charset-to-coding-system charset)))))
 	    (if (setq form (cdr (assq fid forms)))
 		(progn
 		  (setf (w3m-form-method form) (or method "get"))
@@ -1370,7 +1369,7 @@ selected rather than \(as usual\) some other window.  See
 				    w3m-form-input-textarea-buffer-lines))))
 	(select-window (next-window)))
       (let ((pop-up-windows nil))
-	(w3m-switch-to-buffer (if (consp buffer) (cdr buffer) buffer))))))
+	(switch-to-buffer (if (consp buffer) (cdr buffer) buffer))))))
 
 (defun w3m-form-use-textarea-backup-p ()
   (and w3m-form-use-textarea-backup
@@ -1653,7 +1652,7 @@ selected rather than \(as usual\) some other window.  See
 				  w3m-form-input-select-buffer-lines))))
       (select-window (next-window))
       (let ((pop-up-windows nil))
-	(w3m-switch-to-buffer (if (consp buffer) (cdr buffer) buffer))))))
+	(switch-to-buffer (if (consp buffer) (cdr buffer) buffer))))))
 
 ;;; MAP
 
@@ -1809,7 +1808,7 @@ selected rather than \(as usual\) some other window.  See
 				  w3m-form-input-map-buffer-lines))))
       (select-window (next-window))
       (let ((pop-up-windows nil))
-	(w3m-switch-to-buffer (if (consp buffer) (cdr buffer) buffer))))))
+	(switch-to-buffer (if (consp buffer) (cdr buffer) buffer))))))
 
 ;;;
 (defun w3m-form-submit-get-textarea-files (form)

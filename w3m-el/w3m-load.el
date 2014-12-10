@@ -7,7 +7,7 @@
 (provide 'w3m-load)
 
 ;;;### (autoloads (bookmark-w3m-bookmark-jump) "bookmark-w3m" "bookmark-w3m.el"
-;;;;;;  (19648 52975 0 0))
+;;;;;;  (19790 2028 0 0))
 ;;; Generated autoloads from bookmark-w3m.el
 
 (autoload 'bookmark-w3m-bookmark-jump "bookmark-w3m" "\
@@ -18,8 +18,9 @@ Default bookmark handler for w3m buffers.
 ;;;***
 
 ;;;### (autoloads (w3m-buffer w3m-region w3m-find-file w3m-browse-url
-;;;;;;  w3m w3m-gohome w3m-goto-url-new-session w3m-goto-url w3m-download
-;;;;;;  w3m-retrieve) "w3m" "w3m.el" (19994 30757 0 0))
+;;;;;;  w3m w3m-create-empty-session w3m-gohome w3m-goto-url-new-session
+;;;;;;  w3m-goto-url w3m-download w3m-retrieve) "w3m" "w3m.el" (20441
+;;;;;;  47672 0 0))
 ;;; Generated autoloads from w3m.el
 
 (autoload 'w3m-retrieve "w3m" "\
@@ -50,7 +51,7 @@ Download contents of URL to a file named FILENAME.
 NO-CHACHE (which the prefix argument gives when called interactively)
 specifies not using the cached data.
 
-\(fn URL &optional FILENAME NO-CACHE HANDLER POST-DATA)" t nil)
+\(fn &optional URL FILENAME NO-CACHE HANDLER POST-DATA)" t nil)
 
 (autoload 'w3m-goto-url "w3m" "\
 Visit World Wide Web pages.  This is the primitive function of `w3m'.
@@ -88,6 +89,11 @@ session will start afresh.
 
 (autoload 'w3m-gohome "w3m" "\
 Go to the Home page.
+
+\(fn)" t nil)
+
+(autoload 'w3m-create-empty-session "w3m" "\
+Create an empty page as a new session and visit it.
 
 \(fn)" t nil)
 
@@ -165,7 +171,7 @@ See `w3m-region' for the optional arguments.
 ;;;***
 
 ;;;### (autoloads (w3m-antenna w3m-about-antenna) "w3m-antenna" "w3m-antenna.el"
-;;;;;;  (19187 58267 0 0))
+;;;;;;  (19316 3308 0 0))
 ;;; Generated autoloads from w3m-antenna.el
 
 (autoload 'w3m-about-antenna "w3m-antenna" "\
@@ -183,7 +189,7 @@ Report changes of WEB sites, which is specified in `w3m-antenna-sites'.
 ;;;### (autoloads (w3m-setup-bookmark-menu w3m-about-bookmark w3m-bookmark-view-new-session
 ;;;;;;  w3m-bookmark-view w3m-bookmark-add-current-url-group w3m-bookmark-add-all-urls
 ;;;;;;  w3m-bookmark-add-current-url w3m-bookmark-add-this-url) "w3m-bookmark"
-;;;;;;  "w3m-bookmark.el" (19989 33699 0 0))
+;;;;;;  "w3m-bookmark.el" (20316 30737 0 0))
 ;;; Generated autoloads from w3m-bookmark.el
 
 (autoload 'w3m-bookmark-add-this-url "w3m-bookmark" "\
@@ -230,8 +236,8 @@ Setup w3m bookmark items in menubar.
 ;;;***
 
 ;;;### (autoloads (w3m-about-cookie w3m-cookie w3m-cookie-get w3m-cookie-set
-;;;;;;  w3m-cookie-shutdown) "w3m-cookie" "w3m-cookie.el" (19449
-;;;;;;  53703 0 0))
+;;;;;;  w3m-cookie-shutdown) "w3m-cookie" "w3m-cookie.el" (19469
+;;;;;;  2116 0 0))
 ;;; Generated autoloads from w3m-cookie.el
 
 (autoload 'w3m-cookie-shutdown "w3m-cookie" "\
@@ -263,7 +269,7 @@ Make the html contents to display and to enable you to manage cookies.
 ;;;***
 
 ;;;### (autoloads (w3m-dtree w3m-about-dtree) "w3m-dtree" "w3m-dtree.el"
-;;;;;;  (18964 36505 0 0))
+;;;;;;  (19061 39283 0 0))
 ;;; Generated autoloads from w3m-dtree.el
 
 (autoload 'w3m-about-dtree "w3m-dtree" "\
@@ -300,8 +306,8 @@ This allows frame-local lists of buffers (tabs).
 
 ;;;***
 
-;;;### (autoloads (w3m-filter) "w3m-filter" "w3m-filter.el" (18560
-;;;;;;  15090 0 0))
+;;;### (autoloads (w3m-filter) "w3m-filter" "w3m-filter.el" (18728
+;;;;;;  46601 0 0))
 ;;; Generated autoloads from w3m-filter.el
 
 (autoload 'w3m-filter "w3m-filter" "\
@@ -311,8 +317,8 @@ Apply filtering rule of URL against a content in this buffer.
 
 ;;;***
 
-;;;### (autoloads (w3m-fontify-forms) "w3m-form" "w3m-form.el" (19989
-;;;;;;  33699 0 0))
+;;;### (autoloads (w3m-fontify-forms) "w3m-form" "w3m-form.el" (20316
+;;;;;;  30737 0 0))
 ;;; Generated autoloads from w3m-form.el
 
 (autoload 'w3m-fontify-forms "w3m-form" "\
@@ -322,31 +328,30 @@ Process half-dumped data and fontify forms in this buffer.
 
 ;;;***
 
-;;;### (autoloads (w3m-linknum-bookmark-add-this-url w3m-linknum-download-this-url
-;;;;;;  w3m-linknum-print-this-url w3m-linknum-edit-this-url w3m-linknum-external-view-this-url
-;;;;;;  w3m-linknum-save-image w3m-linknum-view-image w3m-linknum-toggle-inline-image
-;;;;;;  w3m-linknum-follow w3m-go-to-linknum w3m-link-numbering-mode)
-;;;;;;  "w3m-lnum" "w3m-lnum.el" (19735 58055 0 0))
+;;;### (autoloads (w3m-lnum-bookmark-add-this-url w3m-lnum-download-this-url
+;;;;;;  w3m-lnum-print-this-url w3m-lnum-edit-this-url w3m-lnum-external-view-this-url
+;;;;;;  w3m-lnum-save-image w3m-lnum-view-image w3m-lnum-toggle-inline-image
+;;;;;;  w3m-lnum-universal w3m-lnum-follow w3m-lnum-goto w3m-lnum-mode)
+;;;;;;  "w3m-lnum" "w3m-lnum.el" (20435 64955 0 0))
 ;;; Generated autoloads from w3m-lnum.el
 
-(autoload 'w3m-link-numbering-mode "w3m-lnum" "\
+(autoload 'w3m-lnum-mode "w3m-lnum" "\
 Minor mode to extend point commands by using Conkeror style number selection.
 With prefix ARG 0 disable battery included point functions, otherwise
 enable them.  With no prefix ARG - toggle.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'w3m-go-to-linknum "w3m-lnum" "\
+(autoload 'w3m-lnum-goto "w3m-lnum" "\
 Turn on link, image and form numbers and ask for one to go to.
-With prefix ARG don't highlight current link.
 0 corresponds to location url.
 
-\(fn ARG)" t nil)
+\(fn)" t nil)
 
-(autoload 'w3m-linknum-follow "w3m-lnum" "\
+(autoload 'w3m-lnum-follow "w3m-lnum" "\
 Turn on link numbers, ask for one and execute appropriate action on it.
-When link - visit it, when button - press, when input - activate it,
-when image - toggle it.
+If link - visit it, when button - press, when input - activate it,
+If image - toggle it.
 With prefix ARG visit link in new session or don't move over
 field/button/image on activation/push/toggle.
 With `-' ARG, for link image - go to it and toggle it.
@@ -356,7 +361,14 @@ With triple prefix ARG, prompt for url to visit in new session.
 
 \(fn ARG)" t nil)
 
-(autoload 'w3m-linknum-toggle-inline-image "w3m-lnum" "\
+(autoload 'w3m-lnum-universal "w3m-lnum" "\
+Turn on link numbers, ask for one and offer actions over it depending on selection type.
+Actions may be selected either by hitting corresponding key,
+pressing <return> over the action line or left clicking.
+
+\(fn)" t nil)
+
+(autoload 'w3m-lnum-toggle-inline-image "w3m-lnum" "\
 If image at point, toggle it.
 Otherwise turn on link numbers and toggle selected image.
 With prefix ARG open url under image in new session.
@@ -364,7 +376,7 @@ If no such url, move over image and toggle it.
 
 \(fn &optional ARG)" t nil)
 
-(autoload 'w3m-linknum-view-image "w3m-lnum" "\
+(autoload 'w3m-lnum-view-image "w3m-lnum" "\
 Display the image under point in the external viewer.
 If no image at poing, turn on image numbers and display selected.
 The viewer is defined in `w3m-content-type-alist' for every type of an
@@ -372,39 +384,39 @@ image.
 
 \(fn)" t nil)
 
-(autoload 'w3m-linknum-save-image "w3m-lnum" "\
+(autoload 'w3m-lnum-save-image "w3m-lnum" "\
 Save the image under point to a file.
 If no image at poing, turn on image numbers and save selected.
 The default name will be the original name of the image.
 
 \(fn)" t nil)
 
-(autoload 'w3m-linknum-external-view-this-url "w3m-lnum" "\
+(autoload 'w3m-lnum-external-view-this-url "w3m-lnum" "\
 Launch the external browser and display the link at point.
 If no link at point, turn on link numbers and open selected externally.
 
 \(fn)" t nil)
 
-(autoload 'w3m-linknum-edit-this-url "w3m-lnum" "\
+(autoload 'w3m-lnum-edit-this-url "w3m-lnum" "\
 Edit the page linked from the anchor under the cursor.
 If no such, turn on link numbers and edit selected.
 
 \(fn)" t nil)
 
-(autoload 'w3m-linknum-print-this-url "w3m-lnum" "\
+(autoload 'w3m-lnum-print-this-url "w3m-lnum" "\
 Display the url under point in the echo area and put it into `kill-ring'.
 If no url under point, activate numbering and select one.
 
 \(fn)" t nil)
 
-(autoload 'w3m-linknum-download-this-url "w3m-lnum" "\
+(autoload 'w3m-lnum-download-this-url "w3m-lnum" "\
 Download the file or the page pointed to by the link under point.
 If no point, activate numbering and select andchor to download.
 
 \(fn)" t nil)
 
-(autoload 'w3m-linknum-bookmark-add-this-url "w3m-lnum" "\
-Add link under cursor to bookmark.
+(autoload 'w3m-lnum-bookmark-add-this-url "w3m-lnum" "\
+Add link under cursor to bookmarks.
 If no link under point, activate numbering and ask for one.
 
 \(fn)" t nil)
@@ -412,7 +424,7 @@ If no link under point, activate numbering and ask for one.
 ;;;***
 
 ;;;### (autoloads (w3m-namazu w3m-about-namazu) "w3m-namazu" "w3m-namazu.el"
-;;;;;;  (18964 36505 0 0))
+;;;;;;  (19061 39283 0 0))
 ;;; Generated autoloads from w3m-namazu.el
 
 (autoload 'w3m-about-namazu "w3m-namazu" "\
@@ -428,7 +440,7 @@ Search indexed files with Namazu.
 ;;;***
 
 ;;;### (autoloads (w3m-perldoc w3m-about-perldoc) "w3m-perldoc" "w3m-perldoc.el"
-;;;;;;  (18197 61165 0 0))
+;;;;;;  (18221 54291 0 0))
 ;;; Generated autoloads from w3m-perldoc.el
 
 (autoload 'w3m-about-perldoc "w3m-perldoc" "\
@@ -444,7 +456,7 @@ View Perl documents.
 ;;;***
 
 ;;;### (autoloads (w3m-search-uri-replace w3m-search-new-session
-;;;;;;  w3m-search) "w3m-search" "w3m-search.el" (19563 22872 0 0))
+;;;;;;  w3m-search) "w3m-search" "w3m-search.el" (20250 56381 0 0))
 ;;; Generated autoloads from w3m-search.el
 
 (autoload 'w3m-search "w3m-search" "\
@@ -471,7 +483,7 @@ Generate query string for ENGINE from URI matched by last search.
 
 ;;;### (autoloads (w3m-session-last-crashed-session w3m-session-last-autosave-session
 ;;;;;;  w3m-setup-session-menu w3m-session-select w3m-session-crash-recovery-remove
-;;;;;;  w3m-session-save) "w3m-session" "w3m-session.el" (19989 33699
+;;;;;;  w3m-session-save) "w3m-session" "w3m-session.el" (20316 30737
 ;;;;;;  0 0))
 ;;; Generated autoloads from w3m-session.el
 
@@ -508,7 +520,7 @@ Setup w3m session items in menubar.
 ;;;***
 
 ;;;### (autoloads (w3m-replace-symbol) "w3m-symbol" "w3m-symbol.el"
-;;;;;;  (18791 2971 0 0))
+;;;;;;  (18841 27975 0 0))
 ;;; Generated autoloads from w3m-symbol.el
 
 (autoload 'w3m-replace-symbol "w3m-symbol" "\
@@ -519,7 +531,7 @@ Setup w3m session items in menubar.
 ;;;***
 
 ;;;### (autoloads (w3m-about-weather w3m-weather) "w3m-weather" "w3m-weather.el"
-;;;;;;  (18197 61165 0 0))
+;;;;;;  (18221 54291 0 0))
 ;;; Generated autoloads from w3m-weather.el
 
 (autoload 'w3m-weather "w3m-weather" "\

@@ -1,6 +1,6 @@
 ;;; w3m-util.el --- Utility macros and functions for emacs-w3m
 
-;; Copyright (C) 2001-2011 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
+;; Copyright (C) 2001-2012 TSUCHIYA Masatoshi <tsuchiya@namazu.org>
 
 ;; Authors: TSUCHIYA Masatoshi <tsuchiya@namazu.org>,
 ;;          Shun-ichi GOTO     <gotoh@taiyo.co.jp>,
@@ -530,22 +530,6 @@ the tabs line."
 	(when (eq cbuf buf)
 	  (throw 'exist bufs))))))
 
-(defun w3m-switch-to-buffer (buffer-or-name &optional norecord)
-  "Switch to buffer BUFFER-OR-NAME in the selected window.
-Optional argument NORECORD non-nil means do not put the buffer
-specified by BUFFER-OR-NAME at the front of the buffer list and
-do not make the window displaying it the most recently selected
-one.  Return the buffer switched to.
-
-This function is intended for the non-interactive use."
-  (let ((buffer (or (get-buffer buffer-or-name)
-		    (generate-new-buffer buffer-or-name))))
-    (set-window-buffer nil buffer)
-    (set-buffer buffer)
-    (unless norecord
-      (select-window (selected-window)))
-    buffer))
-
 (defmacro w3m-popup-window-p ()
   "Return non-nil if `w3m-pop-up-windows' is non-nil and the present
 situation allows it."
@@ -598,7 +582,7 @@ according to `w3m-pop-up-windows' and `w3m-pop-up-frames' (which see)."
 		 (setq w3m-initial-frames
 		       (prog1
 			   (copy-sequence w3m-initial-frames)
-			 (w3m-switch-to-buffer buffer))))
+			 (switch-to-buffer buffer))))
 		(frame
 		 ;; Pop up the existing frame which shows BUFFER.
 		 (pop-to-buffer buffer))
@@ -614,16 +598,13 @@ according to `w3m-pop-up-windows' and `w3m-pop-up-frames' (which see)."
 	    (raise-frame frame)
 	    (select-frame frame)
 	    (w3m-static-when (featurep 'xemacs)
-	      (focus-frame frame)))
-	  (w3m-history-restore-position))
-      (unless (prog1
-		  (eq buffer (current-buffer))
-		;; Simply switch to BUFFER in the current frame.
-		(if (w3m-popup-window-p)
-		    (let ((pop-up-windows t))
-		      (pop-to-buffer buffer))
-		  (w3m-switch-to-buffer buffer)))
-	(w3m-history-restore-position)))))
+	      (focus-frame frame))))
+      ;; Simply switch to BUFFER in the current frame.
+      (if (w3m-popup-window-p)
+	  (let ((pop-up-windows t))
+	    (pop-to-buffer buffer))
+	(switch-to-buffer buffer)))
+    (w3m-history-restore-position)))
 
 (eval-when-compile
   (when (and (fboundp 'select-frame-set-input-focus)
@@ -745,10 +726,68 @@ objects will not be deleted:
 		(delete-window window)))))))))
 
 
+;;; Navigation:
+
+(defmacro w3m-goto-next-defun (name property)
+  "Create function w3m-goto-next- NAME.
+Return position of the first occurence of PROPERTY.
+If currently over such PROPERTY, find next such occurence."
+  `(defun ,(intern (concat "w3m-goto-next-" (symbol-name name)))
+     (&optional pos)
+     ,(concat "Return position of next " (symbol-name name)
+	      " starting from POS or point.")
+     (setq pos (or pos (point)))
+     (if (get-char-property pos ',property) ; currently over such element
+	 (setq pos (next-single-property-change pos ',property)))
+     (if (or (get-char-property pos ',property)
+	     (setq pos (next-single-property-change pos ',property)))
+	 pos)))
+
+(w3m-goto-next-defun link w3m-href-anchor)
+(w3m-goto-next-defun image2 w3m-image)
+
+(defun w3m-goto-next-anchor-or-image (&optional pos)
+  "Return position of next anchor or image starting from POS or point."
+  (setq pos (or pos (point)))
+  (cond				; currently on anchor or image
+   ((w3m-anchor-sequence pos)
+    (setq pos (next-single-property-change pos 'w3m-anchor-sequence)))
+   ((w3m-image pos)
+    (setq pos (next-single-property-change pos 'w3m-image))))
+  (or (w3m-anchor-sequence pos)
+      (w3m-image pos)
+      (let ((image-pos (next-single-property-change pos 'w3m-image)))
+	(setq pos (next-single-property-change pos
+					       'w3m-anchor-sequence))
+	(and image-pos
+	     (or (not pos) (> pos image-pos))
+	     (setq pos image-pos))))
+  (if pos
+      (let ((hseq (w3m-anchor-sequence pos)))
+	(if (and hseq (text-property-any ; multiline anchors
+		       (point-min) pos 'w3m-anchor-sequence hseq))
+	    (w3m-goto-next-anchor-or-image pos)
+	  pos))))
+
+
 ;;; Miscellaneous:
 
 (defconst w3m-url-fallback-base "http:///")
 (defconst w3m-url-invalid-regexp "\\`http:///")
+
+(defmacro w3m-substitute-key-definitions (new-map old-map &rest keys)
+  "In NEW-MAP substitute cascade of OLD-MAP KEYS.
+KEYS is alternating list of key-value."
+  (let ((n-map new-map)
+	(o-map old-map))
+    `(progn
+       ,@(let ((res nil))
+	   (while keys
+	     (push `(substitute-key-definition
+		     ,(car keys) ,(cadr keys) ,n-map ,o-map)
+		   res)
+	     (setq keys (cddr keys)))
+	   (nreverse res)))))
 
 (defun w3m-url-valid (url)
   (and url (not (string-match w3m-url-invalid-regexp url))
@@ -1421,10 +1460,10 @@ The value of DEFAULT is inserted into PROMPT."
 	  (cadr c)
 	  (if (nth 3 c)
 	      `(progn
-		 (w3m-switch-to-buffer w3m-tab-button-menu-current-buffer)
+		 (switch-to-buffer w3m-tab-button-menu-current-buffer)
 		 (funcall (function ,(car c)) ,@(nthcdr 4 c)))
 	    `(save-window-excursion
-	       (w3m-switch-to-buffer w3m-tab-button-menu-current-buffer)
+	       (switch-to-buffer w3m-tab-button-menu-current-buffer)
 	       (funcall (function ,(car c)) ,@(nthcdr 4 c))))
 	  :active (nth 2 c)
 	  :keys (or (and (assq (car c) w3m-make-menu-commands-keys)
@@ -1477,6 +1516,11 @@ get to be the alias to `visited-file-modtime'."
     (wrong-number-of-arguments '(called-interactively-p))
     ;; Old ones
     (void-function '(interactive-p))))
+
+(defalias 'w3m-force-mode-line-update
+  (if (fboundp 'force-mode-line-update)
+      'force-mode-line-update
+    'redraw-modeline))
 
 ;;; Punycode RFC 3492:
 
