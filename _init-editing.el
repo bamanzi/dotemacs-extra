@@ -66,11 +66,6 @@
      (load-library "outshine")
      ))
 
-;; *** outline-org-like (my old package similar to `outshine')
-(autoload 'outline-org-mode  "outline-org-like"
-  "A special `outline-minor-mode' that use org-mode-style headings." t)
-(autoload 'outline-org-heading-mode "outline-org-like"
-  "eldoc" t)
 
 
 
