@@ -142,10 +142,16 @@ FILENAME defaults to `buffer-file-name'."
 ;;use command `j' to list your MRU path,
 ;;use command `j regexp' to jump to one
 
+(eval-after-load "eshell"
+  `(progn
+     (if (executable-find "git")
+         (require 'pcmpl-git nil t))
+     (if (and (executable-find "hg")
+              (require 'pcase nil t))
+         (require 'pcmpl-args nil t))
+     ))
 
-;; ** repl-toggle
-(autoload 'repl-toggle "bmz-repl-toggle"
-  "Toggle between the REPL buffer and the source buffer." t)
+
 
 
 ;; ** misc
