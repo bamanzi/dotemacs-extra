@@ -19,8 +19,8 @@ Default bookmark handler for w3m buffers.
 
 ;;;### (autoloads (w3m-buffer w3m-region w3m-find-file w3m-browse-url
 ;;;;;;  w3m w3m-create-empty-session w3m-gohome w3m-goto-url-new-session
-;;;;;;  w3m-goto-url w3m-download w3m-retrieve) "w3m" "w3m.el" (20441
-;;;;;;  47672 0 0))
+;;;;;;  w3m-goto-url w3m-download w3m-retrieve) "w3m" "w3m.el" (21143
+;;;;;;  15166 0 0))
 ;;; Generated autoloads from w3m.el
 
 (autoload 'w3m-retrieve "w3m" "\
@@ -59,25 +59,31 @@ If the second argument RELOAD is non-nil, reload a content of URL.
 Except that if it is 'redisplay, re-display the page without reloading.
 The third argument CHARSET specifies a charset to be used for decoding
 a content.
-The fourth argument POST-DATA should be a string or a cons cell.  If
-it is a string, it makes this function request a body as if the
-content-type is \"x-www-form-urlencoded\".  If it is a cons cell, the
-car of a cell is used as the content-type and the cdr of a cell is
+The fourth argument POST-DATA should be a string or a cons cell.
+If it is a string, it makes this function request a body as if
+the content-type is \"x-www-form-urlencoded\".  If it is a cons cell,
+the car of a cell is used as the content-type and the cdr of a cell is
 used as the body.
 If the fifth argument REFERER is specified, it is used for a Referer:
 field for this request.
-The remaining HANDLER, ELEMENT[1], and NO-POPUP are for the
-internal operations of emacs-w3m.
+The remaining HANDLER, ELEMENT[1], NO-POPUP, and SAVE-POS[2] are for
+the internal operations of emacs-w3m.
 You can also use \"quicksearch\" url schemes such as \"gg:emacs\" which
-would search for the term \"emacs\" with the Google search engine.  See
-the `w3m-search' function and the variable `w3m-uri-replace-alist'.
+would search for the term \"emacs\" with the Google search engine.
+See the `w3m-search' function and the variable `w3m-uri-replace-alist'.
 
-\[1] A note for the developers: ELEMENT is a history element which has
-already been registered in the `w3m-history-flat' variable.  It is
-corresponding to URL to be retrieved at this time, not for the url of
-the current page.
+Notes for the developers:
+\[1] ELEMENT is a history element which has already been registered in
+the `w3m-history-flat' variable.  It is corresponding to URL to be
+retrieved at this time, not for the url of the current page.
 
-\(fn URL &optional RELOAD CHARSET POST-DATA REFERER HANDLER ELEMENT NO-POPUP)" t nil)
+\[2] SAVE-POS leads this function to save the current emacs-w3m window
+configuration; i.e. to run `w3m-history-store-position'.
+`w3m-history-store-position' should be called in a w3m-mode buffer, so
+this will be convenient if a command that calls this function may be
+invoked in other than a w3m-mode buffer.
+
+\(fn URL &optional RELOAD CHARSET POST-DATA REFERER HANDLER ELEMENT NO-POPUP SAVE-POS)" t nil)
 
 (autoload 'w3m-goto-url-new-session "w3m" "\
 Visit World Wide Web pages in a new session.
@@ -116,8 +122,9 @@ nil, (default t), you will be prompted for a URL (which defaults to
 `popup' meaning to pop to an existing emacs-w3m buffer up).
 
 In addition, if the prefix argument is given or you enter the empty
-string for the prompt, it will visit the home page specified by the
-`w3m-home-page' variable or the \"about:\" page.
+string for the prompt, this command will visit a url at the point, or
+the home page the `w3m-home-page' variable specifies, or the \"about:\"
+page.
 
 You can also run this command in the batch mode as follows:
 
@@ -189,7 +196,7 @@ Report changes of WEB sites, which is specified in `w3m-antenna-sites'.
 ;;;### (autoloads (w3m-setup-bookmark-menu w3m-about-bookmark w3m-bookmark-view-new-session
 ;;;;;;  w3m-bookmark-view w3m-bookmark-add-current-url-group w3m-bookmark-add-all-urls
 ;;;;;;  w3m-bookmark-add-current-url w3m-bookmark-add-this-url) "w3m-bookmark"
-;;;;;;  "w3m-bookmark.el" (20316 30737 0 0))
+;;;;;;  "w3m-bookmark.el" (20809 23574 0 0))
 ;;; Generated autoloads from w3m-bookmark.el
 
 (autoload 'w3m-bookmark-add-this-url "w3m-bookmark" "\
@@ -306,8 +313,8 @@ This allows frame-local lists of buffers (tabs).
 
 ;;;***
 
-;;;### (autoloads (w3m-filter) "w3m-filter" "w3m-filter.el" (18728
-;;;;;;  46601 0 0))
+;;;### (autoloads (w3m-filter) "w3m-filter" "w3m-filter.el" (21143
+;;;;;;  15166 0 0))
 ;;; Generated autoloads from w3m-filter.el
 
 (autoload 'w3m-filter "w3m-filter" "\
@@ -317,8 +324,8 @@ Apply filtering rule of URL against a content in this buffer.
 
 ;;;***
 
-;;;### (autoloads (w3m-fontify-forms) "w3m-form" "w3m-form.el" (20316
-;;;;;;  30737 0 0))
+;;;### (autoloads (w3m-fontify-forms) "w3m-form" "w3m-form.el" (21143
+;;;;;;  15166 0 0))
 ;;; Generated autoloads from w3m-form.el
 
 (autoload 'w3m-fontify-forms "w3m-form" "\
@@ -332,7 +339,7 @@ Process half-dumped data and fontify forms in this buffer.
 ;;;;;;  w3m-lnum-print-this-url w3m-lnum-edit-this-url w3m-lnum-external-view-this-url
 ;;;;;;  w3m-lnum-save-image w3m-lnum-view-image w3m-lnum-toggle-inline-image
 ;;;;;;  w3m-lnum-universal w3m-lnum-follow w3m-lnum-goto w3m-lnum-mode)
-;;;;;;  "w3m-lnum" "w3m-lnum.el" (20435 64955 0 0))
+;;;;;;  "w3m-lnum" "w3m-lnum.el" (21101 4114 0 0))
 ;;; Generated autoloads from w3m-lnum.el
 
 (autoload 'w3m-lnum-mode "w3m-lnum" "\
@@ -456,7 +463,7 @@ View Perl documents.
 ;;;***
 
 ;;;### (autoloads (w3m-search-uri-replace w3m-search-new-session
-;;;;;;  w3m-search) "w3m-search" "w3m-search.el" (20250 56381 0 0))
+;;;;;;  w3m-search) "w3m-search" "w3m-search.el" (20809 23574 0 0))
 ;;; Generated autoloads from w3m-search.el
 
 (autoload 'w3m-search "w3m-search" "\
@@ -483,7 +490,7 @@ Generate query string for ENGINE from URI matched by last search.
 
 ;;;### (autoloads (w3m-session-last-crashed-session w3m-session-last-autosave-session
 ;;;;;;  w3m-setup-session-menu w3m-session-select w3m-session-crash-recovery-remove
-;;;;;;  w3m-session-save) "w3m-session" "w3m-session.el" (20316 30737
+;;;;;;  w3m-session-save) "w3m-session" "w3m-session.el" (20871 17065
 ;;;;;;  0 0))
 ;;; Generated autoloads from w3m-session.el
 
@@ -531,7 +538,7 @@ Setup w3m session items in menubar.
 ;;;***
 
 ;;;### (autoloads (w3m-about-weather w3m-weather) "w3m-weather" "w3m-weather.el"
-;;;;;;  (18221 54291 0 0))
+;;;;;;  (20538 18418 0 0))
 ;;; Generated autoloads from w3m-weather.el
 
 (autoload 'w3m-weather "w3m-weather" "\
@@ -548,7 +555,6 @@ Display weather report.
 
 ;; Local Variables:
 ;; version-control: never
-;; no-byte-compile: t
 ;; no-update-autoloads: t
 ;; coding: utf-8
 ;; End:
