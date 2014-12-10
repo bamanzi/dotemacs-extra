@@ -25,7 +25,7 @@ END-INFO-DIR-ENTRY
 
    This file documents emacs-w3m, an Emacs interface to w3m.
 
-   This edition is for emacs-w3m version 1.4.483.
+   This edition is for emacs-w3m version 1.4.527.
 
 
 File: emacs-w3m.info,  Node: Top,  Next: Introduction,  Up: (dir)
@@ -35,7 +35,7 @@ Emacs-w3m User's Manual
 
                                          The emacs-w3m development team
 
-   This manual corresponds to emacs-w3m version 1.4.483.
+   This manual corresponds to emacs-w3m version 1.4.527.
 
    Copyright (C) 2000-2011 TSUCHIYA Masatoshi
 
@@ -371,8 +371,8 @@ Non-UNIX-like systems::.
   1. First, extract a tarball of the emacs-w3m distribution and enter
      the top directory as follows:
 
-          % tar zxf emacs-w3m-1.4.483.tar.gz
-          % cd emacs-w3m-1.4.483
+          % tar zxf emacs-w3m-1.4.527.tar.gz
+          % cd emacs-w3m-1.4.527
 
      If you've checked out emacs-w3m from CVS, you have to run
      `autoconf' with no argument to generate the `configure' script.
@@ -1618,11 +1618,7 @@ why not take advantage of this?
      point(`w3m-edit-this-url').
 
 `M'
-     Launch an external browser (other than emacs-w3m) and display the
-     same web page as currently displayed in
-     emacs-w3m(`w3m-view-url-with-external-browser').  The external
-     browser to be used is defined by the variable
-     `w3m-content-type-alist', depending on the kind of URL.
+     Open a link at point, or the current page, using `browse-url'.
 
 `|'
      Pipe the source of the web page to a command.  You will be
@@ -6481,7 +6477,7 @@ Key Index
                                                               (line  93)
 * {:                                     Moving in a page.    (line  98)
 * |:                                     HTML File Information.
-                                                              (line  52)
+                                                              (line  48)
 * }:                                     Moving in a page.    (line  94)
 
 
@@ -6795,7 +6791,7 @@ Function Index
 * w3m-next-image:                        Moving in a page.    (line  94)
 * w3m-pattern-uri-replace:               General Variables.   (line 509)
 * w3m-pipe-source:                       HTML File Information.
-                                                              (line  52)
+                                                              (line  48)
 * w3m-previous-anchor:                   Moving in a page.    (line  81)
 * w3m-previous-buffer:                   Moving across buffers.
                                                               (line  22)
@@ -6849,7 +6845,7 @@ Function Index
                                                               (line  26)
 * w3m-view-this-url:                     Launching and Jumping.
                                                               (line  55)
-* w3m-view-url-with-external-browser:    HTML File Information.
+* w3m-view-url-with-browse-url:          HTML File Information.
                                                               (line  45)
 * w3m-zoom-in-image:                     Inline Images.       (line  77)
 * w3m-zoom-out-image:                    Inline Images.       (line  74)
@@ -6891,87 +6887,87 @@ Node: Selecting buffers59900
 Node: Downloading62536
 Node: Submitting Forms63760
 Node: HTML File Information65379
-Node: Pretty Good Features67679
-Node: Using Search Engines68487
-Node: The Search Interface69862
-Node: Quick Searching71437
-Node: Adding New Search Engines73963
-Node: Grouping URLs76307
-Node: Weather Information77410
-Node: Using Antenna77592
-Node: Setting up Antenna78264
-Node: Daily web tracking78878
-Node: Showing Directory Tree80639
-Node: Viewing Perl Documents82301
-Node: Using Namazu82490
-Node: Octet82693
-Node: Frame Local Buffers83138
-Node: Session Manager84739
-Node: Customizable Variables86973
-Node: General Variables89809
-Node: Image Variables114808
-Node: Form Variables119609
-Node: Cookie Variables120525
-Node: Bookmark Variables121173
-Node: Search Variables121998
-Node: Weather Variables123212
-Node: Dtree Variables123851
-Node: Antenna Variables124859
-Node: Perldoc Variables126170
-Node: Namazu Variables127111
-Node: Octet Variables128849
-Node: Session Manager Variables129115
-Node: Hooks129955
-Node: Other Variables131763
-Node: Hooking into MUAs134265
-Node: Gnus135337
-Node: Mew140254
-Node: SEMI MUAs142626
-Node: VM145400
-Node: Frequently Asked Questions145817
-Node: General FAQ146167
-Node: Trouble FAQ148112
-Ref: Trouble FAQ-Footnote-1157573
-Node: Shimbun FAQ157645
-Node: Known Problems158478
-Node: Shimbun Library158647
-Node: Nnshimbun161500
-Ref: Nnshimbun-Footnote-1173121
-Ref: Nnshimbun-Footnote-2173321
-Ref: Nnshimbun-Footnote-3174022
-Ref: Nnshimbun-Footnote-4174126
-Node: Mew Shimbun174596
-Ref: Mew Shimbun-Footnote-1184064
-Ref: Mew Shimbun-Footnote-2184194
-Node: Shimbun with Wanderlust184359
-Node: Shimbun local mode184743
-Node: Shimbun Sites186531
-Node: Newspapers Supported by Shimbun187087
-Node: News Sites Supported by Shimbun197748
-Node: Mailing Lists Supported by Shimbun207307
-Node: Sport Sites Supported by Shimbun220828
-Node: Misc Sites Supported by Shimbun221686
-Node: Shimbun Basics233683
-Node: Overview234278
-Node: Getting web page and header information238113
-Ref: Getting web page and header information-Footnote-1243873
-Ref: Getting web page and header information-Footnote-2243966
-Node: Displaying an article244074
-Node: Inheriting shimbun module246873
-Ref: Inheriting shimbun module-Footnote-1249056
-Ref: Inheriting shimbun module-Footnote-2249141
-Node: Making text/plain articles249195
-Node: Zenkaku to hankaku conversion251525
-Node: Coding convention of Shimbun252635
-Node: Tips253807
-Node: Mailing List258665
-Node: Emacs-w3m Functions260007
-Node: External Packages260195
-Node: Authors261361
-Node: Index261731
-Node: Concept Index262000
-Node: Key Index268820
-Node: Variable Index278546
-Node: Function Index295701
+Node: Pretty Good Features67451
+Node: Using Search Engines68259
+Node: The Search Interface69634
+Node: Quick Searching71209
+Node: Adding New Search Engines73735
+Node: Grouping URLs76079
+Node: Weather Information77182
+Node: Using Antenna77364
+Node: Setting up Antenna78036
+Node: Daily web tracking78650
+Node: Showing Directory Tree80411
+Node: Viewing Perl Documents82073
+Node: Using Namazu82262
+Node: Octet82465
+Node: Frame Local Buffers82910
+Node: Session Manager84511
+Node: Customizable Variables86745
+Node: General Variables89581
+Node: Image Variables114580
+Node: Form Variables119381
+Node: Cookie Variables120297
+Node: Bookmark Variables120945
+Node: Search Variables121770
+Node: Weather Variables122984
+Node: Dtree Variables123623
+Node: Antenna Variables124631
+Node: Perldoc Variables125942
+Node: Namazu Variables126883
+Node: Octet Variables128621
+Node: Session Manager Variables128887
+Node: Hooks129727
+Node: Other Variables131535
+Node: Hooking into MUAs134037
+Node: Gnus135109
+Node: Mew140026
+Node: SEMI MUAs142398
+Node: VM145172
+Node: Frequently Asked Questions145589
+Node: General FAQ145939
+Node: Trouble FAQ147884
+Ref: Trouble FAQ-Footnote-1157345
+Node: Shimbun FAQ157417
+Node: Known Problems158250
+Node: Shimbun Library158419
+Node: Nnshimbun161272
+Ref: Nnshimbun-Footnote-1172893
+Ref: Nnshimbun-Footnote-2173093
+Ref: Nnshimbun-Footnote-3173794
+Ref: Nnshimbun-Footnote-4173898
+Node: Mew Shimbun174368
+Ref: Mew Shimbun-Footnote-1183836
+Ref: Mew Shimbun-Footnote-2183966
+Node: Shimbun with Wanderlust184131
+Node: Shimbun local mode184515
+Node: Shimbun Sites186303
+Node: Newspapers Supported by Shimbun186859
+Node: News Sites Supported by Shimbun197520
+Node: Mailing Lists Supported by Shimbun207079
+Node: Sport Sites Supported by Shimbun220600
+Node: Misc Sites Supported by Shimbun221458
+Node: Shimbun Basics233455
+Node: Overview234050
+Node: Getting web page and header information237885
+Ref: Getting web page and header information-Footnote-1243645
+Ref: Getting web page and header information-Footnote-2243738
+Node: Displaying an article243846
+Node: Inheriting shimbun module246645
+Ref: Inheriting shimbun module-Footnote-1248828
+Ref: Inheriting shimbun module-Footnote-2248913
+Node: Making text/plain articles248967
+Node: Zenkaku to hankaku conversion251297
+Node: Coding convention of Shimbun252407
+Node: Tips253579
+Node: Mailing List258437
+Node: Emacs-w3m Functions259779
+Node: External Packages259967
+Node: Authors261133
+Node: Index261503
+Node: Concept Index261772
+Node: Key Index268592
+Node: Variable Index278318
+Node: Function Index295473
 
 End Tag Table
