@@ -24,7 +24,10 @@
       (define-key w3m-mode-map (kbd "<C-left>") 'w3m-view-previous-page)
       (define-key w3m-mode-map (kbd "<C-right>") 'w3m-view-next-page)
 
-
+      (if (require 'w3m-lnum nil t)
+          ;; use 'F' key to show link hint (F is bound to `w3m-lnum-goto')
+          (add-hook 'w3m-mode-hook 'w3m-lnum-mode))
+  
       (when (and (memq system-type '(windows-nt cygwin))
                  (not (getenv "LANG")))
         ;; w3m executable would crash if env var LANG not set
