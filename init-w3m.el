@@ -9,7 +9,8 @@
 (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
 ;;(setq browse-url-browser-function 'w3m-browse-url)
 
- (with-eval-after-load "w3m"
+(eval-after-load "w3m"
+  `(progn
       (setq w3m-use-title-buffer-name nil)
       ;;(setq browse-url-browser-function 'w3m-browse-url)
 	 
@@ -21,8 +22,23 @@
       (define-key w3m-mode-map (kbd "<C-down>") 'w3m-next-anchor)
       (define-key w3m-mode-map (kbd "<C-up>") 'w3m-previous-anchor)
       (define-key w3m-mode-map (kbd "<C-left>") 'w3m-view-previous-page)
-      (define-key w3m-mode-map (kbd "<C-right>") 'w3m-view-next-page)       
-    )
+      (define-key w3m-mode-map (kbd "<C-right>") 'w3m-view-next-page)
+
+
+      (when (and (memq system-type '(windows-nt cygwin))
+                 (not (getenv "LANG")))
+        ;; w3m executable would crash if env var LANG not set
+        ;; http://cygwin.com/ml/cygwin/2011-01/msg00069.html
+        (setenv "LANG" "zh_CN"))
+
+      ;; (setq w3m-command "e:/cygwin2/bin/w3m.exe")
+      (when (and (eq system-type 'windows-nt)
+                 (not (file-executable-p w3m-command)))
+        (if (and (boundp 'cygwin-mount-cygwin-bin-directory) cygwin-mount-cygwin-bin-directory)
+            (setq w3m-command (concat cygwin-mount-cygwin-bin-directory "/w3m.exe"))
+          (if (executable-find "w3m.exe")
+              (message "Could not find `w3m.exe'. You need to customize `w3m-command' to make `w3m-browser-url' work."))))
+      ))
 
 ;; default to new tab
 (defun w3m-new-tab ()
