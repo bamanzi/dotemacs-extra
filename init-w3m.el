@@ -40,13 +40,14 @@
               (message "Could not find `w3m.exe'. You need to customize `w3m-command' to make `w3m-browser-url' work."))))
       ))
 
+;; ** new tab
 ;; default to new tab
 (defun w3m-new-tab ()
   (require 'w3m)
   (interactive)
   (w3m-copy-buffer nil nil nil t))
 
- (defun w3m-browse-url-new-tab (url &optional new-session)
+(defun w3m-browse-url-new-tab (url &optional new-session)
    (interactive (progn
 		 (require 'browse-url)
 		 (browse-url-interactive-arg "Emacs-w3m URL: ")))
@@ -54,3 +55,52 @@
    (w3m-new-tab)
    (w3m-browse-url url new-session))
 ;;(setq browse-url-browser-function 'w3m-browse-url-new-tab)
+
+(defun w3m-find-file-new-tab (file)
+  (interactive "fFilename: ")
+  (require 'browse-url)  
+  (w3m-new-tab)
+  (w3m-find-file file))
+
+(defun ffap-w3m-new-tab (url &optional new-session)
+  "Browse url in w3m.
+  If current frame has only one window, create a new window and browse the webpage"
+  (interactive (progn
+                 (require 'browse-url)
+                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+  (let ((w3m-pop-up-windows t)) ;;FIXME: necessary?
+    (w3m-browse-url-new-tab url new-session)))
+
+
+;; ** other window
+(defun w3m-browse-url-other-window (url &optional new-session)
+   (interactive (progn
+		 (require 'browse-url)
+		 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+   (require 'w3m)
+   (let ((w3m-pop-up-windows t))
+     (if (one-window-p) (split-window))
+     (other-window 1)
+     (w3m-browse-url url new-session)))
+;;(setq browse-url-browser-function 'w3m-browse-url-other-window)
+
+(defun w3m-find-file-other-window (file)
+  (interactive "fFilename: ")
+  (require 'browse-url)
+   (let ((w3m-pop-up-windows t))
+     (if (one-window-p) (split-window))
+     (other-window 1)
+     (w3m-find-file file)))
+
+;; stolen from http://www.emacswiki.org/emacs/emacs-w3m#toc24
+(defun ffap-w3m-other-window (url &optional new-session)
+  "Browse url in w3m.
+  If current frame has only one window, create a new window and browse the webpage"
+  (interactive (progn
+                 (require 'browse-url)
+                 (browse-url-interactive-arg "Emacs-w3m URL: ")))
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url new-session)))
+
