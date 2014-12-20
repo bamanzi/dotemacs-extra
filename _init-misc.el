@@ -178,3 +178,7 @@ FILENAME defaults to `buffer-file-name'."
 
 (idle-require 'mouse3)
 
+;; emacs>=24.4's `icomplete-mode' no longer shows keybindings for `M-x',
+;; package `icomplete+' reimplemented this feature
+(unless (string< emacs-version "24.4")
+  (idle-require 'icomplete+))
