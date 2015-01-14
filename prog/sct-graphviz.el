@@ -4,7 +4,7 @@
 ;; maintainer: <hondana@gmx.com>
 ;;
 ;; Installation:
-;;              (autoload 'sct-graphviz "simple-call-tree+" "Graphviz enhanced simple-call-tree" t)
+;;     (autoload 'sct-graphviz "simple-call-tree+" "Graphviz enhanced simple-call-tree" t)
 ;;
 ;; Note: automatically use ANYTHING-SIMPLE-CALL-TREE if GRAPHVIZ-COMMAND is not in EXEC-PATH
 ;;
@@ -15,7 +15,7 @@
 (defvar graphviz-command "dot"
   "Binary command used to generate graphs.")
 
-(defvar sct-graphviz-dir "/tmp"
+(defvar sct-graphviz-dir (symbol-value 'temporary-file-directory)
   "Default temporary cache location.")
 
 ;;;###autoload
@@ -82,13 +82,13 @@ Then save the file as \"my-file.dot\" and run
   (if (and (file-directory-p sct-graphviz-dir)
            (file-writable-p sct-graphviz-dir))
       ;; automatically purge temporary files on emacs killing
-      (add-hook-once
-       'kill-emacs-hook
-       #'(lambda () (mapc #'(lambda (file)
-                         (when (file-writable-p file)
-                           (delete-file file)))
-                     (directory-files sct-graphviz-dir t 
-                                      (format "\\.jpg\\'")))))
+      (add-hook 'kill-emacs-hook
+		#'(lambda ()
+		    (mapc #'(lambda (file)
+			      (when (file-writable-p file)
+				(delete-file file)))
+			  (directory-files sct-graphviz-dir t 
+					   (format "\\.jpg\\'")))))
     (error (format "sct-graphviz: unable to access %s" sct-graphviz-dir)))
   (if (null (executable-find graphviz-command))
       (anything-simple-call-tree)
@@ -96,13 +96,14 @@ Then save the file as \"my-file.dot\" and run
           (viz-file (expand-file-name (concat (buffer-name (current-buffer)) ".jpg") sct-graphviz-dir)))
       (with-temp-file tmp-file
         (insert (sct-dot)))
-      (let ((cmd-return (execvp "dot" 
-                                "-Tjpg" tmp-file
-                                "-o" viz-file)))
+      (let ((cmd-return (shell-command-to-string (concat "dot " 
+                                                         " -Tjpg " tmp-file
+                                                         " -o " viz-file))))
         (if (zerop (length cmd-return))
             (let ((vct (get-buffer-create "*Visual Call Tree*")))
               (with-current-buffer
                   vct
+                (image-toggle-display-text)
                 (erase-buffer)
                 (insert-file-contents viz-file)
                 (image-mode))
@@ -110,4 +111,5 @@ Then save the file as \"my-file.dot\" and run
           (error "graphivz: error during external command: %s" cmd-return)))
       (delete-file tmp-file))))
 
-(provide 'simple-call-tree-+)
+(provide 'sct-graphviz)
+;;; sct-graphviz ends here
