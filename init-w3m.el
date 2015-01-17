@@ -7,13 +7,13 @@
   (idle-require 'w3m-load))
 
 (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+
 ;;(setq browse-url-browser-function 'w3m-browse-url)
+(setq w3m-default-display-inline-images t)
+(setq w3m-use-title-buffer-name nil)
 
 (eval-after-load "w3m"
   `(progn
-      (setq w3m-use-title-buffer-name nil)
-      ;;(setq browse-url-browser-function 'w3m-browse-url)
-	 
       (define-key w3m-mode-map (kbd "<down>") 'next-line)
       (define-key w3m-mode-map (kbd "<up>") 'previous-line)
       (define-key w3m-mode-map (kbd "<left>") 'backward-char)
