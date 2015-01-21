@@ -25,12 +25,34 @@
 (eval-after-load "window-extension"
   `(progn
      (global-set-key (kbd "<f11> <f11>") 'toggle-one-window)
-     (global-set-key (kbd "<f11> 1 v")   'delete-other-windows-vertically+)
-     (global-set-key (kbd "<f11> 1 h")   'delete-other-windows-horizontally+)
+     (global-set-key (kbd "<f11> d v")   'delete-other-windows-vertically+)
+     (global-set-key (kbd "<f11> d h")   'delete-other-windows-horizontally+)
      
      (global-set-key [(control x) (?0)] 'sticky-window-delete-window)
      (global-set-key [(control x) (?1)] 'sticky-window-delete-other-windows)
      (global-set-key [(control x) (?9)] 'sticky-window-keep-window-visible)
+     ))
+
+;; ** window jumping
+(autoload 'window-numbering-mode "window-numbering"
+  "A minor mode that assigns a number to each window." t)
+
+(idle-require 'window-numbering)
+
+(eval-after-load "window-numbering"
+  `(progn     
+     (window-numbering-mode 1)
+
+     ;; make window number more clear on mode-line
+     ;; TODO: make sure new frame get the face correctly copied
+     (copy-face 'mode-line-buffer-id 'window-numbering-face)              
+     (defun window-numbering-get-number-string (&optional window)
+       (let ((s (concat " "
+                        (int-to-string (window-numbering-get-number window))
+                        "□ ")))
+         (propertize s 'face 'window-numbering-face)))
+
+     (define-key window-numbering-keymap (kbd "s-0") 'select-minibuffer-window)
      ))
 
 
