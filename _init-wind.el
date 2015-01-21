@@ -43,6 +43,21 @@
   `(progn     
      (window-numbering-mode 1)
 
+     ;; Change the keybindings from `M-0'..`M-9' to `s-0'..`s-9'
+     (dotimes (i 10)
+       (eval `(progn
+                (define-key window-numbering-keymap ,(read-kbd-macro (format "M-%d" i))
+                  nil)
+                (define-key window-numbering-keymap ,(read-kbd-macro (format "<f11> M-%d" i))
+                  ,'(intern (format "select-window-%d" i))
+                  )
+                (define-key window-numbering-keymap ,(read-kbd-macro (format "s-%d" i))
+                  ,'(intern (format "select-window-%d" i))
+                  )
+                )))
+     (define-key window-numbering-keymap (kbd "s-0")     'select-minibuffer-window)
+     (define-key window-numbering-keymap (kbd "<f11> 0") 'select-minibuffer-window)
+
      ;; make window number more clear on mode-line
      ;; TODO: make sure new frame get the face correctly copied
      (copy-face 'mode-line-buffer-id 'window-numbering-face)              
@@ -52,7 +67,6 @@
                         "□ ")))
          (propertize s 'face 'window-numbering-face)))
 
-     (define-key window-numbering-keymap (kbd "s-0") 'select-minibuffer-window)
      ))
 
 
