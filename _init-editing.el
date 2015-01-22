@@ -1,10 +1,3 @@
-;; ** scite-api
-(eval-after-load "auto-complete-config"
-  `(if (load "auto-complete-scite-api" t)
-       (add-to-list 'ac-sources 'ac-source-scite-api)
-     (message "%s: failed to load `auto-complete-scite-api'." load-file-name)))
-
-
 
 ;; ** folding
 ;; *** outline

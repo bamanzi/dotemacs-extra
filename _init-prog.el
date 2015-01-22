@@ -8,6 +8,13 @@
 (global-set-key (kbd "<f5> s")  'anything-yasnippet-2)
 
 
+;; ** scite-api
+(eval-after-load "auto-complete-config"
+  `(if (load "auto-complete-scite-api" t)
+       (add-to-list 'ac-sources 'ac-source-scite-api)
+     (message "%s: failed to load `auto-complete-scite-api'." load-file-name)))
+
+
 ;; ** simple-call-tree
 (autoload 'sct-graphviz "sct-graphviz"
   "Analyze the simple tree call and display it as graphic." t)
