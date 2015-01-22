@@ -1,9 +1,3 @@
-;; ** yasnippet
-(autoload 'anything-yasnippet-2  "anything-yasnippet-2"
-  "Find yasnippets." t)
-
-(global-set-key (kbd "<f5> s")  'anything-yasnippet-2)
-
 ;; ** scite-api
 (eval-after-load "auto-complete-config"
   `(if (load "auto-complete-scite-api" t)

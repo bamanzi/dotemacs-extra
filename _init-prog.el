@@ -1,3 +1,13 @@
+;; ** yasnippet
+(autoload 'yas/global-mode "yasnippet"
+  "Toggle Yas minor mode in all buffers." t)
+
+(autoload 'anything-yasnippet-2  "anything-yasnippet-2"
+  "Find yasnippets." t)
+
+(global-set-key (kbd "<f5> s")  'anything-yasnippet-2)
+
+
 ;; ** simple-call-tree
 (autoload 'sct-graphviz "sct-graphviz"
   "Analyze the simple tree call and display it as graphic." t)
@@ -41,6 +51,8 @@ Each function should accept ONE argument in STRING type.")
           (when (and pulse-command-advice-flag (interactive-p))
             (pulse-momentary-highlight-one-line (point))))
       (message "no configuration for `%s' in `symbol-jump/function-alist'." major-mode))))
+
+(global-set-key (kbd "s-j") 'symbol-jump)
 
 ;; *** jump functions
 (defun symbol-jump/imenu-goto-symbol (foo)
