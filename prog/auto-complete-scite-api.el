@@ -109,7 +109,10 @@ This would read <major-mode-name>.api ('-mode' removed) and/or <file-name-ext>.a
 
 ac-read-file-dictionary (from auto-complete.el) used to cache the file contents"
   (apply 'append
-           (mapcar 'ac-read-file-dictionary
+           (mapcar #'(lambda (filepath)
+                       (when filepath
+                         (message "Loading SciTE API from %s" filepath)
+                         (ac-read-file-dictionary filepath)))
                  (mapcar (lambda (name)
                            (loop for dir in ac-scite-api-directories
                                  for file = (concat dir "/" name ".api")

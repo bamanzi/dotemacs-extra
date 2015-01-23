@@ -9,12 +9,12 @@
 
 (defvar anything-c-source-scite-api
   `((name . "Occur")
-    (init . anything-c-scite-api-init)
+    (init . anything-c-scite-api--init)
     (candidates-in-buffer)
     (migemo)
-    (get-line . anything-c-occur-get-line)
+    (get-line . anything-c-scite-api--get-line)
     (display-to-real . anything-c-display-to-real-line)
-    (action . (("Insert line" . anything-c-scite-api-insert)
+    (action . (("Insert line" . anything-c-scite-api--insert)
                ("Go to Line" . anything-c-action-line-goto)))
     (recenter)
     ;;(mode-line . anything-occur-mode-line)
@@ -22,10 +22,17 @@
     ;;(requires-pattern . 1)
     (delayed)))
 
-(defun anything-c-scite-api-insert (lineno-and-content)
-      (insert-string (cadr lineno-and-content)))
+(defun anything-c-scite-api--insert (lineno-and-content)
+  (let* ((line (cadr lineno-and-content))
+         (signature (replace-regexp-in-string ")\\( .*\\)" "" line nil nil 1)))
+    (with-anything-current-buffer
+      (insert-string signature))
+    (message line)))
 
-(defun anything-c-scite-api-init ()
+(defun anything-c-scite-api-get--line (s e)
+  (format "%5d: %s" (line-number-at-pos (1- s)) (buffer-substring s e)))
+
+(defun anything-c-scite-api--init ()
   (with-current-buffer (anything-candidate-buffer 'global)
     (erase-buffer)
     (mapcar #'(lambda (line)
@@ -36,16 +43,11 @@
 
 ;;;###autoload
 (defun anything-scite-api ()
-  "Preconfigured Anything for SciTE API source.
-If region is active, search only in region,
-otherwise search in whole buffer."
+  "Preconfigured Anything for SciTE API source."
   (interactive)
-  (let ((anything-compile-source-functions
-         ;; rule out anything-match-plugin because the input is one regexp.
-         (delq 'anything-compile-source--match-plugin
-               (copy-sequence anything-compile-source-functions))))
-    (anything :sources 'anything-c-source-scite-api
-              :buffer "*Anything SciTE API*"
-              )))
+  (anything :sources 'anything-c-source-scite-api
+            :buffer "*Anything SciTE API*"
+            :input (thing-at-point 'symbol)
+            ))
 
 ;;; anything-scite-api.el ends here
