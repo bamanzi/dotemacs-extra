@@ -6,7 +6,9 @@
 ;; Version: 0.2
 
 ;;; Commentary:
+;;
 ;; Features:
+;;
 ;; - A candidates source (scite-api) for auto-complete, baked with
 ;;   Scite's API files.
 ;;
@@ -20,44 +22,45 @@
 ;;   As a side-effect, you can always press M-F1 to query the document
 ;;   string for a function/symbol.
 ;;
-;; Requirements: 
-;; * Auto-Complete package needed
-;; 	http://cx4a.org/software/auto-complete/
-;;   	(only tested on v1.2, v1.3)
-;; * Scite API files
-;;   	This library would search API files in folder /usr/share/scite/api/
-;;	and ~/.scite/api. You can customize variable `ac-scite-api-directories'.
+;; Requirements:
 ;;
-;; 	If you need more API files, please visit
+;;   * Auto-Complete package.  http://cx4a.org/software/auto-complete/
+;; 	   (only tested on v1.2, v1.3)
+;;
+;;   * Scite API files.  This library would search API files in folder
+;;     /usr/share/scite/api/ and ~/.scite/api. You can customize
+;;     variable `ac-scite-api-directories'.
+;;
+;; 	   If you need more API files, please visit
 ;;   	 http://code.google.com/p/scite-files/wiki/Customization
 ;;
-;;   The following rules are used to search the API file.
+;;  The following rules are used to search the API file.
+;;
 ;;   1. <major-mode-name>.api  ("-mode" removed.)
-;;	e.g:  init.el -> emacs-lisp-mode -> emacs-lisp.api
+;;	    e.g:  init.el -> emacs-lisp-mode -> emacs-lisp.api
 ;;   2. <file-name-extension>.api
-;;	e.g:  init.el -> el.api
+;;	    e.g:  init.el -> el.api
 ;;   If both matches found, both would be loaded.
 ;;
 ;; Usage:
-;; - to enable ac-source-scite-api for all modes
-;;    (require 'auto-complete-scite-api")
-;;    (setq-default 'ac-sources
-;;		(cons 'ac-source-scite-api ac-sources))
+;;   - to enable `ac-source-scite-api` for all modes
+;;     (require 'auto-complete-scite-api)
+;;     (setq-default 'ac-sources
+;;	     (cons 'ac-source-scite-api ac-sources))
 ;;
-;; - to enable ac-source-scite-api for specific modes
-;;    (require 'auto-complete-scite-api")
-;;    (add-hook 'xahk-mode 'ac-enable-scite-api-source)
-;;   or interactively:
-;;    M-x ac-enable-scite-api-source
+;;   - to enable ac-source-scite-api for specific modes
+;;       (require 'auto-complete-scite-api)
+;;       (add-hook 'xahk-mode 'ac-enable-scite-api-source)
+;;     or interactively turn it on for current-buffer:
+;;       M-x ac-enable-scite-api-source
 ;; 
-;; Note: remember to turn on auto-complete-mode
-;;
+;; Note: remember to turn on `auto-complete-mode'
 ;; 
 ;; Limitations/TODO:
 ;;   - M-x ac-scite-api-reload-api-file
 ;;   - overloaded functions: AC would ignore duplicate items
 ;;   - improve performance for namespaced completion. e.g. for python.api
-;;        * a package name (such as 'xml.') would lead to too much candidates
+;;     * a package name (such as 'xml.') would lead to too much candidates
 ;;
 ;; Changes Log:
 ;;   * v0.2 (2011-03-29)
