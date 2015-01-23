@@ -58,8 +58,6 @@
      ))
 
 
-
-
 ;; ** ibuffer-vc
 
 (eval-after-load "ibuffer-vc"
@@ -151,7 +149,14 @@ FILENAME defaults to `buffer-file-name'."
          (require 'pcmpl-args nil t))
      ))
 
+;; ** indent-guide
+;;`indent-guide-mode' only show guides on current section.
+;; but it would actually insert a char (`indent-guide-char'),
+;; thus it might not be suitable for terminal (if you use external copy (mouse or tmux))
+(autoload 'indent-guide-mode  "indent-guide"
+  "Show vertical lines to guide indentation." t)
 
+(global-set-key (kbd "<f10> ig") 'indent-guide-mode)
 
 
 ;; ** misc
