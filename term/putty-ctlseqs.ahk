@@ -87,14 +87,14 @@ F1::    putty_send_key("F1",    "{ESC}OP",      "",         "{ESC}[11~",    "", 
 F2::    putty_send_key("F2",    "{ESC}OQ",      "",         "{ESC}[12~",    "",         "")
 F3::    putty_send_key("F3",    "{ESC}OR",      "",         "{ESC}[13~",    "",         "")
 F4::    putty_send_key("F4",    "{ESC}OS",      "",         "{ESC}[14~",    "",         "")
-F5::    putty_send_key("F5",    "{ESC}[15~",    "",         "",                 "",         "")
-F6::    putty_send_key("F6",    "{ESC}[17~",    "",         "",                 "",         "")
-F7::    putty_send_key("F7",    "{ESC}[18~",    "",         "",                 "",         "")
-F8::    putty_send_key("F8",    "{ESC}[19~",    "",         "",                 "",         "")
-F9::    putty_send_key("F9",    "{ESC}[20~",    "",         "",                 "",         "")
-F10::   putty_send_key("F10",   "{ESC}[21~",    "",         "",                 "",         "")
-F11::   putty_send_key("F11",   "{ESC}[23~",    "",         "",                 "",         "")
-F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 "",         "")
+F5::    putty_send_key("F5",    "{ESC}[15~",    "",         "",             "",         "")
+F6::    putty_send_key("F6",    "{ESC}[17~",    "",         "",             "",         "")
+F7::    putty_send_key("F7",    "{ESC}[18~",    "",         "",             "",         "")
+F8::    putty_send_key("F8",    "{ESC}[19~",    "",         "",             "",         "")
+F9::    putty_send_key("F9",    "{ESC}[20~",    "",         "",             "",         "")
+F10::   putty_send_key("F10",   "{ESC}[21~",    "",         "",             "",         "")
+F11::   putty_send_key("F11",   "{ESC}[23~",    "",         "",             "",         "")
+F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",             "",         "")
 ;;For F5..F12, most terminals sends ESC [15~ .. ESC[24~ (CSI sequences)
 
 ;; ** Shift/Alt/Ctrl+Fx
@@ -120,23 +120,23 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 ;;  - it emits the same sequences with F11 & S-F1 (and S-F11)
 ;;  - it emits the same sequences with F12 & S-F2 (and S-F12)
 ;;
-;;|       | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm    | term/xterm.el  |
-;;|       | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |          | SS3   CSI      |
-;;|-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
-;;| S-f1  | ^[[23~     | ^[[23~       | ^[[1;2P  | ^[O1;2P  x    | ^[O2P          | ^[O1;2P x     | ^[[1;2P  | ^[O2P ^[[1;2P  |
-;;| S-f2  | ^[[24~     | ^[[24~       | ^[[1;2Q  | ^[O1;2Q  x    | ^[O2Q          | ^[O1;2Q x     | ^[[1;2Q  | ^[O2Q ^[[1;2Q  |
-;;| S-f5  | ^[[28~     | ^[[28~       | ^[[15;2~ | ^[[15;2~      | ^[[15;2~       | ^[[15;2~      | ^[[15;2~ | ____  ^[[15;2~ |
-;;| S-f6  | ^[[29~     | ^[[29~       | ^[[17;2~ | ^[[17;2~      | ^[[17;2~       | ^[[17;2~      | ^[[17;2~ | ____  ^[[17;2~ |
-;;| S-f11 | ^[[23~ ?   |              | ^[[23;2~ | ^[[23;2~      | ^[[23;2~       | ^[[23;2~      | ^[[23;2~ | ____  ^[[23;2~ |
-;;| S-f12 | ^[[24~ ?   |              | ^[[24;2~ | ^[[24;2~      | ^[[24;2~       | ^[[24;2~      | ^[[24;2~ | ____  ^[[24;2~ |
-;;|-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
-;;| M-f1  | ^[^[[11~   | ^[^[[11~     | ^[[1;3P  | ^[O1;3P  x    | ^[O3P          | ^[O1;3P x     | ^[[1;3P  | ^[O3P ____     |
-;;| M-f2  | ^[^[[12~   | ^[^[[12~     | ^[[1;2Q  | ^[O1;3Q  x    | ^[O2Q          | ^[O1;3Q x     | ^[[1;3Q  | ^[O3Q ____     |
-;;| M-f5  | ^[^[[15~   | ^[^[[15~     | ^[[15;3~ | ^[[15;3~      | ^[[15;3~       | ^[[15;3~      | ^[[15;3~ | ____  ^[[15;3~ |
-;;|-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
-;;| C-f1  | -          | -            | ^[[1;5P  | /             | /              | /             | ^[[1;5P  | ^[O5P ____     |
-;;| C-f2  | -          | -            | ^[[1;5Q  | ^[O1;5Q  x    | ^[O5Q          | ^[O1;5Q x     | ^[[1;5Q  | ^[O5Q ____     |
-;;| C-f5  | -          | -            | ^[[15;5~ | ^[[15;5~      | ^[[15;5~       | ^[[15;5~      | ^[[15;5~ | ____  ^[[15;5~ |
+;; |       | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm    | term/xterm.el  |
+;; |       | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |          | SS3   CSI      |
+;; |-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
+;; | S-f1  | ^[[23~     | ^[[23~       | ^[[1;2P  | ^[O1;2P  x    | ^[O2P          | ^[O1;2P x     | ^[[1;2P  | ^[O2P ^[[1;2P  |
+;; | S-f2  | ^[[24~     | ^[[24~       | ^[[1;2Q  | ^[O1;2Q  x    | ^[O2Q          | ^[O1;2Q x     | ^[[1;2Q  | ^[O2Q ^[[1;2Q  |
+;; | S-f5  | ^[[28~     | ^[[28~       | ^[[15;2~ | ^[[15;2~      | ^[[15;2~       | ^[[15;2~      | ^[[15;2~ | ____  ^[[15;2~ |
+;; | S-f6  | ^[[29~     | ^[[29~       | ^[[17;2~ | ^[[17;2~      | ^[[17;2~       | ^[[17;2~      | ^[[17;2~ | ____  ^[[17;2~ |
+;; | S-f11 | ^[[23~ ?   |              | ^[[23;2~ | ^[[23;2~      | ^[[23;2~       | ^[[23;2~      | ^[[23;2~ | ____  ^[[23;2~ |
+;; | S-f12 | ^[[24~ ?   |              | ^[[24;2~ | ^[[24;2~      | ^[[24;2~       | ^[[24;2~      | ^[[24;2~ | ____  ^[[24;2~ |
+;; |-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
+;; | M-f1  | ^[^[[11~   | ^[^[[11~     | ^[[1;3P  | ^[O1;3P  x    | ^[O3P          | ^[O1;3P x     | ^[[1;3P  | ^[O3P ____     |
+;; | M-f2  | ^[^[[12~   | ^[^[[12~     | ^[[1;2Q  | ^[O1;3Q  x    | ^[O2Q          | ^[O1;3Q x     | ^[[1;3Q  | ^[O3Q ____     |
+;; | M-f5  | ^[^[[15~   | ^[^[[15~     | ^[[15;3~ | ^[[15;3~      | ^[[15;3~       | ^[[15;3~      | ^[[15;3~ | ____  ^[[15;3~ |
+;; |-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
+;; | C-f1  | -          | -            | ^[[1;5P  | /             | /              | /             | ^[[1;5P  | ^[O5P ____     |
+;; | C-f2  | -          | -            | ^[[1;5Q  | ^[O1;5Q  x    | ^[O5Q          | ^[O1;5Q x     | ^[[1;5Q  | ^[O5Q ____     |
+;; | C-f5  | -          | -            | ^[[15;5~ | ^[[15;5~      | ^[[15;5~       | ^[[15;5~      | ^[[15;5~ | ____  ^[[15;5~ |
 
 ;; *** Shift+Fx
 ;;                     key              default         xterm   putty           gnome           emacs
@@ -154,19 +154,19 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 +F12::  putty_send_key("Shift+F12",     "{ESC}[24;2~",  "",     "FIXME",        "",             "")
 
 ;; *** Alt+Fx
-;;                     key              default         xterm   putty           gnome           emacs
-!F1::   putty_send_key("Alt+F1",        "{ESC}[1;3P",   "",     "{ESC}{ESC}[11~",    "{ESC}O3P",     "")
-!F2::   putty_send_key("Alt+F2",        "{ESC}[1;3Q",   "",     "{ESC}{ESC}[12~",    "{ESC}O3Q",     "")
-!F3::   putty_send_key("Alt+F3",        "{ESC}[1;3R",   "",     "{ESC}{ESC}[13~",    "{ESC}O3R",     "")
-!F4::   putty_send_key("Alt+F4",        "{ESC}[1;3S",   "",     "{ESC}{ESC}[14~",    "{ESC}O3S",     "")
-!F5::   putty_send_key("Alt+F5",        "{ESC}[15;3~",  "",     "{ESC}{ESC}[15~",    "",             "")
-!F6::   putty_send_key("Alt+F6",        "{ESC}[17;3~",  "",     "{ESC}{ESC}[17~",    "",             "")
-!F7::   putty_send_key("Alt+F7",        "{ESC}[18;3~",  "",     "{ESC}{ESC}[18~",    "",             "")
-!F8::   putty_send_key("Alt+F8",        "{ESC}[19;3~",  "",     "{ESC}{ESC}[19~",    "",             "")
-!F9::   putty_send_key("Alt+F9",        "{ESC}[20;3~",  "",     "{ESC}{ESC}[20~",    "",             "")
-!F10::  putty_send_key("Alt+F10",       "{ESC}[21;3~",  "",     "{ESC}{ESC}[21~",    "",             "")
-!F11::  putty_send_key("Alt+F11",       "{ESC}[23;3~",  "",     "{ESC}{ESC}[23~",    "",             "")
-!F12::  putty_send_key("Alt+F12",       "{ESC}[24;3~",  "",     "{ESC}{ESC}[24~",    "",             "")
+;;                     key              default         xterm   putty               gnome           emacs
+!F1::   putty_send_key("Alt+F1",        "{ESC}[1;3P",   "",     "{ESC}{ESC}[11~",   "{ESC}O3P",     "")
+!F2::   putty_send_key("Alt+F2",        "{ESC}[1;3Q",   "",     "{ESC}{ESC}[12~",   "{ESC}O3Q",     "")
+!F3::   putty_send_key("Alt+F3",        "{ESC}[1;3R",   "",     "{ESC}{ESC}[13~",   "{ESC}O3R",     "")
+!F4::   putty_send_key("Alt+F4",        "{ESC}[1;3S",   "",     "{ESC}{ESC}[14~",   "{ESC}O3S",     "")
+!F5::   putty_send_key("Alt+F5",        "{ESC}[15;3~",  "",     "{ESC}{ESC}[15~",   "",             "")
+!F6::   putty_send_key("Alt+F6",        "{ESC}[17;3~",  "",     "{ESC}{ESC}[17~",   "",             "")
+!F7::   putty_send_key("Alt+F7",        "{ESC}[18;3~",  "",     "{ESC}{ESC}[18~",   "",             "")
+!F8::   putty_send_key("Alt+F8",        "{ESC}[19;3~",  "",     "{ESC}{ESC}[19~",   "",             "")
+!F9::   putty_send_key("Alt+F9",        "{ESC}[20;3~",  "",     "{ESC}{ESC}[20~",   "",             "")
+!F10::  putty_send_key("Alt+F10",       "{ESC}[21;3~",  "",     "{ESC}{ESC}[21~",   "",             "")
+!F11::  putty_send_key("Alt+F11",       "{ESC}[23;3~",  "",     "{ESC}{ESC}[23~",   "",             "")
+!F12::  putty_send_key("Alt+F12",       "{ESC}[24;3~",  "",     "{ESC}{ESC}[24~",   "",             "")
 
 ;; *** Ctrl+Fx
 ;;                     key              default         xterm   putty       gnome           emacs
@@ -231,12 +231,12 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 
 ;;** Ctrl+Alt+Fx
 
-;;|        | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm | term/xterm.el |
-;;|        | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |       | SS3   CSI     |
-;;|--------+------------+--------------+----------+---------------+----------------+---------------+-------+---------------|
-;;| C-M-f1 | -          | -            | ^[[1;7P  | -             | -              | -             |       | ____  ____    |
-;;| C-M-f2 | -          | -            | ^[[1;7Q  | -             | -              | -             | -     | ____  ____    |
-;;| C-M-f5 | -          | -            | ^[[15;7~ | -             | -              | -             |       | ____  _____   |
+;; |        | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm | term/xterm.el |
+;; |        | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |       | SS3   CSI     |
+;; |--------+------------+--------------+----------+---------------+----------------+---------------+-------+---------------|
+;; | C-M-f1 | -          | -            | ^[[1;7P  | -             | -              | -             |       | ____  ____    |
+;; | C-M-f2 | -          | -            | ^[[1;7Q  | -             | -              | -             | -     | ____  ____    |
+;; | C-M-f5 | -          | -            | ^[[15;7~ | -             | -              | -             |       | ____  _____   |
 
 
 ;; * Cursor keys
@@ -244,40 +244,58 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 ;;http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-appcursor
 ;;http://code.google.com/p/mintty/wiki/Keycodes#Cursor_keys
 
-;; ** Shift+Cursor
+;; |           | putty(win) | putty(linux) | mintty  | xfce-terminal | gnome-terminal | mate-terminal | xterm   | term/xterm.el |
+;; |           | 0.62       |              | 1.1     | 0.48          | 2.16           | 1.4           | 271     | SS3   CSI     |
+;; |-----------+------------+--------------+---------+---------------+----------------+---------------+---------+---------------|
+;; | up        | ^[[A       | ^[[A         | ^[[A    | ^[[A          | ^[[A           | ^[[A          | ^[[A    | ^[OA  ^[[A    |
+;; | down      | ^[[B       | ^[[B         | ^[[B    | ^[[B          | ^[[B           | ^[[B          | ^[[B    | ^[OB  ^[[B    |
+;; | right     | ^[[C       | ^[[C         | ^[[C    | ^[[C          | ^[[C           | ^[[C          | ^[[C    | ^[OC  ^[[C    |
+;; | left      | ^[[D       | ^[[D         | ^[[D    | ^[[D          | ^[[D           | ^[[D          | ^[[D    | ^[OD  ^[[D    |
+;; |-----------+------------+--------------+---------+---------------+----------------+---------------+---------+---------------|
+;; | S-up      | -          | -            | (term)  | (term)        | ^[[2A  ?       | ^[[1;2A       | ^[[1;2A | ^[O2A ^[[1;2A |
+;; | S-down    | -          | -            | (term)  | (term)        | ^[[2B  ?       | ^[[1;2B       | ^[[1;2B | ^[O2B ^[[1;2B |
+;; | S-right   | -          | -            | ^[[1;2C | ^[[1;2C       | ^[[2C  ?       | ^[[1;2C       | ^[[1;2C | ^[O2C ^[[1;2C |
+;; | S-left    | -          | -            | ^[[1;2D | ^[[1;2D       | ^[[2D  ?       | ^[[1;2D       | ^[[1;2D | ^[O2D ^[[1;2D |
+;; |-----------+------------+--------------+---------+---------------+----------------+---------------+---------+---------------|
+;; | M-up      | ^[\e[A     | ^[\e[A       | ^[[1;3A | ^[[1;3A       | ^[[3A  ?       | ^[[1;3A       | ^[[1;3A | ____  ^[[1;3A |
+;; | M-down    | ^[\e[B     | ^[\e[B       | ^[[1;3B | ^[[1;3B       | ^[[3B  ?       | ^[[1;3B       | ^[[1;3B | ____  ^[[1;3B |
+;; | M-right   | ^[\e[C     | ^[\e[C       | ^[[1;3C | ^[[1;3C       | ^[[3C  ?       | ^[[1;3C       | ^[[1;3C | ____  ^[[1;3C |
+;; | M-left    | ^[\e[D     | ^[\e[D       | ^[[1;3D | ^[[1;3D       | ^[[3D  ?       | ^[[1;3D       | ^[[1;3D | ____  ^[[1;3D |
+;; |-----------+------------+--------------+---------+---------------+----------------+---------------+---------+---------------|
+;; | C-up      | -          | -            | ^[[1;5A | ^[[1;5A       | ^[[5A  ?       | ^[[1;5A       | ^[[1;5A | ^[O5A ^[[1;5A |
+;; | C-down    | -          | -            | ^[[1;5B | ^[[1;5B       | ^[[5B  ?       | ^[[1;5B       | ^[[1;5B | ^[O5B ^[[1;5B |
+;; | C-right   | /          | -            | ^[[1;5C | ^[[1;5C       | ^[[5C  ?       | ^[[1;5C       | ^[[1;5C | ^[O5C ^[[1;5C |
+;; | C-left    | /          | -            | ^[[1;5D | ^[[1;5D       | ^[[5D  ?       | ^[[1;5D       | ^[[1;5D | ^[O5D ^[[1;5D |
+;; |-----------+------------+--------------+---------+---------------+----------------+---------------+---------+---------------|
+;; | C-S-up    |            |              |         |               | ^[[6A  ?       | -             | ^[[1;6A | ____  ^[[1;6A |
+;; | C-S-down  |            |              |         |               | ^[[6B  ?       | -             | ^[[1;6B | ____  ^[[1;6B |
+;; | C-S-right |            |              |         |               | ^[[6C  ?       | ^[[1;6C       | ^[[1;6C | ____  ^[[1;6C |
+;; | C-S-left  |            |              |         |               | ^[[6D  ?       | ^[[1;6D       | ^[[1;6D | ____  ^[[1;6D |
 
 ;;NOTE: old gnome-terminal (at least 2.16) emits strange sequences for C/S/M-up/down/left/right/
 ;;      (e.g. Shift-left emits ^[[2D  but SS3 sequences is ^[O2D, CSI sequences is ^[[1;2D)
-+Up::SendInput    {Esc}[1;2A
-+Down::SendInput  {Esc}[1;2B
-+Left::SendInput  {Esc}[1;2D
-+Right::SendInput {Esc}[1;2C
 
-;;Other versions of xterm might emit these.
-;;+Up::SendInput    {Esc}O2A
-;;+Down::SendInput  {Esc}O2B
-;;+Left::SendInput  {Esc}O2D
-;;+Right::SendInput {Esc}O2C
-
-;; ** Alt+Cursor
-;;Alt+Up/Down/Left/Right/ work fine
-;;!Up::SendInput {ESC}[1;3A
-
-;; ** Alt+Shift+Cursor
-+!Up::SendInput {ESC}[1;4A
-+!Down::SendInput {ESC}[1;4B
-
-;; ** Ctrl+Cursor
-^Up::SendInput    {Esc}[1;5A
-^Down::SendInput  {Esc}[1;5B
-^Left::SendInput  {Esc}[1;5D
-^Right::SendInput {Esc}[1;5C
-
-;; ** Ctrl+Shif+Cursor
-^+Up::SendInput    {Esc}[1;6A
-^+Down::SendInput  {Esc}[1;6B
-^+Left::SendInput  {Esc}[1;6D
-^+Right::SendInput {Esc}[1;6C
+;;                          key                   default       xterm   putty           gnome   emacs
++Up::      putty_send_key("Shift+Up",           "{Esc}[1;2A",   "",     "",             "FIXME","")   
++Down::    putty_send_key("Shift+Down",         "{Esc}[1;2B",   "",     "",             "FIXME","")   
++Left::    putty_send_key("Shift+Left",         "{Esc}[1;2D",   "",     "",             "FIXME","")   
++Right::   putty_send_key("Shift+Right",        "{Esc}[1;2C",   "",     "",             "FIXME","")   
+; !Up::    putty_send_key("Alt+Up",   ",        "{ESC}[1;3A",   "",     "{ESC}{ESC}[A", "FIXME","")   
+; +Down::  putty_send_key("Alt+Down", ",        "{Esc}[1;3B",   "",     "{Esc}{ESC}[B", "FIXME","")   
+; +Left::  putty_send_key("Alt+Left", ",        "{Esc}[1;3D",   "",     "{Esc}{ESC}[D", "FIXME","")   
+; +Right:: putty_send_key("Alt+Right",",        "{Esc}[1;3C",   "",     "{Esc}{ESC}[C", "FIXME","")   
++!Up::     putty_send_key("Alt+Shift+Up",       "{ESC}[1;4A",   "",     "",             "FIXME","")   
++!Down::   putty_send_key("Alt+Shift+Down",     "{ESC}[1;4B",   "",     "",             "FIXME","")   
++!Left::   putty_send_key("Alt+Shift+Left",     "{Esc}[1;4D",   "",     "",             "FIXME","")   
++!Right::  putty_send_key("Alt+Shift+Right",    "{Esc}[1;4C",   "",     "",             "FIXME","")   
+^Up::      putty_send_key("Ctrl+Up",   ",       "{Esc}[1;5A",   "",     "",             "FIXME","")   
+^Down::    putty_send_key("Ctrl+Down", ",       "{Esc}[1;5B",   "",     "",             "FIXME","")   
+^Left::    putty_send_key("Ctrl+Left", ",       "{Esc}[1;5D",   "",     "",             "FIXME","")   
+^Right::   putty_send_key("Ctrl+Right",",       "{Esc}[1;5C",   "",     "",             "FIXME","")   
+^+Up::     putty_send_key("Ctrl+Shift+Up",      "{Esc}[1;6A",   "",     "",             "FIXME","")   
+^+Down::   putty_send_key("Ctrl+Shift+Down",    "{Esc}[1;6B",   "",     "",             "FIXME","")   
+^+Left::   putty_send_key("Ctrl+Shift+Left",    "{Esc}[1;6D",   "",     "",             "FIXME","")   
+^+Right::  putty_send_key("Ctrl+Shift+Right",   "{Esc}[1;6C",   "",     "",             "FIXME","")   
 
 ;; * Home/End
 ;;Xterm/Mintty:
@@ -286,6 +304,18 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 ;;
 ;;Emacs:
 ;;   GOTCHA: \e[[4~ (End) mapped to <select> in term/xterm.el. 
+
+;; |        | putty(win) | putty(linux) | mintty  | xfce-terminal | gnome-terminal | mate-terminal | xterm   | term/xterm.el |
+;; |        | 0.62       |              | 1.1     | 0.48          | 2.16           | 1.4           | 271     | SS3   CSI     |
+;; |--------+------------+--------------+---------+---------------+----------------+---------------+---------+---------------|
+;; | home   | ^[[1~      | ^[[1~        | ^[[H    | ^[OH          | ^[OH           | ^[OH          | ^[[H    | ^[OH  ^[[1~   |
+;; | end    | ^[[4~      | ^[[4~        | ^[[F    | ^[OF          | ^[OF           | ^[OF          | ^[[F    | ^[OF  ^[[4~   |
+;; | S-home | -          | -            | (term)  | (term)        | (term)         | (term)        | ^[[1;2H | ^[O2H ^[[1;2H |
+;; | S-end  | ^[[4~      | -            | (term)  | (term)        | (term)         | (term)        | ^[[1;2F | ^[O2F ^[[1;2F |
+;; | M-home | ^[^[[1~    | ^[^[[1~      | ^[[1;3H | -             | -              | -             | ^[[1;3H | ____  ^[[1;3H |
+;; | M-end  | ^[^[[4~    | ^[^[[4~      | ^[[1;3F | -             | -              | -             | ^[[1;3F | ____  ^[[1;3F |
+;; | C-home | /          | /            | ^[[1;5H | -             | -              | -             | ^[[1;5H | ^[O5H ^[[1;5H |
+;; | C-end  | /          | /            | ^[[1;5F | -             | -              | -             | ^[[1;5F | ^[O5F ^[[1;5F |
 
 ;;                          key                   default       xterm       putty       gnome emacs
 Home::       putty_send_key("Home",               "{ESC}OH",    "{Esc}[H",  "{ESC}[1~", "",     "") ;;xterm.el doesn't support^[[H(xterm)
@@ -330,6 +360,18 @@ End::        putty_send_key("End",                "{ESC}OF",    "{Esc}[F",  "{ES
 ;;NOTE: by default, Ctrl+Shift is used for switching betweenn  different input methods
 ;; to press C-!, C-# etc, maybe you need to disable this (or use other key combos)
 
+;; |    | `   | ~ | !    | @ | #    | $    | %    | ^ | &    | *    | (    | )    | -    | _    | =      | +    |
+;; | C- | ?   | ? | 6;33 | y | 6;35 | 6;36 | 6;37 | y | 6;38 | 6;42 | 6;40 | 6;41 | 5;45 | y    | 5;61   | 6;43 |
+;; |----+-----+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
+;; |    | Tab |   |      |   |      |      |      |   |      |      | [    | {    | ]    | }    | (bar)  | \    |
+;; | C- | ?   |   |      |   |      |      |      |   |      |      | y    | ?    | y    | ?    | ?      | y    |
+;; |----+-----+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
+;; |    |     |   |      |   |      |      |      |   |      |      | ;    | :    | '    | "    | return |      |
+;; | C- |     |   |      |   |      |      |      |   |      |      | 5;59 | 6;58 | 5;39 | 6;34 |        |      |
+;; |----+-----+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
+;; |    |     |   |      |   |      |      |      |   |      |      | ,    | <    | .    | >    | /      | ?    |
+;; | C- |     |   |      |   |      |      |      |   |      |      | 5;44 | 6;60 | 5;46 | 6;62 | 5;47   | 6;63 |
+
 ;;                     key              default         xterm           putty           gnome   emacs
 ^'::    putty_send_key("Ctrl+'",        "{Esc}[27;5;39~",       "", "FIXME", "FIXME", "")
 ^,::    putty_send_key("Ctrl+,",        "{Esc}[27;5;44~",       "", "FIXME", "FIXME", "")
@@ -365,21 +407,21 @@ End::        putty_send_key("End",                "{ESC}OF",    "{Esc}[F",  "{ES
 ;;most terminals emit ^[[Z for Shift-Tab
 +Tab::
   if not GetKeyState("Numlock", "T")
-     SendInput {Esc}[Z
+    putty_send_key("Shift+Tab", "{Esc}[Z")
   else
-    SendInput {Esc}[27;2;9~
+    putty_send_key("Shift+Tab",  "{Esc}[27;2;9~")
   return
-;;!Tab::SendInput {Esc}{Tab}
-^Tab::SendInput {Esc}[27;5;9~
+;;!Tab::putty_send_key(" {Esc}{Tab}
+^Tab::putty_send_key("Ctrl+Tab", "{Esc}[27;5;9~")
 
-+Enter::SendInput {Esc}[27;2;13~
-^Enter::SendInput {Esc}[27;5;13~
-;;!Enter::SendInput {Esc}{Enter}
++Enter::putty_send_key("Shift+Enter", "{Esc}[27;2;13~")
+^Enter::putty_send_key("Ctrl+Enter",  "{Esc}[27;5;13~")
+;;!Enter::putty_send_key("Alt+Enter", "{Esc}{Enter}")
 
 ;;NOTE:  Backspace => DEL  != Delete (=> <delete>)
 ;; Alt+Bksp  = M-DEL
 ;; map C-backspace to M-backspace
-; ^BackSpace::SendInput {Esc}{BackSpace}
+; ^BackSpace::putty_send_key(" {Esc}{BackSpace}
 
 
 ;; * keypad
