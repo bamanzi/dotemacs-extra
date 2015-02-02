@@ -1,37 +1,36 @@
 ;; * Let putty support more key-chords (such as Shift+F1, C-home)
 ;;by sending corresponding XTerm control sequences
 
-;;all of these sequences are translated from term/xterm.el .
-;;http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/term/xterm.el?h=emacs-23
-;;if emacs can't create keymap correctly from you TERM
-;;you can force to load it
-;; (if (and (not (display-graphics-p))
-;;          (load-library "term/xterm"))
-;;   (terminal-init-xterm))
+;; (note: PuTTY's function key & keypad mode settings is not respected)
 
-;;   (note: PuTTY's function key & keypad mode settings is not respected)
-
+;; how to make emacs recognize these sequences:
+;; add the following code to your .emacs
+;;
+;;   (if (and (not (display-graphics-p))
+;;            (load-library "term/xterm"))
+;;     (terminal-init-xterm))
 
 ;; ** References:
 ;;http://code.google.com/p/mintty/wiki/Keycodes
 ;;http://www.xfree86.org/current/ctlseqs.html#PC-Style%20Function%20Keys
 ;;http://en.wikipedia.org/wiki/ANSI_escape_code
 
+;; nearly all of these sequences are translated from term/xterm.el .
+;; http://git.savannah.gnu.org/cgit/emacs.git/tree/lisp/term/xterm.el?h=emacs-23
+
 ;;`input-decode-map' in GNU Emacs (or: M-[ C-h, M-O C-h)
 ;;http://www.dur.ac.uk/p.j.heslin/Software/Emacs/Download/xterm-extras.el
 ;;http://emacswiki.org/emacs/PuTTY#toc9 Using Emacs over PuTTY: how to use all function keys
-;;http://emacswiki.org/emacs/PuTTY#toc10 ;Windows PuTTY client: xterm broken
+;;http://emacswiki.org/emacs/PuTTY#toc10 Windows PuTTY client: xterm broken
 
 ;;http://offbytwo.com/2012/01/15/emacs-plus-paredit-under-terminal.html
 ;;http://blog.akinori.org/2013/01/18/pasting-a-text-literally-to-emacs-under-terminal/
 ;;http://www.joshstaiger.org/archives/2005/04/fixing_the_righ.html
 
-
-
 ;;AutoHotkey:  Ctrl ^ Alt ! Shift +
 ;;XTerm control sequences: Shift 1, Alt 2;;Ctrl  4
 
-;; *
+;; * send key
 
 putty_emulate_mode=xterm
 
@@ -98,55 +97,63 @@ F11::   putty_send_key("F11",   "{ESC}[23~",    "",         "",                 
 F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 "",         "")
 ;;For F5..F12, most terminals sends ESC [15~ .. ESC[24~ (CSI sequences)
 
-;; ** Shift+Fx
+;; ** Shift/Alt/Ctrl+Fx
 
-;;for ctrl/shift/alt+f1/f2/f3/f4, xterm-r6, mintty emit CSI sequences
+;;Xterm/Mintty:
+;;  - for ctrl/shift/alt+f1/f2/f3/f4, xterm-r6 & mintty emit CSI sequences
+;;  - for alt+f1/f2/f3/f4, xterm emits SSO sequences
+;;
+;;Emacs:
+;;  - term/xterm.el maps both CSI and SS3 sequences for S-f1..S-f4
+;;    (but only SS3 for C-f1..C-f4, S-f1..S-f4)
+;;  - term/xterm.el has SS3 sequences only for M-f1..M-f4, and
+;;    CSI sequences only for M-f5..M-f12
+;;  - GOTCHA: \e[[29~ (S-f6) mapped to <print> in term/xterm.el. 
+;;
+;;gnome-terminal & xfce4-terminal:
+;;  newer gnome-terminal (at least >=2.16) emit wrong sequences for C/S/M-f1..f4
+;;  https://bugs.launchpad.net/ubuntu/+source/gnome-terminal/+bug/96676
+;;  (but gnome-terminal <= 2.16 proves to be correct)
+;;
+;;Putty:
+;;  - it doesn't support Control modifier with F1..F12 (such as C-F1, C-M-F1, C-S-F1)
+;;  - it emits the same sequences with F11 & S-F1 (and S-F11)
+;;  - it emits the same sequences with F12 & S-F2 (and S-F12)
+;;
+;;|       | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm    | term/xterm.el  |
+;;|       | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |          | SS3   CSI      |
+;;|-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
+;;| S-f1  | ^[[23~     | ^[[23~       | ^[[1;2P  | ^[O1;2P  x    | ^[O2P          | ^[O1;2P x     | ^[[1;2P  | ^[O2P ^[[1;2P  |
+;;| S-f2  | ^[[24~     | ^[[24~       | ^[[1;2Q  | ^[O1;2Q  x    | ^[O2Q          | ^[O1;2Q x     | ^[[1;2Q  | ^[O2Q ^[[1;2Q  |
+;;| S-f5  | ^[[28~     | ^[[28~       | ^[[15;2~ | ^[[15;2~      | ^[[15;2~       | ^[[15;2~      | ^[[15;2~ | ____  ^[[15;2~ |
+;;| S-f6  | ^[[29~     | ^[[29~       | ^[[17;2~ | ^[[17;2~      | ^[[17;2~       | ^[[17;2~      | ^[[17;2~ | ____  ^[[17;2~ |
+;;| S-f11 | ^[[23~ ?   |              | ^[[23;2~ | ^[[23;2~      | ^[[23;2~       | ^[[23;2~      | ^[[23;2~ | ____  ^[[23;2~ |
+;;| S-f12 | ^[[24~ ?   |              | ^[[24;2~ | ^[[24;2~      | ^[[24;2~       | ^[[24;2~      | ^[[24;2~ | ____  ^[[24;2~ |
+;;|-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
+;;| M-f1  | ^[^[[11~   | ^[^[[11~     | ^[[1;3P  | ^[O1;3P  x    | ^[O3P          | ^[O1;3P x     | ^[[1;3P  | ^[O3P ____     |
+;;| M-f2  | ^[^[[12~   | ^[^[[12~     | ^[[1;2Q  | ^[O1;3Q  x    | ^[O2Q          | ^[O1;3Q x     | ^[[1;3Q  | ^[O3Q ____     |
+;;| M-f5  | ^[^[[15~   | ^[^[[15~     | ^[[15;3~ | ^[[15;3~      | ^[[15;3~       | ^[[15;3~      | ^[[15;3~ | ____  ^[[15;3~ |
+;;|-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
+;;| C-f1  | -          | -            | ^[[1;5P  | /             | /              | /             | ^[[1;5P  | ^[O5P ____     |
+;;| C-f2  | -          | -            | ^[[1;5Q  | ^[O1;5Q  x    | ^[O5Q          | ^[O1;5Q x     | ^[[1;5Q  | ^[O5Q ____     |
+;;| C-f5  | -          | -            | ^[[15;5~ | ^[[15;5~      | ^[[15;5~       | ^[[15;5~      | ^[[15;5~ | ____  ^[[15;5~ |
 
-;;NOTE: term/xterm.el maps both CSI and SS3 sequences for S-f1..S-f4
-;;(but only SS3 for C-f1..C-f4, S-f1..S-f4)
-
-;;NOTE: xfce4-terminal & newer gnome-terminal emit wrong sequences for C/S/M-f1..f4
-;;       https://bugs.launchpad.net/ubuntu/+source/gnome-terminal/+bug/96676
-;;      (gnome-terminal 2.16 proves to be correct (emiting SS3 sequences)
-
-;; |       | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm    | term/xterm.el  |
-;; |       | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |          | SS3   CSI      |
-;; |-------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
-;; | S-f1  | ^[[23~     | ^[[23~       | ^[[1;2P  | ^[O1;2P  x    | ^[O2P          | ^[O1;2P x     | ^[[1;2P  | ^[O2P ^[[1;2P  |
-;; | S-f2  | ^[[24~     | ^[[24~       | ^[[1;2Q  | ^[O1;2Q  x    | ^[O2Q          | ^[O1;2Q x     | ^[[1;2Q  | ^[O2Q ^[[1;2Q  |
-;; | S-f5  | ^[[28~     | ^[[28~       | ^[[15;2~ | ^[[15;2~      | ^[[15;2~       | ^[[15;2~      | ^[[15;2~ | ____  ^[[15;2~ |
-;; | S-f6  | ^[[29~     | ^[[29~       | ^[[17;2~ | ^[[17;2~      | ^[[17;2~       | ^[[17;2~      | ^[[17;2~ | ____  ^[[17;2~ |
-;; | S-f11 | ^[[23~ ?   |              | ^[[23;2~ | ^[[23;2~      | ^[[23;2~       | ^[[23;2~      | ^[[23;2~ | ____  ^[[23;2~ |
-;; | S-f12 | ^[[24~ ?   |              | ^[[24;2~ | ^[[24;2~      | ^[[24;2~       | ^[[24;2~      | ^[[24;2~ | ____  ^[[24;2~ |
-;; |       |            |              |          |               |                |               |          |                |
-
+;; *** Shift+Fx
 ;;                     key              default         xterm   putty           gnome           emacs
 +F1::   putty_send_key("Shift+F1",      "{ESC}[1;2P",   "",     "{ESC}[23~",    "{ESC}O2P",     "")
 +F2::   putty_send_key("Shift+F2",      "{ESC}[1;2Q",   "",     "{ESC}[24~",    "{ESC}O2Q",     "")
-+F3::   putty_send_key("Shift+F3",      "{ESC}[1;2R",   "",     "{ESC}[13~",    "{ESC}O2R",     "")
-+F4::   putty_send_key("Shift+F4",      "{ESC}[1;2S",   "",     "{ESC}[14~",    "{ESC}O2S",     "")
-+F5::   putty_send_key("Shift+F5",      "{ESC}[15;2~",  "",     "{ESC}[23~",    "",             "")
-+F6::   putty_send_key("Shift+F6",      "{ESC}[17;2~",  "",     "{ESC}[24~",    "",             "")
-+F7::   putty_send_key("Shift+F7",      "{ESC}[18;2~",  "",     "{ESC}[27~",    "",             "")
-+F8::   putty_send_key("Shift+F8",      "{ESC}[19;2~",  "",     "{ESC}[28~",    "",             "")
-+F9::   putty_send_key("Shift+F9",      "{ESC}[20;2~",  "",     "{ESC}[29~",    "",             "")
-+F10::  putty_send_key("Shift+F10",     "{ESC}[21;2~",  "",     "{ESC}[30~",    "",             "")
++F3::   putty_send_key("Shift+F3",      "{ESC}[1;2R",   "",     "{ESC}[25~",    "{ESC}O2R",     "")
++F4::   putty_send_key("Shift+F4",      "{ESC}[1;2S",   "",     "{ESC}[26~",    "{ESC}O2S",     "")
++F5::   putty_send_key("Shift+F5",      "{ESC}[15;2~",  "",     "{ESC}[28~",    "",             "")
++F6::   putty_send_key("Shift+F6",      "{ESC}[17;2~",  "",     "{ESC}[29~",    "",             "")
++F7::   putty_send_key("Shift+F7",      "{ESC}[18;2~",  "",     "{ESC}[30~",    "",             "")
++F8::   putty_send_key("Shift+F8",      "{ESC}[19;2~",  "",     "{ESC}[31~",    "",             "")
++F9::   putty_send_key("Shift+F9",      "{ESC}[20;2~",  "",     "{ESC}[33~",    "",             "")
++F10::  putty_send_key("Shift+F10",     "{ESC}[21;2~",  "",     "{ESC}[34~",    "",             "")
 +F11::  putty_send_key("Shift+F11",     "{ESC}[23;2~",  "",     "FIXME",        "",             "")
 +F12::  putty_send_key("Shift+F12",     "{ESC}[24;2~",  "",     "FIXME",        "",             "")
 
-;; ** Alt+Fx
-
-;;NOTE: When numlock off, M-f1..f4 not compatible with xterm when numlock off,
-;;because xterm emits CSI sequences for M-f1..M-f12
-;;but term/xterm.el has only SS3 sequences for M-f1..M-f4, only CSI sequences for M-f5..M-f12
-
-;; |      | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm    | term/xterm.el  |
-;; |      | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |          | SS3   CSI      |
-;; |------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
-;; | M-f1 | ^[^[[11~   | ^[^[[11~     | ^[[1;3P  | ^[O1;3P  x    | ^[O3P          | ^[O1;3P x     | ^[[1;3P  | ^[O3P ____     |
-;; | M-f2 | ^[^[[12~   | ^[^[[12~     | ^[[1;2Q  | ^[O1;3Q  x    | ^[O2Q          | ^[O1;3Q x     | ^[[1;3Q  | ^[O3Q ____     |
-;; | M-f5 | ^[^[[15~   | ^[^[[15~     | ^[[15;3~ | ^[[15;3~      | ^[[15;3~       | ^[[15;3~      | ^[[15;3~ | ____  ^[[15;3~ |
-
+;; *** Alt+Fx
 ;;                     key              default         xterm   putty           gnome           emacs
 !F1::   putty_send_key("Alt+F1",        "{ESC}[1;3P",   "",     "{ESC}{ESC}[11~",    "{ESC}O3P",     "")
 !F2::   putty_send_key("Alt+F2",        "{ESC}[1;3Q",   "",     "{ESC}{ESC}[12~",    "{ESC}O3Q",     "")
@@ -160,6 +167,21 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 !F10::  putty_send_key("Alt+F10",       "{ESC}[21;3~",  "",     "{ESC}{ESC}[21~",    "",             "")
 !F11::  putty_send_key("Alt+F11",       "{ESC}[23;3~",  "",     "{ESC}{ESC}[23~",    "",             "")
 !F12::  putty_send_key("Alt+F12",       "{ESC}[24;3~",  "",     "{ESC}{ESC}[24~",    "",             "")
+
+;; *** Ctrl+Fx
+;;                     key              default         xterm   putty       gnome           emacs
+^F1::   putty_send_key("Ctrl+F1",      "{ESC}[1;5P",     "",     "FIXME",    "{ESC}O5P",     "")
+^F2::   putty_send_key("Ctrl+F2",      "{ESC}[1;5Q",     "",     "FIXME",    "{ESC}O5Q",     "")
+^F3::   putty_send_key("Ctrl+F3",      "{ESC}[1;5R",     "",     "FIXME",    "{ESC}O5R",     "")
+^F4::   putty_send_key("Ctrl+F4",      "{ESC}[1;5S",     "",     "FIXME",    "{ESC}O5S",     "")
+^F5::   putty_send_key("Ctrl+F5",      "{ESC}[15;5~",    "",     "FIXME",    "",             "")
+^F6::   putty_send_key("Ctrl+F6",      "{ESC}[17;5~",    "",     "FIXME",    "",             "")
+^F7::   putty_send_key("Ctrl+F7",      "{ESC}[18;5~",    "",     "FIXME",    "",             "")
+^F8::   putty_send_key("Ctrl+F8",      "{ESC}[19;5~",    "",     "FIXME",    "",             "")
+^F9::   putty_send_key("Ctrl+F9",      "{ESC}[20;5~",    "",     "FIXME",    "",             "")
+^F10::  putty_send_key("Ctrl+F10",     "{ESC}[21;5~",    "",     "FIXME",    "",             "")
+^F11::  putty_send_key("Ctrl+F11",     "{ESC}[23;5~",    "",     "FIXME",    "",             "")
+^F12::  putty_send_key("Ctrl+F12",     "{ESC}[24;5~",    "",     "FIXME",    "",             "")
 
 
 ;; ** Alt+Shift+F1
@@ -185,34 +207,6 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 +!F11:: putty_send_key("Alt+Shift+F11",     "{ESC}[23;4~",  "",     "FIXME",            "",             "")
 +!F12:: putty_send_key("Alt+Shift+F12",     "{ESC}[24;4~",  "",     "FIXME",            "",             "")
 
-;; ** Ctrl+Fx
-;;Xterm: emits CSI sequences for C-f1..C-f12
-;;Emacs: term/xterm.el has SS3 sequences only for C-f1..C-f4, 
-;;       and CSI sequences for only C-f5..C-f12
-
-;; |      | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm    | term/xterm.el  |
-;; |      | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |          | SS3   CSI      |
-;; |------+------------+--------------+----------+---------------+----------------+---------------+----------+----------------|
-;; | C-f1 | -          | -            | ^[[1;5P  | /             | /              | /             | ^[[1;5P  | ^[O5P ____     |
-;; | C-f2 | -          | -            | ^[[1;5Q  | ^[O1;5Q  x    | ^[O5Q          | ^[O1;5Q x     | ^[[1;5Q  | ^[O5Q ____     |
-;; | C-f5 | -          | -            | ^[[15;5~ | ^[[15;5~      | ^[[15;5~       | ^[[15;5~      | ^[[15;5~ | ____  ^[[15;5~ |
-
-;;                     key              default         xterm   putty       gnome           emacs
-^F1::   putty_send_key("Ctrl+F1",      "{ESC}[1;5P",     "",     "FIXME",    "{ESC}O5P",     "")
-^F2::   putty_send_key("Ctrl+F2",      "{ESC}[1;5Q",     "",     "FIXME",    "{ESC}O5Q",     "")
-^F3::   putty_send_key("Ctrl+F3",      "{ESC}[1;5R",     "",     "FIXME",    "{ESC}O5R",     "")
-^F4::   putty_send_key("Ctrl+F4",      "{ESC}[1;5S",     "",     "FIXME",    "{ESC}O5S",     "")
-^F5::   putty_send_key("Ctrl+F5",      "{ESC}[15;5~",    "",     "FIXME",    "",             "")
-^F6::   putty_send_key("Ctrl+F6",      "{ESC}[17;5~",    "",     "FIXME",    "",             "")
-^F7::   putty_send_key("Ctrl+F7",      "{ESC}[18;5~",    "",     "FIXME",    "",             "")
-^F8::   putty_send_key("Ctrl+F8",      "{ESC}[19;5~",    "",     "FIXME",    "",             "")
-^F9::   putty_send_key("Ctrl+F9",      "{ESC}[20;5~",    "",     "FIXME",    "",             "")
-^F10::  putty_send_key("Ctrl+F10",     "{ESC}[21;5~",    "",     "FIXME",    "",             "")
-^F11::  putty_send_key("Ctrl+F11",     "{ESC}[23;5~",    "",     "FIXME",    "",             "")
-^F12::  putty_send_key("Ctrl+F12",     "{ESC}[24;5~",    "",     "FIXME",    "",             "")
-
-
-
 ;; ** Ctrl+Shift+Fx
 
 ;; |        | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm    | term/xterm.el  |
@@ -221,7 +215,7 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 ;; | C-S-f1 | -          | -            | ^[[1;6P  | ^[O1;6P  x    | ^[O6P          | ^[O1;6P x     | ^[[1;6P  | ^[O6P ____     |
 ;; | C-S-f5 | -          | -            | ^[[15;6~ | ^[[15;6~      | ^[[15;6~       | ^[[15;6~      | ^[[15;6~ | ____  ^[[15;6~ |
 
-;;                     key              default         xterm   putty       gnome           emacs
+;;                      key              default         xterm   putty       gnome           emacs
 ^+F1::   putty_send_key("Ctrl+Shift+F1",      "{ESC}[1;6P",     "",     "FIXME",    "{ESC}O6P",     "")
 ^+F2::   putty_send_key("Ctrl+Shift+F2",      "{ESC}[1;6Q",     "",     "FIXME",    "{ESC}O6Q",     "")
 ^+F3::   putty_send_key("Ctrl+Shift+F3",      "{ESC}[1;6R",     "",     "FIXME",    "{ESC}O6R",     "")
@@ -235,8 +229,7 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 ^+F11::  putty_send_key("Ctrl+Shift+F11",     "{ESC}[23;6~",    "",     "FIXME",    "",             "")
 ^+F12::  putty_send_key("Ctrl+Shift+F12",     "{ESC}[24;6~",    "",     "FIXME",    "",             "")
 
-;;
-** Ctrl+Alt+Fx
+;;** Ctrl+Alt+Fx
 
 ;;|        | putty(win) | putty(linux) | mintty   | xfce-terminal | gnome-terminal | mate-terminal | xterm | term/xterm.el |
 ;;|        | 0.62       |              | 1.1      | 0.48          | 2.16           | 1.4           |       | SS3   CSI     |
@@ -251,26 +244,6 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",                 
 ;;http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-appcursor
 ;;http://code.google.com/p/mintty/wiki/Keycodes#Cursor_keys
 
-
-;;NOTE: when numlock off, not xterm compatible, most terminals emit ^[OH or ^[[1~
-;;      (xterm/mintty emit ^[[H, but term/xterm.el has no mapping for ^[[H)
-
-Home::
-  if GetKeyState("Numlock", "T")
-    ;; putty way
-    SendInput {Esc}[1~
-  else
-    ;; xterm 102/220 / gnome-terminal way
-    SendInput {Esc}OH
-  return
-End::
-  if GetKeyState("Numlock", "T")
-    SendInput {Esc}[4~
-  else
-    SendInput {Esc}OF
-  return
-
-
 ;; ** Shift+Cursor
 
 ;;NOTE: old gnome-terminal (at least 2.16) emits strange sequences for C/S/M-up/down/left/right/
@@ -280,16 +253,11 @@ End::
 +Left::SendInput  {Esc}[1;2D
 +Right::SendInput {Esc}[1;2C
 
-+Home::SendInput  {ESC}[1;2H
-+End::SendInput   {ESC}[1;2F
 ;;Other versions of xterm might emit these.
 ;;+Up::SendInput    {Esc}O2A
 ;;+Down::SendInput  {Esc}O2B
 ;;+Left::SendInput  {Esc}O2D
 ;;+Right::SendInput {Esc}O2C
-;;+Home::SendInput  {ESC}O2H
-;;+End::SendInput   {ESC}O2F
-
 
 ;; ** Alt+Cursor
 ;;Alt+Up/Down/Left/Right/ work fine
@@ -304,34 +272,54 @@ End::
 ^Down::SendInput  {Esc}[1;5B
 ^Left::SendInput  {Esc}[1;5D
 ^Right::SendInput {Esc}[1;5C
-^Home::SendInput  {ESC}[1;5H
-^End::SendInput   {ESC}[1;5F
-
 
 ;; ** Ctrl+Shif+Cursor
 ^+Up::SendInput    {Esc}[1;6A
 ^+Down::SendInput  {Esc}[1;6B
 ^+Left::SendInput  {Esc}[1;6D
 ^+Right::SendInput {Esc}[1;6C
-^+Home::SendInput  {ESC}[1;6H
-^+End::SendInput   {ESC}[1;6F
 
+;; * Home/End
+;;Xterm/Mintty:
+;;   most terminals emit ^[OH or ^[[1~, but xterm/mintty emit ^[[H
+;;   (and term/xterm.el has no mapping for ^[[H)
+;;
+;;Emacs:
+;;   GOTCHA: \e[[4~ (End) mapped to <select> in term/xterm.el. 
+
+;;                          key                   default       xterm       putty       gnome emacs
+Home::       putty_send_key("Home",               "{ESC}OH",    "{Esc}[H",  "{ESC}[1~", "",     "") ;;xterm.el doesn't support^[[H(xterm)
+End::        putty_send_key("End",                "{ESC}OF",    "{Esc}[F",  "{ESC}[1~", "",     "") ;;xterm.el doesn't support^[[F(xterm)
+;;+Home::    putty_send_key("Shift+Home",         "{ESC}[1;2H", "",         "FIXME",    "FIXME","")
+;;+End::     putty_send_key("Shift+End"           "{ESC}[1;2F", "",         "FIXME",    "FIXME","")
+!Home::      putty_send_key("Alt+Home",           "{Esc}[1;3H", "",         "{ESC}{ESC}[H","",  "")
+!End::       putty_send_key("Alt+End",            "{Esc}[1;3F", "",         "{ESC}{ESC}[F","",  "")
++!Home::     putty_send_key("Alt+Shift+Home",     "{Esc}[1;4H", "",         "FIXME",    "",     "")
++!End::      putty_send_key("Alt+Shift+End",      "{Esc}[1;4F", "",         "FIXME",    "",     "")
+^Home::      putty_send_key("Ctrl+Home",          "{Esc}[1;5H", "",         "FIXME",    "",     "")
+^End::       putty_send_key("Ctrl+End",           "{Esc}[1;5F", "",         "FIXME",    "",     "")
+^+Home::     putty_send_key("Ctrl+Shift+Home",    "{Esc}[1;6H", "",         "FIXME",    "",     "")
+^+End::      putty_send_key("Ctrl+Shift+End",     "{Esc}[1;6F", "",         "FIXME",    "",     "")
+^!Home::     putty_send_key("Ctrl+Alt+Home",      "{Esc}[1;7H", "",         "FIXME",    "",     "")
+^!End::      putty_send_key("Ctrl+Alt+End",       "{Esc}[1;7F", "",         "FIXME",    "",     "")
+; ^!+Home::  putty_send_key("Ctrl+Alt+Shift+Home","{Esc}[1;8H", "",         "FIXME",    "",     "")
+; ^!+End::   putty_send_key("Ctrl+Alt+Shift+End", "{Esc}[1;8F", "",         "FIXME",    "",     "")
 
 ;; * Ins/Del
-;;* Shift+...
-;;^+nsert::SendInput {Esc}[2;5~    (Windows: paste from clipboard)
-+Delete::SendInput {Esc}[3;2~
-;;+PGUP::SendInput {Esc}[5;2~
-;;+PGDN::SendInput {Esc}[6;2~
 
-;;** Ctrl+...
-;;^Insert::SendInput {Esc}[2;5~    (Windows: copy selection)
-^Delete::SendInput {Esc}[3;5~
-^PGUP::SendInput {Esc}[5;5~
-^PGDN::SendInput {Esc}[6;5~
-
-;;** Alt+
-;;Alft+Ins/Del/Home/End/PgUp/PgDwn work fine
+;;                         key          default         xterm   putty           gnome   emacs
+; +Insert:: putty_send_key("Shift+Ins", "{Esc}[2;2~",   "",     "",             "",     "") ;;(system: paste from clipboard)
++Delete::   putty_send_key("Shift+Del", "{ESC}[3;2~",   "",     "FIXME",        "",     "")
+; +PGUP::   putty_send_key("Shift+PgUp","{Esc}[5;2~",   "",     "",             "",     "") ;; (putty native)
+; +PGDN::   putty_send_key("Shift+PgDn","{Esc}[6;2~",   "",     "",             "",     "") ;; (putty native)
+!Insert::   putty_send_key("Alt+Ins",   "{ESC}[2;3~",   "",     "{ESC}{ESC}[2~","",     "") 
+!Delete::   putty_send_key("Alt+Del",   "{ESC}[3;3~",   "",     "{ESC}{ESC}[3~","",     "")
+!PGUP::     putty_send_key("Alt+PgUp",  "{ESC}[5;3~",   "",     "{ESC}{ESC}[5~","",     "") 
+!PGDN::     putty_send_key("Alt+PgDn",  "{ESC}[6;3~",   "",     "{ESC}{ESC}[6~","",     "") 
+;;^Insert:: putty_send_key("Ctrl+Ins",  "{ESC}[2;5~",   "",     "FIXME",        "",     "") ;; (system: copy selection) 
+^Delete::   putty_send_key("Ctrl+Del",  "{ESC}[3;5~",   "",     "FIXME",        "",     "")
+^PGUP::     putty_send_key("Ctrl+PgUp", "{ESC}[5;5~",   "",     "FIXME",        "",     "") 
+^PGDN::     putty_send_key("Ctrl+PgDn", "{ESC}[6;5~",   "",     "FIXME",        "",     "") 
 
 
 ;; * some punctions
@@ -350,18 +338,18 @@ End::
 ^/::    putty_send_key("Ctrl+/",        "{Esc}[27;5;47~",       "", "FIXME", "FIXME", "")
 ^`;::   putty_send_key("Ctrl+;",        "{Esc}[27;5;59~",       "", "FIXME", "FIXME", "")
 ^=::    putty_send_key("Ctrl+=",        "{Esc}[27;5;61~",       "", "FIXME", "FIXME", "")
-;;C-\:: putty_send_key("Ctrl+\",        "{Esc}[27;5;92~",       "", "FIXME", "FIXME", "")
+; C-\:: putty_send_key("Ctrl+\",        "{Esc}[27;5;92~",       "", "FIXME", "FIXME", "") ;;recognizable on most term
 ^!::    putty_send_key("Ctrl+!",        "{Esc}[27;6;33~",       "", "FIXME", "FIXME", "")
-;;^"::   putty_send_key("Ctrl+"",   "{Esc}[27;6;34~",       "", "FIXME", "FIXME", "") ;;FIXME: this would affect ^ key
+; ^"::   putty_send_key("Ctrl+"",       "{Esc}[27;6;34~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
 ^#::    putty_send_key("Ctrl+#",        "{Esc}[27;6;35~",       "", "FIXME", "FIXME", "")
 ^$::    putty_send_key("Ctrl+$",        "{Esc}[27;6;36~",       "", "FIXME", "FIXME", "")
 ^%::    putty_send_key("Ctrl+%",        "{Esc}[27;6;37~",       "", "FIXME", "FIXME", "")
 ^&::    putty_send_key("Ctrl+&",        "{Esc}[27;6;38~",       "", "FIXME", "FIXME", "")
-;;^(::  putty_send_key("Ctrl+(",        "{Esc}[27;6;40~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
-;;^)::  putty_send_key("Ctrl+)",        "{Esc}[27;6;41~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
+; ^(::  putty_send_key("Ctrl+(",        "{Esc}[27;6;40~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
+; ^)::  putty_send_key("Ctrl+)",        "{Esc}[27;6;41~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
 ^*::    putty_send_key("Ctrl+*",        "{Esc}[27;6;42~",       "", "FIXME", "FIXME", "")
 ^+::    putty_send_key("Ctrl++",        "{Esc}[27;6;43~",       "", "FIXME", "FIXME", "")
-;;^:::  putty_send_key("Ctrl+:",        "{Esc}[27;6;58~",       "", "FIXME", "FIXME", "") ;;FIXME: AHK bug here: how to set C-: as hotkey?
+; ^:::  putty_send_key("Ctrl+:",        "{Esc}[27;6;58~",       "", "FIXME", "FIXME", "") ;;FIXME: AHK bug here: how to set C-: as hotkey?
 ^<::    putty_send_key("Ctrl+<",        "{Esc}[27;6;60~",       "", "FIXME", "FIXME", "")
 ^>::    putty_send_key("Ctrl+>",        "{Esc}[27;6;62~",       "", "FIXME", "FIXME", "")
 ^?::    putty_send_key("Ctrl+?",        "{Esc}[27;6;63~",       "", "FIXME", "FIXME", "")
@@ -391,7 +379,7 @@ End::
 ;;NOTE:  Backspace => DEL  != Delete (=> <delete>)
 ;; Alt+Bksp  = M-DEL
 ;; map C-backspace to M-backspace
-^BackSpace::SendInput {Esc}{BackSpace}
+; ^BackSpace::SendInput {Esc}{BackSpace}
 
 
 ;; * keypad
