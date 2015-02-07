@@ -36,14 +36,18 @@ putty_emulate_mode=xterm
 
 putty_do_send_seq(key_name, term_seq, default_seq)
 {
-    if (term_seq = "FIXME")
-    {
+    global putty_emulate_mode
+
+    if (term_seq = "FIXME")  {
         OutputDebug,%key_name% => %default_seq%  ('%putty_emulate_mode%' doesn't support this key. default sequence used.)
         SendInput,%default_seq%
-    } else if (term_seq = "")
+    } else if (term_seq = "") {
+        OutputDebug,%key_name% => %default_seq%  (mode=%putty_emulate_mode%)
         SendInput,%default_seq%
-    else
+    } else {
+        OutputDebug,%key_name% => %term_seq%  (mode=%putty_emulate_mode%)
         SendInput,%term_seq%
+    }
 }
 
 putty_send_key(key_name, default_seq, xterm_seq:="", putty_seq:="", gnome_seq:="", emacs_seq:="")
@@ -60,8 +64,66 @@ putty_send_key(key_name, default_seq, xterm_seq:="", putty_seq:="", gnome_seq:="
         putty_do_send_seq(key_name, xterm_seq, default_seq)
 }
 
-;;putty/mintty/putty-nd/mobaxterm
-#if WinActive("ahk_class PuTTY") or WinActive("ahk_class mintty") or WinActive("ahk_class SysTabControl32") or WinActive("ahk_class TMobaXtermForm")
+;; * tray menu
+menuitem_xterm_text  = xterm mode (Xterm R6)
+menuitem_emacs_text  = emacs mode (Emacs term/xterm.el)
+menuitem_gnome_text  = gnome mode (GNOME Terminal)
+menuitem_putty_text  = putty mode (PuTTY default)
+
+uncheck_all_mode_menu()
+{
+  global
+  Menu, tray, uncheck, %menuitem_xterm_text%
+  Menu, tray, uncheck, %menuitem_emacs_text%
+  Menu, tray, uncheck, %menuitem_gnome_text%
+  Menu, tray, uncheck, %menuitem_putty_text%
+}
+
+#Persistent  ; Keep the script running until the user exits it.
+
+Menu, tray, add  ; Creates a separator line.
+Menu, tray, add, %menuitem_xterm_text%,  MenuHandlerPreferXterm
+Menu, tray, add, %menuitem_emacs_text%,  MenuHandlerPreferEmacs
+Menu, tray, add, %menuitem_gnome_text%,  MenuHandlerPreferGnome
+Menu, tray, add, %menuitem_putty_text%,  MenuHandlerPreferPutty
+
+Menu, tray, check, %menuitem_xterm_text%
+
+;;Menu, tray, delete,Exit
+Menu, tray, add, Exit, MenuHandlerExitApp
+return
+
+MenuHandlerPreferXterm:
+  putty_emulate_mode=xterm
+  uncheck_all_mode_menu()
+  Menu, tray, check, %menuitem_xterm_text%
+  return
+
+MenuHandlerPreferEmacs:
+  putty_emulate_mode=emacs
+  uncheck_all_mode_menu()
+  Menu, tray, check, %menuitem_emacs_text%
+  return
+
+MenuHandlerPreferGnome:
+  putty_emulate_mode=gnome
+  uncheck_all_mode_menu()
+  Menu, tray, check, %menuitem_gnome_text%
+  return
+
+MenuHandlerPreferPutty:
+  putty_emulate_mode=putty
+  uncheck_all_mode_menu()
+  Menu, tray, check, %menuitem_putty_text%
+  return
+
+MenuHandlerExitApp:
+  ExitApp 
+  return
+
+;;putty/kitty/mintty/mobaxterm/putty-nd1/putty-nd3
+#if WinActive("ahk_class PuTTY") or WinActive("ahk_class KiTTY") or WinActive("ahk_class mintty") or WinActive("ahk_class TMobaXtermForm") or WinActive("ahk_class SysTabControl32") or WinActive("ahk_class Wan_WidgetWin_0")
+;; MTPuTTY WinActive("ahk_class TTYPLUSMAIN")
 
 ;; * F1 .. F12
 ;;PuTTY:
@@ -146,8 +208,8 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",             "", 
 +F4::   putty_send_key("Shift+F4",      "{ESC}[1;2S",   "",     "{ESC}[26~",    "{ESC}O2S",     "")
 +F5::   putty_send_key("Shift+F5",      "{ESC}[15;2~",  "",     "{ESC}[28~",    "",             "")
 +F6::   putty_send_key("Shift+F6",      "{ESC}[17;2~",  "",     "{ESC}[29~",    "",             "")
-+F7::   putty_send_key("Shift+F7",      "{ESC}[18;2~",  "",     "{ESC}[30~",    "",             "")
-+F8::   putty_send_key("Shift+F8",      "{ESC}[19;2~",  "",     "{ESC}[31~",    "",             "")
++F7::   putty_send_key("Shift+F7",      "{ESC}[18;2~",  "",     "{ESC}[31~",    "",             "")
++F8::   putty_send_key("Shift+F8",      "{ESC}[19;2~",  "",     "{ESC}[32~",    "",             "")
 +F9::   putty_send_key("Shift+F9",      "{ESC}[20;2~",  "",     "{ESC}[33~",    "",             "")
 +F10::  putty_send_key("Shift+F10",     "{ESC}[21;2~",  "",     "{ESC}[34~",    "",             "")
 +F11::  putty_send_key("Shift+F11",     "{ESC}[23;2~",  "",     "FIXME",        "",             "")
@@ -196,14 +258,14 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",             "", 
 ;;                     key                  default         xterm   putty               gnome           emacs
 +!F1::  putty_send_key("Alt+Shift+F1",      "{ESC}[1;4P",   "",     "{ESC}{ESC}[23~",   "{ESC}O4P",     "")
 +!F2::  putty_send_key("Alt+Shift+F2",      "{ESC}[1;4Q",   "",     "{ESC}{ESC}[24~",   "{ESC}O4Q",     "")
-+!F3::  putty_send_key("Alt+Shift+F3",      "{ESC}[1;4R",   "",     "{ESC}{ESC}[13~",   "{ESC}O4R",     "")
-+!F4::  putty_send_key("Alt+Shift+F4",      "{ESC}[1;4S",   "",     "{ESC}{ESC}[14~",   "{ESC}O4S",     "")
-+!F5::  putty_send_key("Alt+Shift+F5",      "{ESC}[15;4~",  "",     "{ESC}{ESC}[23~",   "",             "")
-+!F6::  putty_send_key("Alt+Shift+F6",      "{ESC}[17;4~",  "",     "{ESC}{ESC}[24~",   "",             "")
-+!F7::  putty_send_key("Alt+Shift+F7",      "{ESC}[18;4~",  "",     "{ESC}{ESC}[27~",   "",             "")
-+!F8::  putty_send_key("Alt+Shift+F8",      "{ESC}[19;4~",  "",     "{ESC}{ESC}[28~",   "",             "")
-+!F9::  putty_send_key("Alt+Shift+F9",      "{ESC}[20;4~",  "",     "{ESC}{ESC}[29~",   "",             "")
-+!F10:: putty_send_key("Alt+Shift+F10",     "{ESC}[21;4~",  "",     "{ESC}{ESC}[30~",   "",             "")
++!F3::  putty_send_key("Alt+Shift+F3",      "{ESC}[1;4R",   "",     "{ESC}{ESC}[25~",   "{ESC}O4R",     "")
++!F4::  putty_send_key("Alt+Shift+F4",      "{ESC}[1;4S",   "",     "{ESC}{ESC}[26~",   "{ESC}O4S",     "")
++!F5::  putty_send_key("Alt+Shift+F5",      "{ESC}[15;4~",  "",     "{ESC}{ESC}[28~",   "",             "")
++!F6::  putty_send_key("Alt+Shift+F6",      "{ESC}[17;4~",  "",     "{ESC}{ESC}[29~",   "",             "")
++!F7::  putty_send_key("Alt+Shift+F7",      "{ESC}[18;4~",  "",     "{ESC}{ESC}[31~",   "",             "")
++!F8::  putty_send_key("Alt+Shift+F8",      "{ESC}[19;4~",  "",     "{ESC}{ESC}[32~",   "",             "")
++!F9::  putty_send_key("Alt+Shift+F9",      "{ESC}[20;4~",  "",     "{ESC}{ESC}[33~",   "",             "")
++!F10:: putty_send_key("Alt+Shift+F10",     "{ESC}[21;4~",  "",     "{ESC}{ESC}[34~",   "",             "")
 +!F11:: putty_send_key("Alt+Shift+F11",     "{ESC}[23;4~",  "",     "FIXME",            "",             "")
 +!F12:: putty_send_key("Alt+Shift+F12",     "{ESC}[24;4~",  "",     "FIXME",            "",             "")
 
@@ -241,6 +303,8 @@ F12::   putty_send_key("F12",   "{ESC}[24~",    "",         "",             "", 
 
 ;; * Cursor keys
 ;;Cursor keycodes without modifier keys depend on whether "application cursor key mode"
+;;  - In normal mode, the arrow keys send ESC [A .. ESC [D.
+;;  - In application mode, they send ESC OA .. ESC OD.
 ;;http://the.earth.li/~sgtatham/putty/0.62/htmldoc/Chapter4.html#config-appcursor
 ;;http://code.google.com/p/mintty/wiki/Keycodes#Cursor_keys
 
