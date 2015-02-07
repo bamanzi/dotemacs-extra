@@ -2,8 +2,11 @@
 (autoload 'yas/global-mode "yasnippet"
   "Toggle Yas minor mode in all buffers." t)
 
-(autoload 'anything-yasnippet-2  "anything-yasnippet-2"
-  "Find yasnippets." t)
+(autoload 'yas/minor-mode "yasnippet"
+  "Toggle YASnippet mode." t)
+
+(autoload 'anything-yasnippet-2 "anything-c-yasnippet-2"
+  "Yasnippet from `anything'." t)
 
 (global-set-key (kbd "<f5> s")  'anything-yasnippet-2)
 
@@ -27,6 +30,14 @@
      (add-to-list 'exec-path "e:/tools/graphviz")
      ;;(executable-find "dot.exe")
      ))
+
+;; ** tags
+
+;; *** find-file-in-tags
+(autoload 'find-file-in-tags "find-file-in-tags"
+  "find file in TAGS file." t)
+
+(global-set-key (kbd "<f9> . f") 'find-file-in-tags)
 
 
 ;;** super+click to jump to declaration/implementation
