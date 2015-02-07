@@ -64,6 +64,17 @@ putty_send_key(key_name, default_seq, xterm_seq:="", putty_seq:="", gnome_seq:="
         putty_do_send_seq(key_name, xterm_seq, default_seq)
 }
 
+putty_send_seq_by_numlock(key_name, numlock_on_seq, numlock_off_seq)
+{
+    if GetKeyState("Numlock", "T") {
+        OutputDebug,%key_name% => %numlock_on_seq%
+        SendInput,%numlock_on_seq%
+    } else {
+        OutputDebug,%key_name% => %numlock_off_seq%
+        SendInput,%numlock_off_seq%
+    }
+}
+
 ;; * tray menu
 menuitem_xterm_text  = xterm mode (Xterm R6)
 menuitem_emacs_text  = emacs mode (Emacs term/xterm.el)
@@ -424,17 +435,17 @@ End::        putty_send_key("End",                "{ESC}OF",    "{Esc}[F",  "{ES
 ;;NOTE: by default, Ctrl+Shift is used for switching betweenn  different input methods
 ;; to press C-!, C-# etc, maybe you need to disable this (or use other key combos)
 
-;; |    | `   | ~ | !    | @ | #    | $    | %    | ^ | &    | *    | (    | )    | -    | _    | =      | +    |
-;; | C- | ?   | ? | 6;33 | y | 6;35 | 6;36 | 6;37 | y | 6;38 | 6;42 | 6;40 | 6;41 | 5;45 | y    | 5;61   | 6;43 |
-;; |----+-----+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
-;; |    | Tab |   |      |   |      |      |      |   |      |      | [    | {    | ]    | }    | (bar)  | \    |
-;; | C- | ?   |   |      |   |      |      |      |   |      |      | y    | ?    | y    | ?    | ?      | y    |
-;; |----+-----+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
-;; |    |     |   |      |   |      |      |      |   |      |      | ;    | :    | '    | "    | return |      |
-;; | C- |     |   |      |   |      |      |      |   |      |      | 5;59 | 6;58 | 5;39 | 6;34 |        |      |
-;; |----+-----+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
-;; |    |     |   |      |   |      |      |      |   |      |      | ,    | <    | .    | >    | /      | ?    |
-;; | C- |     |   |      |   |      |      |      |   |      |      | 5;44 | 6;60 | 5;46 | 6;62 | 5;47   | 6;63 |
+;; |    | `    | ~ | !    | @ | #    | $    | %    | ^ | &    | *    | (    | )    | -    | _    | =      | +    |
+;; | C- | 5;59 | ? | 6;33 | y | 6;35 | 6;36 | 6;37 | y | 6;38 | 6;42 | 6;40 | 6;41 | 5;45 | y    | 5;61   | 6;43 |
+;; |----+------+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
+;; |    | Tab  |   |      |   |      |      |      |   |      |      | [    | {    | ]    | }    | (bar)  | \    |
+;; | C- | 5,9  |   |      |   |      |      |      |   |      |      | y    | ?    | y    | ?    | ?      | y    |
+;; |----+------+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
+;; |    |      |   |      |   |      |      |      |   |      |      | ;    | :    | '    | "    | return |      |
+;; | C- |      |   |      |   |      |      |      |   |      |      | 5;59 | 6;58 | 5;39 | 6;34 |        |      |
+;; |----+------+---+------+---+------+------+------+---+------+------+------+------+------+------+--------+------|
+;; |    |      |   |      |   |      |      |      |   |      |      | ,    | <    | .    | >    | /      | ?    |
+;; | C- |      |   |      |   |      |      |      |   |      |      | 5;44 | 6;60 | 5;46 | 6;62 | 5;47   | 6;63 |
 
 ;;                     key              default         xterm           putty           gnome   emacs
 ^'::    putty_send_key("Ctrl+'",        "{Esc}[27;5;39~",       "", "FIXME", "FIXME", "")
@@ -444,15 +455,15 @@ End::        putty_send_key("End",                "{ESC}OF",    "{Esc}[F",  "{ES
 ^/::    putty_send_key("Ctrl+/",        "{Esc}[27;5;47~",       "", "FIXME", "FIXME", "")
 ^`;::   putty_send_key("Ctrl+;",        "{Esc}[27;5;59~",       "", "FIXME", "FIXME", "")
 ^=::    putty_send_key("Ctrl+=",        "{Esc}[27;5;61~",       "", "FIXME", "FIXME", "")
-; C-\:: putty_send_key("Ctrl+\",        "{Esc}[27;5;92~",       "", "FIXME", "FIXME", "") ;;recognizable on most term
+; ^\::  putty_send_key("Ctrl+\",        "{Esc}[27;5;92~",       "", "FIXME", "FIXME", "") ;;recognizable on most term
 ^!::    putty_send_key("Ctrl+!",        "{Esc}[27;6;33~",       "", "FIXME", "FIXME", "")
 ; ^"::   putty_send_key("Ctrl+"",       "{Esc}[27;6;34~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
 ^#::    putty_send_key("Ctrl+#",        "{Esc}[27;6;35~",       "", "FIXME", "FIXME", "")
 ^$::    putty_send_key("Ctrl+$",        "{Esc}[27;6;36~",       "", "FIXME", "FIXME", "")
 ^%::    putty_send_key("Ctrl+%",        "{Esc}[27;6;37~",       "", "FIXME", "FIXME", "")
 ^&::    putty_send_key("Ctrl+&",        "{Esc}[27;6;38~",       "", "FIXME", "FIXME", "")
-; ^(::  putty_send_key("Ctrl+(",        "{Esc}[27;6;40~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
-; ^)::  putty_send_key("Ctrl+)",        "{Esc}[27;6;41~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey
+; ^(::  putty_send_key("Ctrl+(",        "{Esc}[27;6;40~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey on AHK < 1.1.09
+; ^)::  putty_send_key("Ctrl+)",        "{Esc}[27;6;41~",       "", "FIXME", "FIXME", "") ;;FIXME: Invalid hotkey on AHK < 1.1.09
 ^*::    putty_send_key("Ctrl+*",        "{Esc}[27;6;42~",       "", "FIXME", "FIXME", "")
 ^+::    putty_send_key("Ctrl++",        "{Esc}[27;6;43~",       "", "FIXME", "FIXME", "")
 ; ^:::  putty_send_key("Ctrl+:",        "{Esc}[27;6;58~",       "", "FIXME", "FIXME", "") ;;FIXME: AHK bug here: how to set C-: as hotkey?
@@ -469,24 +480,18 @@ End::        putty_send_key("End",                "{ESC}OF",    "{Esc}[F",  "{ES
 ;; | Bksp  | ^?    | ^?    | ^_      | U+009F     | 
 
 ;;most terminals emit ^[[Z for Shift-Tab
-+Tab::
-  if not GetKeyState("Numlock", "T")
-    putty_send_key("Shift+Tab", "{Esc}[Z")
-  else
-    putty_send_key("Shift+Tab",  "{Esc}[27;2;9~")
-  return
-;;!Tab::putty_send_key(" {Esc}{Tab}
-^Tab::putty_send_key("Ctrl+Tab", "{Esc}[27;5;9~")
++Tab::  putty_send_seq_by_numlock("Shift+Tab",  "{ESC}[Z",     "{Esc}[27;2;9~")
+;;!Tab::putty_send_seq_by_numlock("Alt+Tab",    "{Esc}{Tab}")
+^Tab::  putty_send_seq_by_numlock("Ctrl+Tab",   "{ESC}[1;5I",  "{Esc}[27;5;9~")
 
-+Enter::putty_send_key("Shift+Enter", "{Esc}[27;2;13~")
-^Enter::putty_send_key("Ctrl+Enter",  "{Esc}[27;5;13~")
++Enter::putty_send_seq_by_numlock("Shift+Enter", "^j",         "{Esc}[27;2;13~")
+^Enter::putty_send_seq_by_numlock("Ctrl+Enter",  "{Esc}[27;5;13~", "{Esc}[27;5;13~")
 ;;!Enter::putty_send_key("Alt+Enter", "{Esc}{Enter}")
 
 ;;NOTE:  Backspace => DEL  != Delete (=> <delete>)
 ;; Alt+Bksp  = M-DEL
 ;; map C-backspace to M-backspace
 ; ^BackSpace::putty_send_key(" {Esc}{BackSpace}
-
 
 ;; * keypad
 ;;PuTTY original behavior:
@@ -505,40 +510,14 @@ End::        putty_send_key("End",                "{ESC}OF",    "{Esc}[F",  "{ES
 ;; http://vim.wikia.com/wiki/PuTTY_numeric_keypad_mappings (wrong sequences for keypad +-*/ ?
 
 ~NumLock::return
-NumpadMult::
-  if GetKeyState("Numlock", "T")
-    putty_send_key("NumpadMult(*)", "*")
-  else
-    putty_send_key("NumpadMult(*)", "{Esc}Oj")
-  return
-NumpadAdd::
-  if GetKeyState("Numlock", "T")
-    putty_send_key("NumpadAdd(+)", "+")
-  else
-    putty_send_key("NumpadAdd(+)", "{Esc}Ok")
-  return
+NumpadMult::    putty_send_seq_by_numlock("NumpadMult(*)",      "*",    "{Esc}Oj")
+NumpadAdd::     putty_send_seq_by_numlock("NumpadAdd(+)",       "*",    "{Esc}Ok")
 ;;\e[0l         kp-separator ?
-NumpadSub::
-  if GetKeyState("Numlock", "T")
-    putty_send_key("NumpadSub(-)", "-")
-  else
-    putty_send_key("NumpadSub(-)", "{Esc}Om")
-  return
-NumpadDiv::
-  if GetKeyState("Numlock", "T")
-    putty_send_key("NumpadDiv(/)", "/")
-  else
-    putty_send_key("NumpadDiv(/)", "{Esc}Oo")
-  return
+NumpadSub::     putty_send_seq_by_numlock("NumpadSub(-)",       "-",    "{Esc}Om")
+NumpadDiv::     putty_send_seq_by_numlock("NumpadDiv(/)",       "/",    "{Esc}Oo")
+NumpadDel::     putty_send_seq_by_numlock("NumpadDel",          "{Del}",        "{Esc}On")
+NumpadEnter::   putty_send_seq_by_numlock("NumpadEnter",        "{Enter}",      "{Esc}OM")
 
-NumpadEnter::
-  if GetKeyState("Numlock", "T")
-    putty_send_key("NumpadEnter", "-")
-  else
-    putty_send_key("NumpadEnter", "{Esc}OM")
-  return
-
-NumpadDel::putty_send_key("NumpadDel", "{Esc}On")
 ;;to kp-0 .. kp-9
 NumpadIns::     putty_send_key("NumpadIns",   "{Esc}Op") 
 NumpadEnd::     putty_send_key("NumpadEnd",   "{Esc}Oq") 
@@ -578,8 +557,8 @@ Numpad9::       putty_send_key("Numpad9",     "9")
 ;;* =========== Misc ======================
 
 ;;super/hyper modifiers (only for Emacs)
-*RWin::SendInput ^x@s
-*AppsKey::SendInput ^x@h
+;;*RWin::SendInput ^x@s
+;;*AppsKey::SendInput ^x@h
 
 ;;tmux/gnu-screen
 <#Tab::SendInput ^bn
@@ -607,7 +586,7 @@ Numpad9::       putty_send_key("Numpad9",     "9")
 !y::SendInput {Esc}y
 !/::SendInput {Esc}/
 
-^h::SendInput {f1}
+;;^h::SendInput {f1}
 
 
 ;; -*- indent-tabs: nil; comment-start: ";;"; comment-end: ""; orgtbl-comment: t -*-
