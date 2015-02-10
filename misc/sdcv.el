@@ -242,6 +242,7 @@
     (define-key map "A" 'hide-body)
     (define-key map "v" 'show-entry)
     (define-key map "V" 'hide-entry)
+    (define-key map (kbd "TAB") 'outline-toggle-children)
     ;; Misc.
     (define-key map "e" 'scroll-down)
     (define-key map " " 'scroll-up)
@@ -357,7 +358,7 @@ The result will be displayed in buffer named with
     (setq buffer-read-only nil)
     (erase-buffer)
     (let* ((process
-            (start-process
+            (start-process-shell-command
              "sdcv" sdcv-buffer-name
              (format "sdcv -n %s %s"
                      (mapconcat (lambda (dict)
