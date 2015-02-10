@@ -1174,43 +1174,42 @@ to enter a database name."
 	    (user-only        dictem-use-user-databases-only)
 	    (use-existing-buf dictem-use-existing-buffer)
 ;	    (option-mime      dictem-option-mime)
-	    (dict-buf         nil)
+	    (dict-buf         (if use-existing-buf
+                              (dictem-ensure-buffer)
+                            (dictem-create-buffer))
 	    )
-	(if dictem-use-existing-buffer
-	    (dictem-ensure-buffer)
-	  (dictem))
-	(setq dict-buf (buffer-name))
-;	(set-buffer-file-coding-system coding-system)
-	(make-local-variable 'dictem-default-strategy)
-	(make-local-variable 'dictem-default-database)
-	(make-local-variable 'case-replace)
-	(make-local-variable 'case-fold-search)
+    (with-current-buffer dict-buf
+      (setq dict-buf (buffer-name))
+      ;; (set-buffer-file-coding-system coding-system)
+      (make-local-variable 'dictem-default-strategy)
+      (make-local-variable 'dictem-default-database)
+      (make-local-variable 'case-replace)
+      (make-local-variable 'case-fold-search)
 
-	; the following lines are to inherit values local to buffer
-	(set (make-local-variable 'dictem-server) server)
-	(set (make-local-variable 'dictem-port)   port)
-	(set (make-local-variable 'dictem-database-alist) dbs)
-	(set (make-local-variable 'dictem-strategy-alist) strats)
-	(set (make-local-variable 'dictem-user-databases-alist) user-dbs)
-	(set (make-local-variable 'dictem-use-user-databases-only) user-only)
-	(set (make-local-variable 'dictem-use-existing-buffer) use-existing-buf)
+      ;; the following lines are to inherit values local to buffer
+      (set (make-local-variable 'dictem-server) server)
+      (set (make-local-variable 'dictem-port)   port)
+      (set (make-local-variable 'dictem-database-alist) dbs)
+      (set (make-local-variable 'dictem-strategy-alist) strats)
+      (set (make-local-variable 'dictem-user-databases-alist) user-dbs)
+      (set (make-local-variable 'dictem-use-user-databases-only) user-only)
+      (set (make-local-variable 'dictem-use-existing-buffer) use-existing-buf)
 
-;	(set (make-local-variable 'dictem-option-mime) option-mime)
+      ;; (set (make-local-variable 'dictem-option-mime) option-mime)
 
-	(set (make-local-variable 'dictem-hyperlinks-alist) nil)
+      (set (make-local-variable 'dictem-hyperlinks-alist) nil)
 
-	;;;;;;;;;;;;;;
-	(setq case-replace nil)
-	(setq case-fold-search nil)
-	(setq dictem-error-messages nil)
-	(dictem-local-run-functions search-fun database query strategy)
-	(switch-to-buffer dict-buf)
-	(if (and (not (equal ex_status 0)) (= (point-min) (point-max)))
-	    (insert (dictem-generate-full-error-message ex_status)))
-	(goto-char (point-min))
-	(setq buffer-read-only t)
-	ex_status
-	))))
+      (setq case-replace nil)
+      (setq case-fold-search nil)
+      (setq dictem-error-messages nil)
+      (dictem-local-run-functions search-fun database query strategy)
+      (switch-to-buffer-other-window dict-buf)
+      (if (and (not (equal ex_status 0)) (= (point-min) (point-max)))
+          (insert (dictem-generate-full-error-message ex_status)))
+      (goto-char (point-min))
+      (setq buffer-read-only t)
+      ex_status
+	))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun dictem-next-section ()
@@ -1397,22 +1396,23 @@ and returns a list containing protocol, server, port and path on nil if fails"
        )
     nil))
 
-(defun dictem ()
+(defun dictem-create-buffer ()
   "Create a new dictem buffer and install dictem-mode"
   (interactive)
 
-  (let (
-	(buffer (generate-new-buffer dictem-buffer-name))
-	(window-configuration (current-window-configuration))
-	(selected-window (frame-selected-window)))
+  (let ((buffer (generate-new-buffer dictem-buffer-name))
+        (window-configuration (current-window-configuration))
+        (selected-window (frame-selected-window)))
     (switch-to-buffer-other-window buffer)
-    (dictem-mode)
+    (with-current-buffer buffer
+      (dictem-mode)
 
-    (make-local-variable 'dictem-window-configuration)
-    (make-local-variable 'dictem-selected-window)
-    (make-local-variable 'dictem-content-history)
-    (setq dictem-window-configuration window-configuration)
-    (setq dictem-selected-window selected-window)
+      (make-local-variable 'dictem-window-configuration)
+      (make-local-variable 'dictem-selected-window)
+      (make-local-variable 'dictem-content-history)
+      (setq dictem-window-configuration window-configuration)
+      (setq dictem-selected-window selected-window)
+      )
     ))
 
 ;(unless dictem-mode-map
@@ -1486,16 +1486,19 @@ and returns a list containing protocol, server, port and path on nil if fails"
 
 (defun dictem-ensure-buffer ()
   "If current buffer is not a dictem buffer, create a new one."
-  (if (dictem-mode-p)
-      (progn
-	(if dictem-use-content-history
-	    (setq dictem-content-history
-		  (cons (list (buffer-substring
-			       (point-min) (point-max))
-			      (point)) dictem-content-history)))
-	(setq buffer-read-only nil)
-	(erase-buffer))
-    (dictem)))
+  (with-current-buffer (get-buffer-create dictem-buffer-name)
+    (if (dictem-mode-p)
+        (progn
+          (if dictem-use-content-history
+              (setq dictem-content-history
+                    (cons (list (buffer-substring
+                                 (point-min) (point-max))
+                                (point)) dictem-content-history)))
+          (setq buffer-read-only nil)
+          (erase-buffer))
+      (dictem-mode))
+    ;; return current buffer
+    (current-buffer)))
 
 (defun dictem-quit ()
   "Bury the current dictem buffer."
