@@ -1,3 +1,22 @@
+;; ** language tools
+;; *** dict protocol
+(setq dictem-server "localhost")
+(autoload 'dictem-run-search  "dictem" nil t)
+(autoload 'dictem-run-match   "dictem" nil t)
+(autoload 'dictem-run-define  "dictem" nil t)
+
+(progn
+  (global-set-key (kbd "M-S d s") 'dictem-run-search)
+  (global-set-key (kbd "M-S d SPC") 'dictem-run-search)
+  (global-set-key (kbd "M-S d m") 'dictem-run-match)
+  (global-set-key (kbd "M-S d d") 'dictem-run-define)
+  (global-set-key (kbd "M-S D")   'dictem-run-define)
+  )
+
+(eval-after-load "dictem"
+  `(progn
+     (dictem-initialize)
+     ))
 
 
 ;; ** back-button: Visual navigation through mark rings
