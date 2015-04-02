@@ -197,6 +197,22 @@ FILENAME defaults to `buffer-file-name'."
 
 
 ;; ** misc
+(autoload 'guide-key-mode "guide-key"
+  "Toggle guide key mode." t)
+
+(idle-require 'guide-key)
+(eval-after-load "guide-key"
+  `(progn
+     (setq guide-key/guide-key-sequence '("C-x r"
+                                          "C-x 4"
+                                          "M-g"
+                                          "M-s"
+                                          "<f11>"
+                                          "<f10>"))
+     (guide-key-mode 1)  ; Enable guide-key-mode
+     ))
+
+;;--
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
 
@@ -206,7 +222,7 @@ FILENAME defaults to `buffer-file-name'."
      (volatile-highlights-mode t)
      ))
 
-
+;;--
 (idle-require 'buff-menu+)
 (eval-after-load "buff-menu+"
   `(progn
