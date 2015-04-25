@@ -196,6 +196,37 @@ FILENAME defaults to `buffer-file-name'."
 (global-set-key (kbd "<f10> ig") 'indent-guide-mode)
 
 
+;; ** minibuffer completion
+;; emacs>=24.4's `icomplete-mode' no longer shows keybindings for `M-x',
+;; package `icomplete+' reimplemented this feature
+(unless (string< emacs-version "24.4")
+  (idle-require 'icomplete+))
+
+;; but `icomplete+' disabled the keybinding (C-,/C-. etc) for cycling candidates,
+;; we need to use `icompletep-cycling-mode' to re-enable it.
+(eval-after-load "icomplete+"
+  `(progn
+     (icompletep-cycling-mode 1)))
+
+;;--
+;; enhance `ido'
+(idle-require 'ido-vertical-mode)
+(eval-after-load "ido-vertical-mode"
+  `(progn
+     (ido-vertical-mode t)))
+
+;;-- smex
+;; I don't `smex' is better than `icomplete-mode',
+;; but `smex-major-mode-commands' is useful
+(autoload 'smex-major-mode-commands "smex"
+  "Like `smex', but limited to commands that are relevant to the active major mode." t)
+
+(global-set-key (kbd "ESC M-x") 'smex-major-mode-commands)
+
+(setq smex-cache nil
+      smex-data nil)  ;;workaround for bug of `smex'
+
+
 ;; ** misc
 (autoload 'guide-key-mode "guide-key"
   "Toggle guide key mode." t)
@@ -236,7 +267,3 @@ FILENAME defaults to `buffer-file-name'."
 
 (idle-require 'mouse3)
 
-;; emacs>=24.4's `icomplete-mode' no longer shows keybindings for `M-x',
-;; package `icomplete+' reimplemented this feature
-(unless (string< emacs-version "24.4")
-  (idle-require 'icomplete+))
