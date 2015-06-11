@@ -1,0 +1,115 @@
+## 24.4
+
+```elisp
+ (describe-variable 'dynamic-library-alist)
+```
+
+```elisp
+ ((xpm "libxpm.dll" "xpm4.dll" "libXpm-nox4.dll")
+ (png "libpng16.dll" "libpng16-16.dll")
+ (tiff "libtiff-5.dll" "libtiff3.dll" "libtiff.dll")
+ (jpeg "libjpeg-9.dll")
+ (gif "libgif-7.dll")
+ (svg "librsvg-2-2.dll")
+ (gdk-pixbuf "libgdk_pixbuf-2.0-0.dll")
+ (glib "libglib-2.0-0.dll")
+ (gobject "libgobject-2.0-0.dll")
+ (gnutls "libgnutls-28.dll" "libgnutls-26.dll")
+ (libxml2 "libxml2-2.dll" "libxml2.dll")
+ (zlib "zlib1.dll" "libz-1.dll"))
+```
+
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+| ext  | dlls                                    | location                                                                            |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+| xpm  | libxpm.dll, xpm4.dll or libxpm-nox4.dll | (libxpm.dll included in emacs zip)                                                  |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+| png  | libpng16.dll or libpng16-16.dll         | http://sourceforge.net/projects/ezwinports/files/libpng-1.6.12-w32-bin.zip/download |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+| jpeg | libjpeg-9.dll                           | http://sourceforge.net/projects/ezwinports/files/jpeg-v9a-w32-bin.zip/download      |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+| tiff | libtiff-5.dll,                          | http://sourceforge.net/projects/ezwinports/files/tiff-4.0.3-w32-bin.zip/download    |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+|      | libtiff3.dll / libtiff.dll              | http://gnuwin32.sourceforge.net/packages/tiff.htm                                   |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+|      |                                         | (note it requires jpeg62.dll & zlib1.dll)                                           |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+|      |                                         | http://gnuwin32.sourceforge.net/packages/zlib.htm                                   |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+| gif  | libgif-7.dll                            | http://sourceforge.net/projects/ezwinports/files/giflib-5.1.0-w32-bin.zip/download  |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+|      |                                         | http://gnuwin32.sourceforge.net/packages/libungif.htm                               |
++------+-----------------------------------------+-------------------------------------------------------------------------------------+
+
+## 24.3
+
+```elisp
+ (describe-variable 'dynamic-library-alist)
+```
+
+```elisp
+((xpm "libxpm.dll" "xpm4.dll" "libXpm-nox4.dll")
+ (png "libpng14-14.dll" "libpng14.dll")
+ (jpeg "jpeg62.dll" "libjpeg.dll" "jpeg-62.dll" "jpeg.dll")
+ (tiff "libtiff3.dll" "libtiff.dll")
+ (gif "giflib4.dll" "libungif4.dll" "libungif.dll")
+ (svg "librsvg-2-2.dll")
+ (gdk-pixbuf "libgdk_pixbuf-2.0-0.dll")
+ (glib "libglib-2.0-0.dll")
+ (gobject "libgobject-2.0-0.dll")
+ (gnutls "libgnutls-28.dll" "libgnutls-26.dll")
+ (libxml2 "libxml2-2.dll" "libxml2.dll"))
+```
+
++------+-------------------------------------------------------+-------------------------------------------------------------+
+| ext  | dlls                                                  | location                                                    |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+| xpm  | libxpm.dll, xpm4.dll or libxpm-nox4.dll               | (libxpm.dll included in emacs zip)                          |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+| png  | libpng14-14.dll or libpng14.dll (libpng12 won't work) | http://ftp.cn.debian.org/gnome/binaries/win32/dependencies/ |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+| jpeg | jpeg62.dll, libjpeg.dll, jpeg-62.dll or jpeg.dll      | http://gnuwin32.sourceforge.net/packages/jpeg.htm           |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+| tiff | libtiff3.dll, libtiff.dll                             | http://gnuwin32.sourceforge.net/packages/tiff.htm           |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+|      |                                                       | (note it requires jpeg62.dll & zlib1.dll)                   |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+|      |                                                       | http://gnuwin32.sourceforge.net/packages/zlib.htm           |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+| gif  | giflib4.dll, libungif4.dll or libungif.dll            | http://gnuwin32.sourceforge.net/packages/giflib.htm         |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+|      |                                                       | http://gnuwin32.sourceforge.net/packages/libungif.htm       |
++------+-------------------------------------------------------+-------------------------------------------------------------+
+
+
+## 23.3
+
+```elisp
+ (describe-variable 'image-library-alist)
+```
+
+```elisp
+((xpm "libxpm.dll" "xpm4.dll" "libXpm-nox4.dll")
+ (png "libpng12d.dll" "libpng12.dll" "libpng.dll" "libpng13d.dll" "libpng13.dll")
+ (jpeg "jpeg62.dll" "libjpeg.dll" "jpeg-62.dll" "jpeg.dll")
+ (tiff "libtiff3.dll" "libtiff.dll")
+ (gif "giflib4.dll" "libungif4.dll" "libungif.dll")
+ (svg "librsvg-2-2.dll")
+ (gdk-pixbuf "libgdk_pixbuf-2.0-0.dll")
+ (glib "libglib-2.0-0.dll")
+ (gobject "libgobject-2.0-0.dll"))
+```
+
+
+## 23.1
+
+| ext  | dlls                                                     | location                                              |
+|------|----------------------------------------------------------|-------------------------------------------------------|
+| xpm  | libxpm.dll, xpm4.dll or libxpm-nox4.dll                  | (libxpm.dll included in emacs zip)                    |
+| png  | libpng12d.dll, libpng12.dll, libpng.dll or libpng13d.dll | http://gnuwin32.sourceforge.net/packages/libpng.htm   |
+| jpeg | jpeg62.dll, libjpeg.dll, jpeg-62.dll or jpeg.dll         | http://gnuwin32.sourceforge.net/packages/jpeg.htm     |
+| tiff | libtiff3.dll, libtiff.dll                                | http://gnuwin32.sourceforge.net/packages/tiff.htm     |
+|      |                                                          | (note it requires jpeg62.dll & zlib.dll)              |
+|      |                                                          | http://gnuwin32.sourceforge.net/packages/zlib.htm     |
+| gif  | giflib4.dll, libungif4.dll or libungif.dll               | http://gnuwin32.sourceforge.net/packages/giflib.htm   |
+|      |                                                          | http://gnuwin32.sourceforge.net/packages/libungif.htm |
