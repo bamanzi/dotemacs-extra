@@ -274,6 +274,19 @@ FILENAME defaults to `buffer-file-name'."
      ))
 
 ;;--
+;;info+.el: more colors (and other enhancements) 
+(eval-after-load "info"
+  `(require 'info+)
+  )
+
+(eval-after-load "info+"
+  `(progn
+     (defvar Info-next-link-keymap (make-sparse-keymap))
+     (defvar Info-prev-link-keymap (make-sparse-keymap))
+     (defvar Info-up-link-keymap   (make-sparse-keymap))
+     (defvar Info-down-link-keymap   (make-sparse-keymap))))
+
+;;--
 (idle-require 'buff-menu+)
 (eval-after-load "buff-menu+"
   `(progn
@@ -283,7 +296,6 @@ FILENAME defaults to `buffer-file-name'."
 
 (idle-require 'menu-bar+)
 
-(idle-require 'info+)
 
 (idle-require 'mouse3)
 
