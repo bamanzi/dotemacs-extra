@@ -233,7 +233,13 @@ FILENAME defaults to `buffer-file-name'."
 (idle-require 'ido-vertical-mode)
 (eval-after-load "ido-vertical-mode"
   `(progn
-     (ido-vertical-mode t)))
+     (ido-vertical-mode t)
+
+     (define-key ido-completion-map (kbd "<up>")   'ido-prev-match)
+     (define-key ido-completion-map (kbd "<down>") 'ido-next-match)
+     (define-key ido-buffer-completion-map (kbd "<up>")   'ido-prev-match)
+     (define-key ido-buffer-completion-map (kbd "<down>") 'ido-next-match)
+     ))
 
 ;;-- smex
 ;; I don't `smex' is better than `icomplete-mode',
