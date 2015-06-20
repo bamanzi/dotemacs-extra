@@ -177,10 +177,14 @@ FILENAME defaults to `buffer-file-name'."
   `(progn
      (ido-vertical-mode t)
 
-     (define-key ido-completion-map (kbd "<up>")   'ido-prev-match)
-     (define-key ido-completion-map (kbd "<down>") 'ido-next-match)
-     (define-key ido-buffer-completion-map (kbd "<up>")   'ido-prev-match)
-     (define-key ido-buffer-completion-map (kbd "<down>") 'ido-next-match)
+     (add-hook 'ido-setup-hook
+               #'(lambda ()     
+                   (define-key ido-completion-map (kbd "<up>")   'ido-prev-match)
+                   (define-key ido-completion-map (kbd "<down>") 'ido-next-match)
+                   (define-key ido-buffer-completion-map (kbd "<up>")   'ido-prev-match)
+                   (define-key ido-buffer-completion-map (kbd "<down>") 'ido-next-match)
+                   )
+               'append)
      ))
 
 ;;-- smex
