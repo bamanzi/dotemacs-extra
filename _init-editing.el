@@ -8,6 +8,12 @@
 (global-set-key (kbd "M-g c") 'avy-goto-char-2)
 (global-set-key (kbd "M-g l") 'avy-goto-line)
 
+;; ** search
+(autoload 'swiper "swiper"
+  "`isearch' with an overview." t)
+
+(global-set-key (kbd "M-u C-s") 'swiper)
+
 
 ;; ** folding
 ;; *** outline
