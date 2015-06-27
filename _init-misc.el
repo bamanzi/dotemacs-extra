@@ -136,21 +136,18 @@ FILENAME defaults to `buffer-file-name'."
 ;; ** minibuffer completion
 ;; emacs>=24.4's `icomplete-mode' no longer shows keybindings for `M-x',
 ;; package `icomplete+' reimplemented this feature
-(unless (string< emacs-version "24.4")
-  (idle-require 'icomplete+))
-
-;; but `icomplete+' disabled the keybinding (C-,/C-. etc) for cycling candidates,
-;; we need to use `icompletep-cycling-mode' to re-enable it.
-(eval-after-load "icomplete+"
-  `(progn
-     (icompletep-cycling-mode 1)))
+(eval-after-load "icomplete"
+  `(unless (string< emacs-version "24.4")
+     (when (require 'icomplete+ nil t)
+       ;; but `icomplete+' disabled the keybinding (C-,/C-. etc) for cycling candidates,
+       ;; we need to use `icompletep-cycling-mode' to re-enable it.
+       (icompletep-cycling-mode 1))))
 
 ;;--
 ;; enhance `ido'
-(idle-require 'ido-vertical-mode)
-(eval-after-load "ido-vertical-mode"
-  `(progn
-     (ido-vertical-mode t)
+(eval-after-load "ido"
+  `(when (require 'ido-vertical-mode nil t)
+     (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
 
      (add-hook 'ido-setup-hook
                #'(lambda ()     
@@ -160,6 +157,8 @@ FILENAME defaults to `buffer-file-name'."
                    (define-key ido-buffer-completion-map (kbd "<down>") 'ido-next-match)
                    )
                'append)
+     
+     (ido-vertical-mode t)
      ))
 
 ;;-- smex
