@@ -14,9 +14,9 @@
       google-translate-default-target-language "zh-CN")
 
 (progn
-  (global-set-key (kbd "M-u g g")   'google-translate-at-point)
-  (global-set-key (kbd "M-u G")     'google-translate-at-point)
-  (global-set-key (kbd "M-u g SPC") 'google-translate-query-translate)
+  (global-set-key (kbd "<apps> g g")   'google-translate-at-point)
+  (global-set-key (kbd "<apps> G")     'google-translate-at-point)
+  (global-set-key (kbd "<apps> g SPC") 'google-translate-query-translate)
   )
 
 ;; ** dictionary
@@ -28,9 +28,9 @@
   "Search word from input and display result with buffer." t)
 
 (progn
-  (global-set-key (kbd "M-u y y")   'youdao-dictionary-search-at-point+)
-  (global-set-key (kbd "M-u Y")     'youdao-dictionary-search-at-point+)
-  (global-set-key (kbd "M-u y SPC") 'youdao-dictionary-search-from-input)
+  (global-set-key (kbd "<apps> y y")   'youdao-dictionary-search-at-point+)
+  (global-set-key (kbd "<apps> Y")     'youdao-dictionary-search-at-point+)
+  (global-set-key (kbd "<apps> y SPC") 'youdao-dictionary-search-from-input)
   )
 
 
@@ -41,11 +41,11 @@
 (autoload 'dictem-run-define  "dictem" nil t)
 
 (progn
-  (global-set-key (kbd "M-u d s") 'dictem-run-search)
-  (global-set-key (kbd "M-u d SPC") 'dictem-run-search)
-  (global-set-key (kbd "M-u d m") 'dictem-run-match)
-  (global-set-key (kbd "M-u d d") 'dictem-run-define)
-  (global-set-key (kbd "M-u D")   'dictem-run-define)
+  (global-set-key (kbd "<apps> d s") 'dictem-run-search)
+  (global-set-key (kbd "<apps> d SPC") 'dictem-run-search)
+  (global-set-key (kbd "<apps> d m") 'dictem-run-match)
+  (global-set-key (kbd "<apps> d d") 'dictem-run-define)
+  (global-set-key (kbd "<apps> D")   'dictem-run-define)
   )
 
 
@@ -57,13 +57,13 @@
 ;; *** sdcv
 (autoload 'sdcv-search-input "sdcv"
   "Search WORD through the `command-line' tool sdcv." t)
-(global-set-key (kbd "M-u s SPC")  'sdcv-search-input)
+(global-set-key (kbd "<apps> s SPC")  'sdcv-search-input)
 
 ;;(setq sdcv-dictionary-simple-list '("XDICT英汉辞典" "XDICT汉英辞典"))
 (autoload 'sdcv-search-pointer+ "sdcv"
   "Translate current point word with command-line tool `sdcv'." t)
-(global-set-key (kbd "M-u s s")  'sdcv-search-pointer+)
-(global-set-key (kbd "M-u S")    'sdcv-search-pointer+)
+(global-set-key (kbd "<apps> s s")  'sdcv-search-pointer+)
+(global-set-key (kbd "<apps> S")    'sdcv-search-pointer+)
 
 (defun sdcv-search-word-at-pt-mouse (event)
   (interactive "e")

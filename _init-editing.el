@@ -12,7 +12,7 @@
 (autoload 'swiper "swiper"
   "`isearch' with an overview." t)
 
-(global-set-key (kbd "M-u C-s") 'swiper)
+(global-set-key (kbd "<apps> C-s") 'swiper)
 
 
 ;; ** folding
