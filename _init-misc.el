@@ -158,7 +158,8 @@ FILENAME defaults to `buffer-file-name'."
       smex-data nil)  ;;workaround for bug of `smex'
 
 
-;; ** misc
+;; ** keys
+;; *** guide-key
 (autoload 'guide-key-mode "guide-key"
   "Toggle guide key mode." t)
 
@@ -174,6 +175,38 @@ FILENAME defaults to `buffer-file-name'."
      (guide-key-mode 1)  ; Enable guide-key-mode
      ))
 
+
+;; *** switch off/on touchpad when emacs gets/loses focus
+;; https://www.reddit.com/r/emacs/comments/38o0tr/i_have_to_share_this_switch_your_touchpad_off/
+(defvar touchpad-device-name nil
+  "The name of your touchpad device.
+
+You can figure it out using
+
+xinput --list
+
+e.g. for me it's \"SynPS/2 Synaptics TouchPad\"")
+
+(defun turn-off-mouse (&optional frame)
+  (interactive)
+  (if touchpad-device-name
+      (shell-command (format "xinput --disable \"%s\"" touchpad-device-name))
+  (shell-command "synclient TouchpadOff=1")))
+
+(defun turn-on-mouse (&optional frame)
+  (interactive)
+  (if touchpad-device-name
+      (shell-command (format "xinput --enable \"%s\"" touchpad-device-name))
+    (shell-command "synclient TouchpadOff=0")))
+
+;; only Emacs >= 24.4 has `focus-in-hook' and `focus-out-hook'
+(when (boundp 'focus-in-hook)
+  (add-hook 'focus-in-hook #'turn-off-mouse)
+  (add-hook 'focus-out-hook #'turn-on-mouse)
+  (add-hook 'delete-frame-functions #'turn-on-mouse))
+
+
+;; ** misc
 ;;--
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
