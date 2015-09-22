@@ -107,21 +107,6 @@ FILENAME defaults to `buffer-file-name'."
      ))
 
 
-;; ** eshell enhancements
-;; *** autojump
-(eval-after-load "eshell"
-  '(require 'eshell-autojump nil t))
-;;use command `j' to list your MRU path,
-;;use command `j regexp' to jump to one
-
-(eval-after-load "eshell"
-  `(progn
-     (if (executable-find "git")
-         (require 'pcmpl-git nil t))
-     (if (and (executable-find "hg")
-              (require 'pcase nil t))
-         (require 'pcmpl-args nil t))
-     ))
 
 ;; ** indent-guide
 ;;`indent-guide-mode' only show guides on current section.
