@@ -18,6 +18,13 @@
             (toc-org-insert-toc)
           (message "You should add tag TOC to one of the heading lines."))))))
 
+;; ** eldoc support
+(eval-after-load "org"
+  `(progn
+     (if (require 'org-eldoc nil t)
+         (message "Package `org-eldoc' found, you can use `eldoc-mode' in org buffers.")
+       (message "WARN: failed to load package `org-eldoc'."))
+     ))
 
 ;; ** attach images
 ;; insert image from local file or http
