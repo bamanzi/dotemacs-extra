@@ -1,4 +1,24 @@
 ;; * org-mode
+;; ** TOC
+
+(eval-after-load "toc-org"
+  `(progn
+     (add-hook 'org-mode-hook 'toc-org-enable)
+     ))
+
+(defun org-insert-or-update-toc ()
+  (interactive)
+  (when (require 'toc-org nil t)
+    (toc-org-enable)
+    (save-excursion
+      (goto-char (point-min))
+      (let ((case-fold-search t))
+        ;; find the first heading with the :TOC: tag
+        (if (re-search-forward toc-org-toc-org-regexp (point-max) t)
+            (toc-org-insert-toc)
+          (message "You should add tag TOC to one of the heading lines."))))))
+
+
 ;; ** attach images
 ;; insert image from local file or http
 (autoload 'org-download-image "org-download"
@@ -81,3 +101,8 @@ The screen-shot tool is determined by `org-download-screenshot-method'."
 (autoload 'adoc-mode "adoc-mode"
   "Major mode for editing AsciiDoc text files." t)
 (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode))
+
+;; * markdown
+;; ** TOC
+(autoload 'markdown-toc-generate-toc "markdown-toc"
+  "Generate a TOC for markdown file at current point." t)
