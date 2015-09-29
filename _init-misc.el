@@ -200,7 +200,8 @@ e.g. for me it's \"SynPS/2 Synaptics TouchPad\"")
     (shell-command "synclient TouchpadOff=0")))
 
 ;; only Emacs >= 24.4 has `focus-in-hook' and `focus-out-hook'
-(when (boundp 'focus-in-hook)
+(when (and (boundp 'focus-in-hook)
+           (eq 0 (shell-command "synclient -l")))
   (add-hook 'focus-in-hook #'turn-off-mouse)
   (add-hook 'focus-out-hook #'turn-on-mouse)
   (add-hook 'delete-frame-functions #'turn-on-mouse))
