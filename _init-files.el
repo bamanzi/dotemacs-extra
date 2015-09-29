@@ -47,7 +47,7 @@
      (add-hook 'custom-mode-hook 'turn-on-tempbuf-mode)
      (if (require 'man nil t)
          (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode))
-     (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
+;;     (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
      (add-hook 'diff-mode-hook 'turn-on-tempbuf-mode)
      (add-hook 'completion-list-mode 'turn-on-tempbf-mode)
      (add-hook 'occur-mode-hoo 'turn-on-tempbuf-mode)
