@@ -21,8 +21,9 @@
 ;; ** eldoc support
 (eval-after-load "org"
   `(progn
-     (if (require 'org-eldoc nil t)
-         (message "Package `org-eldoc' found, you can use `eldoc-mode' in org buffers.")
+     (if (and (require 'ob-core nil t)
+              (require 'org-eldoc nil t))
+         (message "Package `org-eldoc' loaded, you can use `eldoc-mode' in org buffers.")
        (message "WARN: failed to load package `org-eldoc'."))
      ))
 
