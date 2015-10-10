@@ -159,11 +159,22 @@ FILENAME defaults to `buffer-file-name'."
 
 
 ;; ** keys
-;; *** guide-key
+;; *** which-key/guide-key
+(autoload 'which-key-mode  "which-key"
+  "Toggle which-key-mode." t)
 (autoload 'guide-key-mode "guide-key"
   "Toggle guide key mode." t)
 
-(idle-require 'guide-key)
+(if (string< emacs-version "24.3")
+    (idle-require 'guide-key)
+  (idle-require 'which-key))
+
+(eval-after-load "which-key"
+  `(progn
+     (which-key-setup-side-window-right-bottom)
+     (which-key-mode 1)
+     ))
+
 (eval-after-load "guide-key"
   `(progn
      (setq guide-key/guide-key-sequence '("C-x r"
