@@ -71,8 +71,6 @@
 
 
 
-
-
 ;; ** rectangle
 ;; *** C-x r ...
 (autoload 'rectplus-copy-rectangle  "rect+"
@@ -80,11 +78,33 @@
 (autoload 'rectplus-insert-number-rectangle  "rect+"
   "Insert incremental number into each left edges of rectangle's line." t)
 
-(define-key ctl-x-r-map (kbd "M-w") 'rectplus-copy-rectangle)
-(define-key ctl-x-r-map (kbd "M-n") 'rectplus-insert-number-rectangle)
+(define-key ctl-x-r-map (kbd "M-w")   'rectplus-rectangle-to-kill-ring)
+(define-key ctl-x-r-map (kbd "M-S-w") 'rectplus-copy-rectangle)
+(define-key ctl-x-r-map (kbd "M-n")   'rectplus-insert-number-rectangle)
 
 ;; *** cua rectangle (visual)
+(autoload 'cua-mouse-set-rectangle-mark "cua-rect"
+  "Start rectangle at mouse click position." t)
 
+;; *** rectangle-mark-mode (visual, but only available on emacs>=24.4)
+
+;; use mouse to mark rectangle (r-m-m)
+;; https://tangjunjie.wordpress.com/2015/07/10/enable-emacs-column-selection-using-mouse/
+(defun mouse-start-rectangle (start-event)
+  (interactive "e")
+  (deactivate-mark)
+  (mouse-set-point start-event)
+  (rectangle-mark-mode +1)
+  (let ((drag-event))
+    (track-mouse
+      (while (progn
+               (setq drag-event (read-event))
+               (mouse-movement-p drag-event))
+        (mouse-set-point drag-event)))))
+
+(if (fboundp 'rectangle-mark-mode)
+    (global-set-key (kbd "<C-M-down-mouse-1>") #'mouse-start-rectangle)
+  (global-set-key (kbd "<C-M-down-mouse-1>")   'cua-mouse-set-rectangle-mark)
 
 
 ;; ** mark-thing
