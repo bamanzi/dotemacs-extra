@@ -104,7 +104,7 @@
 
 (if (fboundp 'rectangle-mark-mode)
     (global-set-key (kbd "<C-M-down-mouse-1>") #'mouse-start-rectangle)
-  (global-set-key (kbd "<C-M-down-mouse-1>")   'cua-mouse-set-rectangle-mark)
+  (global-set-key (kbd "<C-M-down-mouse-1>")   'cua-mouse-set-rectangle-mark))
 
 
 ;; ** mark-thing
