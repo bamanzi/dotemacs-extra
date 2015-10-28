@@ -90,4 +90,5 @@
       t
     t))
 
+(provide 'abs-indent-mode)
 ;;; abs-indent-mode.el ends here
