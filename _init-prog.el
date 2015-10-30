@@ -47,6 +47,11 @@
 (global-set-key (kbd "<f9> . f") 'find-file-in-tags)
 
 
+;; ** highlighting
+(autoload 'color-identifiers-mode "color-identifiers-mode"
+  "Color the identifiers in the current buffer based on their names." t)
+
+
 ;;** super+click to jump to declaration/implementation
 (defvar symbol-jump/function-alist
   '((emacs-lisp-mode       . symbol-jump/elisp-jump-to-symbol)
