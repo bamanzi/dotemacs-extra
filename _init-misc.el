@@ -96,9 +96,8 @@ FILENAME defaults to `buffer-file-name'."
 
 
 
-;; ** log scratch contents
-(idle-require 'scratch-log)
-
+;; ** scratch buffer
+;; *** pretty print for emacs-lisp
 (idle-require 'ipretty)
 (eval-after-load "ipretty"
   `(progn
@@ -106,6 +105,14 @@ FILENAME defaults to `buffer-file-name'."
      (define-key lisp-interaction-mode-map [remap eval-print-last-sexp] 'ipretty-last-sexp)
      ))
 
+;; *** log scratch content automatically
+(idle-require 'scratch-log)
+
+;; *** scratch buffer for all major modes
+(autoload 'scratch  "scratch"
+  "Get a scratch buffer for the current mode." t)
+
+(global-set-key (kbd "<f12> M-*") 'scratch)
 
 
 ;; ** indent-guide
