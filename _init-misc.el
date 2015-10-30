@@ -115,14 +115,22 @@ FILENAME defaults to `buffer-file-name'."
 (global-set-key (kbd "<f12> M-*") 'scratch)
 
 
-;; ** indent-guide
+;; ** indentation guides
+;; *** highlight-identation-mode
+;; (configured in `dotemacs-elite')
+;; cons:
+;;    - only whitespaces supported (tabs not supported)
+
+;; *** indent-guide-mode
 ;;`indent-guide-mode' only show guides on current section.
-;; but it would actually insert a char (`indent-guide-char'),
+;; but it would actually use a char (`indent-guide-char') to guide line,
 ;; thus it might not be suitable for terminal (if you use external copy (mouse or tmux))
 (autoload 'indent-guide-mode  "indent-guide"
   "Show vertical lines to guide indentation." t)
 
 (global-set-key (kbd "<f10> ig") 'indent-guide-mode)
+
+;; *** visual-indentation-mode
 
 
 ;; ** minibuffer completion
