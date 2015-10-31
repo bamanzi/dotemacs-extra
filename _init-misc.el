@@ -258,6 +258,10 @@ e.g. for me it's \"SynPS/2 Synaptics TouchPad\"")
      (defvar Info-down-link-keymap   (make-sparse-keymap))))
 
 ;;--
+(autoload 'restart-emacs "restart-emacs"
+  "Restart Emacs." t)
+
+;;--
 (idle-require 'buff-menu+)
 (eval-after-load "buff-menu+"
   `(progn
