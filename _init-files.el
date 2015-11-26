@@ -79,6 +79,18 @@
      ))
 
 
+;; ** dired-narrow
+(autoload 'dired-narrow "dired-narrow"
+  "Narrow a dired buffer to the files matching a string." t)
+
+(eval-after-load "dired"
+  `(progn
+     (define-key dired-mode-map (kbd "M-q") 'dired-narrow)
+
+     ;; always execute dired-k when dired buffer is opened
+     ;; (add-hook 'dired-initial-position-hook 'dired-k)
+     ))
+
 ;; ** nav (file browser)
 
 (autoload 'nav "nav"
