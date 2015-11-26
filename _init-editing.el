@@ -1,4 +1,4 @@
-;;; ** go-to
+;; ** go-to
 (autoload 'avy-goto-char-timer "avy"
   "Read one or two consecutive chars and jump to the first one." t)
 
@@ -128,3 +128,18 @@
       (push-mark (cdr bounds) nil transient-mark-mode)
       (setq deactivate-mark nil))))
 
+;; ** highlight-thing
+;; highlight *all occurence* of a thing
+(autoload 'highlight-thing-mode "highlight-thing"
+  "Minor mode that highlights things at point" t)
+
+(global-set-key (kbd "<f10> h t") 'highlight-thing-mode)
+
+(eval-after-load "highlight-thing"
+  `(progn
+     ;; highlight all occurrence of current selection
+     (setq highlight-thing-what-thing 'region)
+
+     ;; default value 0.5 is too short, causing high CPU usage sometimes when too much occurrence
+     (setq highlight-thing-delay-seconds 1.5)
+     ))
