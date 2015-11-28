@@ -175,13 +175,13 @@ FILENAME defaults to `buffer-file-name'."
 
 ;; ** keys
 ;; *** which-key/guide-key
-(autoload 'which-key-mode  "which-key"
-  "Toggle which-key-mode." t)
 (autoload 'guide-key-mode "guide-key"
   "Toggle guide key mode." t)
 
 (if (string< emacs-version "24.3")
     (idle-require 'guide-key)
+  (autoload 'which-key-mode  "which-key"
+    "Toggle which-key-mode." t)
   (idle-require 'which-key))
 
 (eval-after-load "which-key"

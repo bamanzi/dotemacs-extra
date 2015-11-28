@@ -25,8 +25,8 @@
 (eval-after-load "window-extension"
   `(progn
      (global-set-key (kbd "<f11> <f11>") 'toggle-one-window)
-     (global-set-key (kbd "<f11> d v")   'delete-other-windows-vertically+)
-     (global-set-key (kbd "<f11> d h")   'delete-other-windows-horizontally+)
+     (global-set-key (kbd "<f11> V")     'delete-other-windows-vertically+)
+     (global-set-key (kbd "<f11> H")     'delete-other-windows-horizontally+)
      
      (global-set-key [(control x) (?0)] 'sticky-window-delete-window)
      (global-set-key [(control x) (?1)] 'sticky-window-delete-other-windows)
@@ -48,7 +48,7 @@
        (eval `(progn
                 (define-key window-numbering-keymap ,(read-kbd-macro (format "M-%d" i))
                   nil)
-                (define-key window-numbering-keymap ,(read-kbd-macro (format "<f11> M-%d" i))
+                (define-key window-numbering-keymap ,(read-kbd-macro (format "<f11> %d" i))
                   ,'(intern (format "select-window-%d" i))
                   )
                 (define-key window-numbering-keymap ,(read-kbd-macro (format "s-%d" i))
