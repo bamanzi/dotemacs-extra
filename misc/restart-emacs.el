@@ -5,7 +5,7 @@
 ;; Author: Iqbal Ansari <iqbalansari02@yahoo.com>
 ;; Keywords: convenience
 ;; URL: https://github.com/iqbalansari/restart-emacs
-;; Version: 0.1
+;; Version: 0.1.1
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,16 +24,40 @@
 
 ;; This package provides a simple command to restart Emacs from within Emacs
 
+
+
 ;;; Code:
 
+;; Making the byte compiler happy
 (declare-function w32-shell-execute "w32fns.c")
+
+
+
+;; Compatibility functions
+
+(defun restart-emacs--string-join (strings &optional separator)
+  "Join all STRINGS using SEPARATOR.
+
+This function is available on Emacs v24.4 and higher, it has been
+backported here for compatibility with older Emacsen."
+  (if (fboundp 'string-join)
+      (apply #'string-join (list strings separator))
+    (mapconcat 'identity strings separator)))
+
+(defun restart-emacs--user-error (format &rest args)
+  "Signal a `user-error' if available otherwise signal a generic `error'.
+
+FORMAT and ARGS correspond to STRING and OBJECTS arguments to `format'."
+  (if (fboundp 'user-error)
+      (apply #'user-error format args)
+    (apply #'error format args)))
+
+
+
+;; Core functions
 
 (defvar restart-emacs--args nil
   "The arguments with which to restart Emacs is bound dynamically.")
-
-(defun restart-emacs--string-join (strings &optional separator)
-  "Join all STRINGS using SEPARATOR."
-  (mapconcat 'identity strings separator))
 
 (defun restart-emacs--get-emacs-binary ()
   "Get absolute path to binary of currently running Emacs."
@@ -44,7 +68,7 @@
 
 ARGS is the list arguments with which Emacs should be started"
   (call-process "sh" nil
-                nil nil
+                0 nil
                 "-c" (format "%s %s &"
                              (shell-quote-argument (restart-emacs--get-emacs-binary))
                              (restart-emacs--string-join (mapcar #'shell-quote-argument
@@ -73,17 +97,17 @@ sh, bash, zsh, fish, csh and tcsh shells"
   "Ensure we can restart Emacs on current platform."
   (when (and (not (display-graphic-p))
              (memq system-type '(windows-nt ms-dos)))
-    (user-error (format "Cannot restart emacs running in terminal on system of type `%s'" system-type))))
+    (restart-emacs--user-error (format "Cannot restart emacs running in terminal on system of type `%s'" system-type))))
 
 (defun restart-emacs--launch-other-emacs ()
   "Launch another Emacs session according to current platform."
   (apply (if (display-graphic-p)
-             (if (memq system-type '(windows-nt msdos))
+             (if (memq system-type '(windows-nt ms-dos))
                  #'restart-emacs--start-gui-on-windows
                #'restart-emacs--start-gui-using-sh)
-           (if (memq system-type '(windows-nt msdos))
+           (if (memq system-type '(windows-nt ms-dos))
                ;; This should not happen since we check this before triggering a restart
-               (user-error "Cannot restart Emacs running in a windows terminal")
+               (restart-emacs--user-error "Cannot restart Emacs running in a windows terminal")
              #'restart-emacs--start-emacs-in-terminal))
          ;; Since this function is called in `kill-emacs-hook' it cannot accept
          ;; direct arguments the arguments are let-bound instead
@@ -100,6 +124,10 @@ It does the following translation
         ((equal prefix '(16)) '("-Q"))
         ((equal prefix '(64)) (split-string (read-string "Arguments to start Emacs with (separated by space): ")
                                             " "))))
+
+
+
+;; User interface
 
 ;;;###autoload
 (defun restart-emacs (&optional args)
