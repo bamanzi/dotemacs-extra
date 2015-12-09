@@ -32,14 +32,38 @@
 (autoload 'org-download-image "org-download"
   "Save image at address LINK to `org-download--dir'." t)
 
-(defun org-attach-image-file (filename)
+(defun org-insert-image-file (filename)
   (interactive "fImage file: ")
-  (require 'org-download)
+  (or (featurep 'org-download)
+      (require 'org-download))
   (org-download-image filename))
 
-;; insert screenshot
-(autoload 'org-download-screenshot "org-download"
-  "Capture screenshot and insert the resulting file." t)
+;; some modifications over `org-download-screenshot' (ideas stolen from `org-screenshot')
+;; + hide emacs frame unless C-u given
+;; + we can give a base name for the file
+;; + use `org-attach' to make storage path customizable for each document / heading
+;; + use correct slash in filename when calling external screenshot command
+(defun org-insert-screenshot (basename)
+  "Capture screenshot and insert the resulting file.
+
+The screen-shot tool is determined by `org-download-screenshot-method'."
+  (interactive (list
+                (read-string "sBase name for screenshot: " "screenshot")))
+  (or (featurep 'org-download)
+      (require 'org-download))  
+  (let ((temp-file (concat (file-name-as-directory temporary-file-directory)
+                           basename
+                           ".png"))
+        (attach-dir (org-download--dir))
+        (frame (selected-frame)))
+    (unless current-prefix-arg (iconify-frame frame))
+    (shell-command (format org-download-screenshot-method
+                           (convert-standard-filename temp-file)))
+    (unless current-prefix-arg
+      (make-frame-visible frame)
+      (raise-frame frame))
+    (org-download-image temp-file)))
+
 
 (when (memq system-type '(ms-dos windows-nt))
     (setq org-download-screenshot-method "d:/tools/IrfanView/i_view32.exe /capture=4 /convert=%s")
@@ -50,12 +74,11 @@
   `(progn
 
      ;; use `org-attach' to manage attachment folders for current document / headings
-     (defun org-download--dir ()
+     (defadvice org-download--dir (around use-org-attach activate)
        "Return the directory path for image storage with `org-attach' library.
 
-This overrides original `org-download--dir` and makes
-`org-download-image-dir' and `org-download-heading-lvl'
-obsolete."
+This overrides original `org-download--dir' and makes `org-download-image-dir'
+and `org-download-heading-lvl' obsolete."
        (require 'org-attach)
        (let ((result (or (org-attach-dir) ;; attach dir for current entry
                          (org-entry-get nil "ATTACH_DIR" t) ;; inherit from top level headings
@@ -63,34 +86,18 @@ obsolete."
                            (message "Hint: default attach folder used. Use `org-attach-set-directory' to change it.")
                            org-attach-directory))))
          (unless (file-exists-p result)
-           (make-directory dir t))
-         result))
+           (make-directory result t))
+         (setq ad-return-value result)))
 
-     ;; some modifications (ideas stolen from `org-screenshot')
-     ;; + hide emacs frame unless C-u given
-     ;; + we can give a base name for the file
-     ;; + use `org-attach' to make storage path customizable for each document / heading
-     ;; + use correct slash in filename when calling external screenshot command
-     (defun org-download-screenshot (basename)
-       "Capture screenshot and insert the resulting file.
 
-The screen-shot tool is determined by `org-download-screenshot-method'."
-       (interactive "sBase name for screenshot: ")
-       (let ((temp-file (concat (file-name-as-directory temporary-file-directory)
-                                basename
-                                ".png"))
-             (attach-dir (org-download--dir))
-             (frame (selected-frame)))
-         (unless current-prefix-arg (iconify-frame frame))
-         (shell-command (format org-download-screenshot-method
-                                (convert-standard-filename temp-file)))
-         (unless current-prefix-arg
-           (make-frame-visible frame)
-           (raise-frame frame))
-         (org-download-image temp-file)))
+     (defadvice org-download-screenshot (around use-org-attach active)
+       (let ((basename (read-string "sBase name for screenshot: " "screenshot-")))
+         (org-insert-screenshot basename)))
+
      (defalias 'org-attach-screenshot 'org-download-screenshot)
 
      ))
+
 
 ;; ** export to asciidoc
 (eval-after-load "org"
