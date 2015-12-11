@@ -274,3 +274,7 @@ e.g. for me it's \"SynPS/2 Synaptics TouchPad\"")
 
 (idle-require 'mouse3)
 
+;; give `diff-mode' some colors
+(idle-require 'diff-mode-)
+
+
