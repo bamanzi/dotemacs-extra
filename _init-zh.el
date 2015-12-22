@@ -97,3 +97,18 @@
      (require 'eim-extra)
      (global-set-key ";" 'eim-insert-ascii)
      ))
+
+;; ** fcitx.el (make fcitx work better in emacs)
+(autoload 'fcitx-default-setup "fcitx"
+  "Default setup for `fcitx'." t)
+
+(when (and (eq window-system 'x)
+           (shell-command-to-string "pidof fcitx"))
+  (idle-require 'fcitx))
+
+(eval-after-load "fcitx"
+  `(progn
+     (fcitx-default-setup)
+     
+     (fcitx-prefix-keys-add "M-s")
+     ))
