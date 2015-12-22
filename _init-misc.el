@@ -217,7 +217,7 @@ e.g. for me it's \"SynPS/2 Synaptics TouchPad\"")
   (interactive)
   (if touchpad-device-name
       (shell-command (format "xinput --disable \"%s\"" touchpad-device-name))
-  (shell-command "synclient TouchpadOff=1")))
+    (shell-command "synclient TouchpadOff=1")))
 
 (defun turn-on-mouse (&optional frame)
   (interactive)
@@ -227,7 +227,8 @@ e.g. for me it's \"SynPS/2 Synaptics TouchPad\"")
 
 ;; only Emacs >= 24.4 has `focus-in-hook' and `focus-out-hook'
 (when (and (boundp 'focus-in-hook)
-           (eq 0 (shell-command "synclient -l")))
+           (eq window-system 'x)
+           (not (string-match "Couldn't find synaptics properties" (shell-command-to-string "synclient -l"))))
   (add-hook 'focus-in-hook #'turn-off-mouse)
   (add-hook 'focus-out-hook #'turn-on-mouse)
   (add-hook 'delete-frame-functions #'turn-on-mouse))
