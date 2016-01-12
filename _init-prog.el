@@ -143,7 +143,7 @@ Each function should accept ONE argument in STRING type.")
 (autoload 'realgud-perldb "realgud" nil t)
 (autoload 'realgud-rdebug "realgud" nil t)
 
-(def load-realgud ()
+(defun load-realgud ()
      (interactive)
 
      (require 'realgud)

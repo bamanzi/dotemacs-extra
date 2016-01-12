@@ -103,7 +103,7 @@
   "Default setup for `fcitx'." t)
 
 (when (and (eq window-system 'x)
-           (shell-command-to-string "pidof fcitx"))
+           (> (length (shell-command-to-string "pidof fcitx")) 0))
   (idle-require 'fcitx))
 
 (eval-after-load "fcitx"

@@ -66,7 +66,7 @@ The screen-shot tool is determined by `org-download-screenshot-method'."
 
 
 (when (memq system-type '(ms-dos windows-nt))
-    (setq org-download-screenshot-method "d:/tools/IrfanView/i_view32.exe /capture=4 /convert=%s")
+    (setq org-download-screenshot-method "d:/wintools/IrfanView/i_view32.exe /capture=4 /convert=%s")
     (setq org-download-timestamp "_%Y-%m-%d_%H%M%S") ; ':' is invalid for filename os Windows   
     )
 

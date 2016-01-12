@@ -46,9 +46,13 @@
      (setq sml/hidden-modes '(" RJ"
                               " drag"
                               " back"
-                              " org-link"
                               " Hi"
+                              " org-link"
                               " -Chg"
+                              " VHl"
+                              " WK"
+                              " ivy"
+                              " OrgStruct"
                               " Undo-Tree"))
 
      (setq-default mode-line-format
