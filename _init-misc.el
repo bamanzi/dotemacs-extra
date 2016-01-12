@@ -1,5 +1,6 @@
 
-;; ** back-button: Visual navigation through mark rings
+;; ** cross-buffer navigation
+;; *** back-button: Visual navigation through mark rings
 ;;https://github.com/rolandwalker/back-button
 (if (and (< emacs-major-version 24)
          (locate-library "smartrep"))
@@ -58,32 +59,6 @@
 
 
 
-;; ** desktop-registry
-(autoload 'desktop-registry-change-desktop  "desktop-registry"
-  "Change to the desktop named NAME." t)
-
-(global-set-key (kbd "<f12> C-l") 'desktop-registry-change-desktop)
-
-(idle-require 'desktop-registry)
-
-(eval-after-load "desktop-registry"
-  `(progn
-     (desktop-registry-auto-register 1)
-     ))
-
-(unless (fboundp 'file-name-base)
-  (defun file-name-base (&optional filename)
-    "Return the base name of the FILENAME: no directory, no extension.
-FILENAME defaults to `buffer-file-name'."
-    (file-name-sans-extension
-     (file-name-nondirectory (or filename (buffer-file-name))))))
-
-(require 'cl-lib)
-(unless (fboundp 'cl-find)
-  (defalias 'cl-find 'find))
-
-
-
 ;; ** vi emulation (viper)
 
 ;; *** viper/vimpulse addons
@@ -134,6 +109,39 @@ FILENAME defaults to `buffer-file-name'."
 
 
 ;; ** minibuffer completion
+
+;; *** ivy-mode
+;; better replacement for icomplete + ido + ido-vertical + ido-ubiquitous
+;; - commands (M-x, where-is)
+;; - variables (describe-variable, set-variable, customize-variable, find-variable)
+;; - functions (describe-function, find-function)
+;; - groups (customize-group)
+;; - libraries (find-library)
+;; - packages (describe-package, package-install)
+;; - tags (find-tag)
+;; - info nodes (Info-goto-node, info-lookup-symbol)
+
+(autoload 'ivy-mode "ivy"
+  "Toggle Ivy mode on or off." t)
+
+(unless (fboundp 'setq-local)
+  ;; emacs <= 24.2 doesn't have `setq-local'
+  (defmacro setq-local (var val)
+    "Set variable VAR to value VAL in current buffer."
+    ;; Can't use backquote here, it's too early in the bootstrap.
+    (list 'set (list 'make-local-variable (list 'quote var)) val)))
+
+;;(idle-require 'ivy)
+
+(eval-after-load "ivy"
+  `(progn
+     (icomplete-mode -1)
+     (ido-mode -1)
+
+     (ivy-mode 1)
+     ))
+
+;; *** icomplete+
 ;; emacs>=24.4's `icomplete-mode' no longer shows keybindings for `M-x',
 ;; package `icomplete+' reimplemented this feature
 (eval-after-load "icomplete"
@@ -143,7 +151,7 @@ FILENAME defaults to `buffer-file-name'."
        ;; we need to use `icompletep-cycling-mode' to re-enable it.
        (icompletep-cycling-mode 1))))
 
-;;--
+;; *** ido enhancement
 ;; enhance `ido'
 (eval-after-load "ido"
   `(when (require 'ido-vertical-mode nil t)
@@ -202,48 +210,11 @@ FILENAME defaults to `buffer-file-name'."
      ))
 
 
-;; *** switch off/on touchpad when emacs gets/loses focus
-;; https://www.reddit.com/r/emacs/comments/38o0tr/i_have_to_share_this_switch_your_touchpad_off/
-(defvar touchpad-device-name nil
-  "The name of your touchpad device.
-
-You can figure it out using
-
-xinput --list
-
-e.g. for me it's \"SynPS/2 Synaptics TouchPad\"")
-
-(defun turn-off-mouse (&optional frame)
-  (interactive)
-  (if touchpad-device-name
-      (shell-command (format "xinput --disable \"%s\"" touchpad-device-name))
-    (shell-command "synclient TouchpadOff=1")))
-
-(defun turn-on-mouse (&optional frame)
-  (interactive)
-  (if touchpad-device-name
-      (shell-command (format "xinput --enable \"%s\"" touchpad-device-name))
-    (shell-command "synclient TouchpadOff=0")))
-
-;; only Emacs >= 24.4 has `focus-in-hook' and `focus-out-hook'
-(when (and (boundp 'focus-in-hook)
-           (eq window-system 'x)
-           (not (string-match "Couldn't find synaptics properties" (shell-command-to-string "synclient -l"))))
-  (add-hook 'focus-in-hook #'turn-off-mouse)
-  (add-hook 'focus-out-hook #'turn-on-mouse)
-  (add-hook 'delete-frame-functions #'turn-on-mouse))
-
-
 ;; ** misc
 ;;--
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
 
-(idle-require 'volatile-highlights)
-(eval-after-load "volatile-highlights"
-  `(progn
-     (volatile-highlights-mode t)
-     ))
 
 ;;--
 ;;info+.el: more colors (and other enhancements) 
