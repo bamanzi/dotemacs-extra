@@ -132,3 +132,25 @@ Each function should accept ONE argument in STRING type.")
 
 (define-key global-map (kbd "<s-mouse-3>")      'pop-to-mark-command)
 (define-key global-map (kbd "<C-s-mouse-3>")    'pop-global-mark)
+
+;; ** realgud
+;;https://github.com/rocky/emacs-dbgr
+
+(add-to-list 'load-path "~/.emacs.d/packages/realgud")
+
+(autoload 'realgud-gdb    "realgud" nil t)
+(autoload 'realgud-pdb    "realgud" nil t)
+(autoload 'realgud-perldb "realgud" nil t)
+(autoload 'realgud-rdebug "realgud" nil t)
+
+(def load-realgud ()
+     (interactive)
+
+     (require 'realgud)
+
+     (autoload 'pdb            "realgud" nil t)
+     (autoload 'perldb         "realgud" nil t)
+     (autoload 'rdebug         "realgud" nil t)
+
+     (autoload 'realgud-track-mode "realgud" nil t)
+     )

@@ -42,7 +42,7 @@
 (autoload 'hide-non-matching-lines "hide-lines"
   "Hide lines that don't match the specified regexp." t)
 
-;; ** outshine = outline + org-mode
+;; *** outshine = outline + org-mode
 ;;TAB key for org-mode like folding
 
 (eval-after-load "outshine"
@@ -128,7 +128,8 @@
       (push-mark (cdr bounds) nil transient-mark-mode)
       (setq deactivate-mark nil))))
 
-;; ** highlight-thing
+;; ** some highlighting
+;; *** highlight-thing
 ;; highlight *all occurence* of a thing
 (autoload 'highlight-thing-mode "highlight-thing"
   "Minor mode that highlights things at point" t)
@@ -142,4 +143,11 @@
 
      ;; default value 0.5 is too short, causing high CPU usage sometimes when too much occurrence
      (setq highlight-thing-delay-seconds 1.5)
+     ))
+
+;; *** volatile-highlights
+(idle-require 'volatile-highlights)
+(eval-after-load "volatile-highlights"
+  `(progn
+     (volatile-highlights-mode t)
      ))
