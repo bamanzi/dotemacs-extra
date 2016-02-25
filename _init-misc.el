@@ -215,6 +215,14 @@
 
 
 ;; ** misc
+(autoload 'default-text-scale-increase "default-text-scale"
+  "Increase the height of the default face by `default-text-scale-amount'." t)
+(autoload 'default-text-scale-decrease "default-text-scale"
+  "Decrease the height of the default face by `default-text-scale-amount'." t)
+
+(global-set-key (kbd "<C-S-wheel-up>")   'default-text-scale-increase)
+(global-set-key (kbd "<C-S-wheel-down>") 'default-text-scale-decrease)
+
 ;;--
 (autoload 'yagist-list "yagist"
   "Displays a list of all of the current user's gists in a new buffer." t)
