@@ -1,9 +1,11 @@
-;;; emamux.el --- Interact with tmux
+;;; emamux.el --- Interact with tmux -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2012 by Syohei YOSHIDA
+;; Copyright (C) 2015 by Syohei YOSHIDA
 
 ;; Author: Syohei YOSHIDA <syohex@gmail.com>
 ;; URL: https://github.com/syohex/emacs-emamux
+;; Version: 0.13
+;; Package-Requires: ((emacs "24") (cl-lib "0.5"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,7 +34,10 @@
 
 ;;; Code:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile
+  (defvar helm-mode))
+
+(require 'cl-lib)
 
 (defgroup emamux nil
   "tmux manipulation from Emacs"
@@ -55,6 +60,21 @@
   :type  'boolean
   :group 'emamux)
 
+(defsubst emamux:helm-mode-enabled-p ()
+  (and (featurep 'helm) helm-mode))
+
+(defcustom emamux:completing-read-type (if ido-mode
+                                           'ido
+                                         (if (emamux:helm-mode-enabled-p)
+                                             'helm
+                                           'normal))
+  "Function type to call for completing read.
+For helm completion use either `normal' or `helm' and turn on `helm-mode'."
+  :type '(choice (const :tag "Using completing-read" 'normal)
+                 (const :tag "Using ido-completing-read" 'ido)
+                 (const :tag "Using helm completion" 'helm))
+  :group 'emamux)
+
 (defvar emamux:last-command nil
   "Last emit command")
 
@@ -62,20 +82,20 @@
 (defvar emamux:window nil)
 (defvar emamux:pane nil)
 
-(defun emamux:tmux-running-p ()
-  (= (call-process-shell-command "tmux has-session" nil nil nil) 0))
+(defsubst emamux:tmux-running-p ()
+  (zerop (process-file "tmux" nil nil nil "has-session")))
 
-(defun* emamux:tmux-run-command (cmd &optional (output nil))
-  (let* ((cmd (format "tmux %s" cmd))
-         (retval (call-process-shell-command cmd nil output nil)))
-    (unless (= retval 0)
-      (error (format "Failed: %s(status = %d)" cmd retval)))))
+(defun emamux:tmux-run-command (output &rest args)
+  (let ((retval (apply 'process-file "tmux" nil output nil args)))
+    (unless (zerop retval)
+      (error (format "Failed: %s(status = %d)"
+                     (mapconcat 'identity (cons "tmux" args) " ")
+                     retval)))))
 
 (defun emamux:set-parameters ()
-  (progn
-    (emamux:set-parameter-session)
-    (emamux:set-parameter-window)
-    (emamux:set-parameter-pane)))
+  (emamux:set-parameter-session)
+  (emamux:set-parameter-window)
+  (emamux:set-parameter-pane))
 
 (defun emamux:unset-parameters ()
   (setq emamux:session nil emamux:window nil emamux:pane nil))
@@ -83,44 +103,85 @@
 (defun emamux:set-parameters-p ()
   (and emamux:session emamux:window emamux:pane))
 
-(defun emamux:set-parameter-session ()
-  (let ((candidates (emamux:get-sessions)))
-    (setq emamux:session
-          (if (= (length candidates) 1)
-              (car candidates)
-            (completing-read "Input session: " candidates nil t)))))
+(defun emamux:select-completing-read-function ()
+  (cl-case emamux:completing-read-type
+    ((normal helm) 'completing-read)
+    (ido 'ido-completing-read)))
 
-(defun emamux:set-parameter-window ()
+(defun emamux:mode-function ()
+  (cl-case emamux:completing-read-type
+    ((normal ido) 'ignore)
+    (helm (if (emamux:helm-mode-enabled-p) 'ignore 'helm-mode))))
+
+(defun emamux:completing-read (prompt &rest args)
+  (let ((mode-function (emamux:mode-function)))
+    (unwind-protect
+        (progn
+          (funcall mode-function +1)
+          (apply (emamux:select-completing-read-function) prompt args))
+      (funcall mode-function -1))))
+
+(defun emamux:read-parameter-session ()
+  (let ((candidates (emamux:get-sessions)))
+    (if (= (length candidates) 1)
+        (car candidates)
+      (emamux:completing-read "Session: " candidates nil t))))
+
+(defun emamux:set-parameter-session ()
+  (setq emamux:session (emamux:read-parameter-session)))
+
+(defun emamux:read-parameter-window ()
   (let* ((candidates (emamux:get-window))
          (selected (if (= (length candidates) 1)
                        (car candidates)
-                     (completing-read "Input window: " candidates nil t))))
-    (setq emamux:window (car (split-string selected ":")))))
+                     (emamux:completing-read "Window: " candidates nil t))))
+    (car (split-string selected ":"))))
+
+(defun emamux:set-parameter-window ()
+  (setq emamux:window (emamux:read-parameter-window)))
+
+(defun emamux:read-parameter-pane ()
+  (let ((candidates (emamux:get-pane)))
+    (if (= (length candidates) 1)
+        (car candidates)
+      (emamux:completing-read "Input pane: " candidates))))
 
 (defun emamux:set-parameter-pane ()
-  (let ((candidates (emamux:get-pane)))
-    (setq emamux:pane
-          (if (= (length candidates) 1)
-              (car candidates)
-            (completing-read "Input pane: " candidates)))))
+  (setq emamux:pane (emamux:read-parameter-pane)))
 
-(defun* emamux:target-session (&optional (session emamux:session)
-                                         (window emamux:window)
-                                         (pane emamux:pane))
+(cl-defun emamux:target-session (&optional (session emamux:session)
+                                           (window emamux:window)
+                                           (pane emamux:pane))
   (format "%s:%s.%s" session window pane))
 
 (defun emamux:get-sessions ()
   (with-temp-buffer
-    (emamux:tmux-run-command "list-sessions" t)
+    (emamux:tmux-run-command t "list-sessions")
     (goto-char (point-min))
     (let (sessions)
       (while (re-search-forward "^\\([^:]+\\):" nil t)
         (push (match-string-no-properties 1) sessions))
       sessions)))
 
+(defun emamux:get-buffers ()
+  (with-temp-buffer
+    (emamux:tmux-run-command t "list-buffers")
+    (goto-char (point-min))
+    (cl-loop for count from 0 while
+          (re-search-forward
+           "^\\([0-9]+\\): +\\([0-9]+\\) +\\(bytes\\): +[\"]\\(.*\\)[\"]" nil t)
+          collect (cons (replace-regexp-in-string
+                         "\\s\\" "" (match-string-no-properties 4))
+                        count))))
+
+(defun emamux:show-buffer (index)
+  (with-temp-buffer
+    (emamux:tmux-run-command t "show-buffer" "-b" (number-to-string index))
+    (buffer-substring-no-properties (point-min) (point-max))))
+
 (defun emamux:get-window ()
   (with-temp-buffer
-    (emamux:tmux-run-command (format "list-windows -t %s" emamux:session) t)
+    (emamux:tmux-run-command t "list-windows" "-t" emamux:session)
     (goto-char (point-min))
     (let (windows)
       (while (re-search-forward "^\\([0-9]+: [^ ]+\\)" nil t)
@@ -129,8 +190,8 @@
 
 (defun emamux:get-pane ()
   (with-temp-buffer
-    (emamux:tmux-run-command (format "list-panes -t %s:%s"
-                                     emamux:session emamux:window) t)
+    (let ((pane-id (concat emamux:session ":" emamux:window)))
+      (emamux:tmux-run-command t "list-panes" "-t" pane-id))
     (goto-char (point-min))
     (let (panes)
       (while (re-search-forward "^\\([0-9]+\\):" nil t)
@@ -138,12 +199,15 @@
       (reverse panes))))
 
 (defun emamux:read-command (prompt use-last-cmd)
-  (read-shell-command prompt (and use-last-cmd emamux:last-command)))
+  (let ((cmd (read-shell-command prompt (and use-last-cmd emamux:last-command))))
+    (setq emamux:last-command cmd)
+    cmd))
 
 (defun emamux:check-tmux-running ()
   (unless (emamux:tmux-running-p)
     (error "'tmux' does not run on this machine!!")))
 
+;;;###autoload
 (defun emamux:send-command ()
   "Send command to target-session of tmux"
   (interactive)
@@ -153,52 +217,73 @@
         (if (or current-prefix-arg (not (emamux:set-parameters-p)))
             (emamux:set-parameters))
         (let* ((target (emamux:target-session))
-               (prompt (format "Send to (%s): " target))
+               (prompt (format "Command [Send to (%s)]: " target))
                (input  (emamux:read-command prompt t)))
           (emamux:reset-prompt target)
-          (emamux:send-keys input)
-          (setq emamux:last-command input)))
+          (emamux:send-keys input)))
       (quit (emamux:unset-parameters))))
 
+;;;###autoload
+(defun emamux:send-region (beg end)
+  "Send region to target-session of tmux"
+  (interactive "r")
+  (emamux:check-tmux-running)
+  (condition-case nil
+      (progn
+        (if (or current-prefix-arg (not (emamux:set-parameters-p)))
+            (emamux:set-parameters))
+        (let ((target (emamux:target-session))
+              (input (buffer-substring-no-properties beg end)))
+          (setq emamux:last-command input)
+          (emamux:reset-prompt target)
+          (emamux:send-keys input)))
+    (quit (emamux:unset-parameters))))
+
+;;;###autoload
 (defun emamux:copy-kill-ring (arg)
   "Set (car kill-ring) to tmux buffer"
   (interactive "P")
   (emamux:check-tmux-running)
-  (if (null kill-ring)
-      (error "kill-ring is nil!!"))
-  (let ((index (or (and (consp current-prefix-arg) (car current-prefix-arg))
-                   current-prefix-arg
-                   0))
+  (when (null kill-ring)
+    (error "kill-ring is nil!!"))
+  (let ((index (or arg 0))
         (data (substring-no-properties (car kill-ring))))
     (emamux:set-buffer data index)))
 
-(defun emamux:escape (input)
-  (emamux:escape-quote (emamux:escape-dollar input)))
+;;;###autoload
+(defun emamux:yank-from-list-buffers ()
+  (interactive)
+  (emamux:check-tmux-running)
+  (let* ((candidates (emamux:get-buffers))
+         (index (assoc-default
+                 (emamux:completing-read
+                  "Buffers: " (mapcar 'car candidates))
+                 candidates)))
+    (insert (emamux:show-buffer index))))
 
-(defun emamux:escape-quote (input)
-  (replace-regexp-in-string "\\\"" "\\\\\"" input))
+;;;###autoload
+(defun emamux:kill-session ()
+  "Kill tmux session"
+  (interactive)
+  (emamux:check-tmux-running)
+  (let ((session (emamux:read-parameter-session)))
+    (emamux:tmux-run-command nil "kill-session" "-t" session)))
 
-(defun emamux:escape-dollar (input)
-  (replace-regexp-in-string "\\$" "\\\\\$" input))
+(defsubst emamux:escape-semicolon (str)
+  (replace-regexp-in-string ";\\'" "\\\\;" str))
 
-(defun* emamux:send-keys (input &optional (target (emamux:target-session)))
-  (let ((cmd (format "send-keys -t %s \"%s\" C-m"
-                     target (emamux:escape input))))
-    (emamux:tmux-run-command cmd)))
+(cl-defun emamux:send-keys (input &optional (target (emamux:target-session)))
+  (let ((escaped (emamux:escape-semicolon input)))
+    (emamux:tmux-run-command nil "send-keys" "-t" target escaped "C-m")))
 
-(defun emamux:send-raw-keys (input target)
-  (let ((cmd (format "send-keys -t %s %s" target input)))
-    (emamux:tmux-run-command cmd)))
-
-(defun emamux:buffer-index-option (index)
+(defun emamux:set-buffer-argument (index data)
   (if (zerop index)
-      ""
-    (format "-b %d" index)))
+      (list data)
+    (list "-b" (number-to-string index) data)))
 
 (defun emamux:set-buffer (data index)
-  (let ((cmd (format "set-buffer %s \"%s\""
-                     (emamux:buffer-index-option index) (emamux:escape data))))
-    (emamux:tmux-run-command cmd)))
+  (let ((args (emamux:set-buffer-argument index data)))
+    (apply 'emamux:tmux-run-command nil "set-buffer" args)))
 
 (defun emamux:in-tmux-p ()
   (and (not (display-graphic-p))
@@ -206,6 +291,7 @@
 
 (defvar emamux:runner-pane-id nil)
 
+;;;###autoload
 (defun emamux:run-command (cmd &optional cmddir)
   "Run command"
   (interactive
@@ -213,60 +299,72 @@
   (emamux:check-tmux-running)
   (unless (emamux:in-tmux-p)
     (error "You are not in 'tmux'"))
-  (let ((current-pane (emamux:active-pane-id)))
+  (let ((current-pane (emamux:current-active-pane-id)))
     (unless (emamux:runner-alive-p)
       (emamux:setup-runner-pane)
       (emamux:chdir-pane cmddir))
     (emamux:send-keys cmd emamux:runner-pane-id)
     (emamux:select-pane current-pane)))
 
+;;;###autoload
+(defun emamux:run-last-command ()
+  (interactive)
+  (unless emamux:last-command
+    (error "You have never run command"))
+  (emamux:run-command emamux:last-command))
+
 (defun emamux:reset-prompt (pane)
-  (emamux:send-raw-keys "q C-u" pane))
+  (emamux:tmux-run-command nil "send-keys" "-t" pane "q" "C-u"))
 
 (defun emamux:chdir-pane (dir)
   (let ((chdir-cmd (format " cd %s" (or dir default-directory))))
     (emamux:send-keys chdir-cmd emamux:runner-pane-id)))
 
 (defun emamux:setup-runner-pane ()
-  (let ((nearest-pane-id (emamux:nearest-inactive-pane-id)))
+  (let ((nearest-pane-id (emamux:nearest-inactive-pane-id (emamux:list-panes))))
     (if (and emamux:use-nearest-pane nearest-pane-id)
-      (progn
-        (emamux:select-pane nearest-pane-id)
-        (emamux:reset-prompt nearest-pane-id))
-      (emamux:split-runner-pane)))
-  (setq emamux:runner-pane-id (emamux:active-pane-id)))
+        (progn
+          (emamux:select-pane nearest-pane-id)
+          (emamux:reset-prompt nearest-pane-id))
+      (emamux:split-runner-pane))
+    (setq emamux:runner-pane-id (emamux:current-active-pane-id))))
 
 (defun emamux:select-pane (target)
-  (let ((cmd (format "select-pane -t %s" target) ))
-    (emamux:tmux-run-command cmd)))
+  (emamux:tmux-run-command nil "select-pane" "-t" target))
 
-(defvar emamux:orientation-option-alist
+(defconst emamux:orientation-option-alist
   '((vertical . "-v") (horizonal . "-h")))
 
 (defun emamux:split-runner-pane ()
   (let ((orient-option (assoc-default emamux:default-orientation
                                       emamux:orientation-option-alist)))
-    (emamux:tmux-run-command (format "split-window -p %d %s"
-                                     emamux:runner-pane-height orient-option))))
+    (emamux:tmux-run-command nil
+                             "split-window" "-p"
+                             (number-to-string emamux:runner-pane-height)
+                             orient-option)))
 
 (defun emamux:list-panes ()
   (with-temp-buffer
-    (emamux:tmux-run-command "list-panes" t)
-    (loop initially (goto-char (point-min))
-          while (re-search-forward "^\\(.+\\)$" nil t nil)
-          collect (match-string-no-properties 1))))
+    (emamux:tmux-run-command t "list-panes")
+    (cl-loop initially (goto-char (point-min))
+             while (re-search-forward "^\\(.+\\)$" nil t)
+             collect (match-string-no-properties 1))))
 
-(defun emamux:active-pane-id ()
-  (loop for pane in (emamux:list-panes)
-        when (string-match "\\([^ ]+\\) (active)$" pane)
-        return (match-string-no-properties 1 pane)))
+(defun emamux:active-pane-id (panes)
+  (cl-loop for pane in panes
+           when (string-match "\\([^ ]+\\) (active)\\'" pane)
+           return (match-string-no-properties 1 pane)))
 
-(defun emamux:nearest-inactive-pane-id ()
-  (loop for pane in (emamux:list-panes)
-        when (not (string-match "(active)$" pane))
-        return (if (string-match " \\([^ ]+\\)$" pane)
-                   (match-string-no-properties 1 pane))))
+(defun emamux:current-active-pane-id ()
+  (emamux:active-pane-id (emamux:list-panes)))
 
+(defun emamux:nearest-inactive-pane-id (panes)
+  (cl-loop for pane in panes
+           when (and (not (string-match-p "(active)\\'" pane))
+                     (string-match " \\([^ ]+\\)\\'" pane))
+           return (match-string-no-properties 1 pane)))
+
+;;;###autoload
 (defun emamux:close-runner-pane ()
   "Close runner pane"
   (interactive)
@@ -274,24 +372,21 @@
   (emamux:kill-pane emamux:runner-pane-id)
   (setq emamux:runner-pane-id nil))
 
+;;;###autoload
 (defun emamux:close-panes ()
   "Close all panes except current pane"
   (interactive)
-  (let ((panes (emamux:list-panes)))
-    (if (> (length panes) 1)
-        (emamux:kill-all-panes))))
+  (when (> (length (emamux:list-panes)) 1)
+    (emamux:kill-all-panes)))
 
 (defun emamux:kill-all-panes ()
-  (let ((cmd "kill-pane -a"))
-    (emamux:tmux-run-command cmd)))
+  (emamux:tmux-run-command nil "kill-pane" "-a"))
 
 (defun emamux:kill-pane (target)
-  (let ((cmd (format "kill-pane -t %s" target)))
-    (emamux:tmux-run-command cmd)))
+  (emamux:tmux-run-command nil "kill-pane" "-t" target))
 
-(defun emamux:pane-alive-p (target)
-  (let ((cmd (format "tmux list-panes -t %s" target)))
-    (= (call-process-shell-command cmd nil nil nil) 0)))
+(defsubst emamux:pane-alive-p (target)
+  (zerop (process-file "tmux" nil nil nil "list-panes" "-t" target)))
 
 (defun emamux:runner-alive-p ()
   (and emamux:runner-pane-id (emamux:pane-alive-p emamux:runner-pane-id)))
@@ -300,24 +395,34 @@
   (unless (emamux:runner-alive-p)
     (error "There is no runner pane")))
 
+;;;###autoload
 (defun emamux:inspect-runner ()
   "Enter copy-mode in runner pane"
   (interactive)
   (emamux:check-runner-alive)
   (emamux:select-pane emamux:runner-pane-id)
-  (emamux:tmux-run-command "copy-mode"))
+  (emamux:tmux-run-command nil "copy-mode"))
 
+;;;###autoload
 (defun emamux:interrupt-runner ()
   "Send SIGINT to runner pane"
   (interactive)
   (emamux:check-runner-alive)
-  (emamux:send-raw-keys "^c" emamux:runner-pane-id))
+  (emamux:tmux-run-command nil "send-keys" "-t" emamux:runner-pane-id "^c"))
 
+;;;###autoload
 (defun emamux:clear-runner-history ()
   "Clear history of runner pane"
   (interactive)
   (emamux:check-runner-alive)
-  (emamux:tmux-run-command (format "clear-history %s" emamux:runner-pane-id)))
+  (emamux:tmux-run-command nil "clear-history" emamux:runner-pane-id))
+
+;;;###autoload
+(defun emamux:zoom-runner ()
+  "Zoom runner pane. This feature requires tmux 1.8 or higher"
+  (interactive)
+  (emamux:check-runner-alive)
+  (emamux:tmux-run-command nil "resize-pane" "-Z" "-t" emamux:runner-pane-id))
 
 (provide 'emamux)
 
