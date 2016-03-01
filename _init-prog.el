@@ -1,3 +1,16 @@
+;; ** indent
+;; *** aggressive-indent-mode
+(autoload 'aggressive-indent-mode "aggressive-indent"
+  "Toggle Aggressive-Indent mode on or off." t)
+
+(eval-after-load "lisp-mode"
+  `(progn
+     (add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode 'append)
+     (add-hook 'lisp-interaction-mode-hook 'aggressive-indent-mode 'append)
+     ))
+
+(global-set-key (kbd "<f10> a i") 'aggressive-indent-mode)
+
 ;; ** yasnippet
 (autoload 'yas/global-mode "yasnippet"
   "Toggle Yas minor mode in all buffers." t)
