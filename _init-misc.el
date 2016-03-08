@@ -156,7 +156,21 @@
        (icompletep-cycling-mode 1))))
 
 ;; *** ido enhancement
-;; enhance `ido'
+;; **** ido-ubiquitous-mode
+;; `ido-ubiquitous-mode' is better than `icomplete-mode' (is it?)
+(setq ido-everywhere t)
+
+(autoload 'ido-ubiquitous-mode "ido-ubiquitous"
+  "Use `ido-completing-read' instead of `completing-read' almost everywhere." t)
+
+(idle-require 'ido-ubiquitous)
+
+(eval-after-load "ido-ubiquitous"
+  `(progn
+     (ido-ubiquitous-mode 1)
+     ))
+
+;; **** vertical candidates
 (eval-after-load "ido"
   `(when (require 'ido-vertical-mode nil t)
      (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
@@ -173,7 +187,7 @@
      (ido-vertical-mode t)
      ))
 
-;;-- smex
+;; **** smex
 ;; I don't `smex' is better than `icomplete-mode',
 ;; but `smex-major-mode-commands' is useful
 (autoload 'smex-major-mode-commands "smex"
