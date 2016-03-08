@@ -172,7 +172,9 @@
 
 ;; **** vertical candidates
 (eval-after-load "ido"
-  `(when (require 'ido-vertical-mode nil t)
+  `(when (and (>= emacs-major-version 24)
+              (require 'ido-vertical-mode nil t))
+
      (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
 
      (add-hook 'ido-setup-hook
