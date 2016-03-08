@@ -24,7 +24,7 @@
      (if (and (require 'ob-core nil t)
               (require 'org-eldoc nil t))
          (message "Package `org-eldoc' loaded, you can use `eldoc-mode' in org buffers.")
-       (message "WARN: failed to load package `org-eldoc'."))
+       (message "WARN: package 'org-eldoc' requires org>8, but current version is %s. stop loading it." org-version))
      ))
 
 ;; ** attach images
