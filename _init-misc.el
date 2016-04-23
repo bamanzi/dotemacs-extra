@@ -58,9 +58,9 @@
      (setq-default mode-line-format
                    (cons " "
                          (cons '(which-func-mode which-func-format)
-                                (default-value 'mode-line-format))))
+                               (remove '(which-func-mode which-func-format)
+                                       (default-value 'mode-line-format)))))
      ))
-
 
 
 ;; ** vi emulation (viper)
