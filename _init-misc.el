@@ -73,6 +73,14 @@
      (require 'vimpulse-surround nil t)
      ))
 
+;; *** god-mode
+(autoload god-mode "god-mode"
+  "Toggle global God mode." t)
+(autoload god-local-mode  "god-mode"
+  "Minor mode for running commands." t)
+
+(global-set-key (kbd "<f10> g") 'god-local-mode)
+(global-set-key (kbd "<f10> G") 'god-mode)
 
 
 ;; ** scratch buffer
