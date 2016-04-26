@@ -73,13 +73,19 @@
 
 ;; ** rectangle
 ;; *** C-x r ...
+
+;; put rectangle-area to `killed-rectangle'
+;; (same with `copy-rectangle-as-kill' in emacs>=24.3)
 (autoload 'rectplus-copy-rectangle  "rect+"
   "Copy rectangle area." t)
+;; copy content of `killed-rectangle' to `kill-ring'
+(autoload 'rectplus-rectangle-to-kill-ring "rect+"
+  "Killed rectangle to normal `kill-ring'." t)
+
 (autoload 'rectplus-insert-number-rectangle  "rect+"
   "Insert incremental number into each left edges of rectangle's line." t)
 
-(define-key ctl-x-r-map (kbd "M-w")   'rectplus-rectangle-to-kill-ring)
-(define-key ctl-x-r-map (kbd "M-S-w") 'rectplus-copy-rectangle)
+
 (define-key ctl-x-r-map (kbd "M-n")   'rectplus-insert-number-rectangle)
 
 ;; *** cua rectangle (visual)
