@@ -100,17 +100,18 @@ and `org-download-heading-lvl' obsolete."
 
 
 ;; ** export to asciidoc
-(eval-after-load "org"
-  `(progn
-    (if (string< org-version "8")
-        ;; 1. export `org-export-as-ascii' to C-c C-e a/n/u  or C-c C-e A/N/U
-        (if (require 'org-ascii nil t) ;;since org-6.33 core
-            (message "Package `org-ascii' loaded. now you can publish org-mode to `asciidoc' with <C-c C-e a> or <C-c C-e A>"))
+(defun bmz/org-enable-exporting-to-asciidoc ()
+  "Load package `ox-ascii' (org>=8) or `org-ascii' (org<8)."
+  (require 'org)
+  (if (string< org-version "8")
+      ;; 1. export `org-export-as-ascii' to C-c C-e a/n/u  or C-c C-e A/N/U
+      (if (require 'org-ascii nil t) ;;since org-6.33 core
+          (message "Package `org-ascii' loaded. now you can publish org-mode to `asciidoc' with <C-c C-e a> or <C-c C-e A>"))
 
-      ;; 2. org 8.x can export to ASCII directly
-      (if (require 'ox-ascii nil t)  ;; expose ASCIIdocto C-c C-e menu
-          (message "Package `ox-ascii' loaded. now you can publish org-mode to `asciidoc' with <C-c C-e t a> or <C-c C-e t A>"))
-      )))
+    ;; 2. org 8.x can export to ASCII directly
+    (if (require 'ox-ascii nil t)  ;; expose ASCIIdocto C-c C-e menu
+        (message "Package `ox-ascii' loaded. now you can publish org-mode to `asciidoc' with <C-c C-e t a> or <C-c C-e t A>"))
+    ))
 
 ;; * asciidoc
 (autoload 'adoc-mode "adoc-mode"
