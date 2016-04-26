@@ -1,11 +1,11 @@
 ;; ** go-to
-(autoload 'avy-goto-char-timer "avy"
-  "Read one or two consecutive chars and jump to the first one." t)
+(autoload 'avy-goto-char-in-line "avy"
+  "Jump to the currently visible CHAR in the current line." t)
 
 (autoload 'avy-goto-line "avy"
   "Jump to a line start in current buffer." t)
 
-(global-set-key (kbd "M-g c") 'avy-goto-char-timer)
+(global-set-key (kbd "M-g c") 'avy-goto-char-in-line)
 (global-set-key (kbd "M-g l") 'avy-goto-line)
 
 ;; ** search
