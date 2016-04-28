@@ -213,12 +213,11 @@
 ;; *** which-key/guide-key
 (autoload 'guide-key-mode "guide-key"
   "Toggle guide key mode." t)
+(autoload 'which-key-mode "which-key"
+  "Toggle which-key-mode." t)
 
-(if (string< emacs-version "24.3")
-    (idle-require 'guide-key)
-  (autoload 'which-key-mode  "which-key"
-    "Toggle which-key-mode." t)
-  (idle-require 'which-key))
+;; (idle-require 'which-key) ;; it requires emacs>=24.3
+(idle-require 'guide-key)
 
 (eval-after-load "which-key"
   `(progn
@@ -230,10 +229,23 @@
   `(progn
      (setq guide-key/guide-key-sequence '("C-x r"
                                           "C-x 4"
+                                          "C-c C-x"
+                                          "C-c @"
                                           "M-g"
                                           "M-s"
+                                          "<f1>"
+                                          "<f6>"
+                                          "<f9>"
+                                          "<f10>"
                                           "<f11>"
-                                          "<f10>"))
+                                          "<f12>"
+                                          "<apps>"))
+     (setq guide-key/highlight-command-regexp
+           '("rectangle"
+             ("\\(anything\\|helm\\)" . font-lock-keyword-face)
+             ("tag" . font-lock-type-face)
+             ("bookmark" . "hot pink")))
+     (setq guide-key/recursive-key-sequence-flag t)     
      (guide-key-mode 1)  ; Enable guide-key-mode
      ))
 
