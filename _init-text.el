@@ -90,7 +90,7 @@ and `org-download-heading-lvl' obsolete."
          (setq ad-return-value result)))
 
 
-     (defadvice org-download-screenshot (around use-org-attach active)
+     (defadvice org-download-screenshot (around use-org-attach activate)
        (let ((basename (read-string "sBase name for screenshot: " "screenshot-")))
          (org-insert-screenshot basename)))
 
@@ -102,6 +102,7 @@ and `org-download-heading-lvl' obsolete."
 ;; ** export to asciidoc
 (defun bmz/org-enable-exporting-to-asciidoc ()
   "Load package `ox-ascii' (org>=8) or `org-ascii' (org<8)."
+  (interactive)
   (require 'org)
   (if (string< org-version "8")
       ;; 1. export `org-export-as-ascii' to C-c C-e a/n/u  or C-c C-e A/N/U
@@ -113,10 +114,12 @@ and `org-download-heading-lvl' obsolete."
         (message "Package `ox-ascii' loaded. now you can publish org-mode to `asciidoc' with <C-c C-e t a> or <C-c C-e t A>"))
     ))
 
+
 ;; * asciidoc
 (autoload 'adoc-mode "adoc-mode"
   "Major mode for editing AsciiDoc text files." t)
 (add-to-list 'auto-mode-alist '("\\.adoc$" . adoc-mode))
+
 
 ;; * markdown
 ;; ** TOC
