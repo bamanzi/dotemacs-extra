@@ -52,3 +52,12 @@
      ;;(eshell-did-you-mean-setup)
      ))
 
+;; *** cheatsheet
+(progn
+  (cheatsheet-add :group 'Eshell :key "?"        :description "esh-help-run-help (man)")
+  (cheatsheet-add :group 'Eshell :key "help"     :description "esh-help-run-help (man)")
+  (cheatsheet-add :group 'Eshell :key "j"        :description "list MRU paths (eshell-autojump)")
+  (cheatsheet-add :group 'Eshell :key "j regexp" :description "jump to a MRU path (eshell-autojump)")
+  t)
+
+

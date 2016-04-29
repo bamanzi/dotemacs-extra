@@ -10,6 +10,11 @@
 
 (define-key global-map (kbd "<f5> <f10>") 'anything-lacarte)
 
+(progn
+  (cheatsheet-add :group 'Term :key "ESC <f10>"    :description "lacarte-execute-menu-command")
+  (cheatsheet-add :group 'Term :key "<f5> <f10>"   :description "anything-larcate")
+  )
+
 ;; ** tmux integration
 (autoload 'emamux:send-command "emamux"
   "Send command to target-session of tmux" t)
@@ -34,3 +39,11 @@
     ))
  
 (define-key global-map (kbd "<f12> t") 'emamux:chdir-pwd-other-pane)
+
+(progn
+  (cheatsheet-add :group 'Term :key "M-x emamux:send-command"    :description "tmux: send-command to a choosen session/window/pane")
+  (cheatsheet-add :group 'Term :key "M-x emamux:run-command"     :description "tmux: run a command")
+  (cheatsheet-add :group 'Term :key "M-x emamux:send-region"     :description "tmux: send region to target-session/window/pane")
+  (cheatsheet-add :group 'Term :key "M-x emamux:chdir-pwd-other-pane" :description "tmux: send `cd _default-directory_' to other pane")
+  t)
+

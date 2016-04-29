@@ -11,12 +11,28 @@
 (eval-after-load "back-button"
   `(progn
      (back-button-mode 1)
-     (define-key goto-map (kbd "<left>")    'back-button-local-backward)
-     (define-key goto-map (kbd "<right>")   'back-button-local-backward)
-     (define-key goto-map (kbd "<M-left>")  'back-button-global-backward)
-     (define-key goto-map (kbd "<M-right>") 'back-button-global-backward)
 
+     (define-key goto-map (kbd "<left>")    'back-button-local-backward)
+     (define-key goto-map (kbd "<right>")   'back-button-local-forward)
+     (define-key goto-map (kbd "<M-left>")  'back-button-global-backward)
+     (define-key goto-map (kbd "<M-right>") 'back-button-global-forward)
+
+
+     (cheatsheet-add :group 'Jump
+                     :key "M-g <left>"
+                     :description "back-button-local-backward")
+     (cheatsheet-add :group 'Jump
+                     :key "M-g <right>"
+                     :description "back-button-local-forward")
+     (cheatsheet-add :group 'Jump
+                     :key "M-g <M-left>"
+                     :description "back-button-global-backward")
+     (cheatsheet-add :group 'Jump
+                     :key "M-g <M-right>"
+                     :description "back-button-global-forward")
+     t
      ))
+
 
 ;; *** recent-jump
 ;;(idle-require 'recent-jump)
@@ -29,6 +45,14 @@
   `(progn
      (define-key goto-map (kbd "<left>")  'recent-jump-backward)
      (define-key goto-map (kbd "<right>") 'recent-jump-forward)
+
+     (cheatsheet-add :group 'Jump
+                     :key "M-g <left>"
+                     :description "recent-jump-backward")
+     (cheatsheet-add :group 'Jump
+                     :key "M-g <right>"
+                     :description "recent-jump-forward")
+     
      ))
 
 
@@ -74,9 +98,9 @@
      ))
 
 ;; *** god-mode
-(autoload god-mode "god-mode"
+(autoload 'god-mode "god-mode"
   "Toggle global God mode." t)
-(autoload god-local-mode  "god-mode"
+(autoload 'god-local-mode  "god-mode"
   "Minor mode for running commands." t)
 
 (global-set-key (kbd "<f10> g") 'god-local-mode)
@@ -208,6 +232,11 @@
 (setq smex-cache nil
       smex-data nil)  ;;workaround for bug of `smex'
 
+(progn
+  (cheatsheet-add :group 'Minibuffer
+                  :key "ESC M-x"
+                  :description "smex-major-mode-commands")
+  t)
 
 ;; ** keys
 ;; *** which-key/guide-key
@@ -258,6 +287,15 @@
 
 (global-set-key (kbd "<C-S-wheel-up>")   'default-text-scale-increase)
 (global-set-key (kbd "<C-S-wheel-down>") 'default-text-scale-decrease)
+
+(progn
+  (cheatsheet-add :group 'Misc
+                  :key "<C-S-wheel-up>"
+                  :description "default-text-scale-increase")
+  (cheatsheet-add :group 'Misc
+                  :key "<C-S-wheel-down>"
+                  :description "default-text-scale-decrease")
+  t)
 
 ;;--
 (autoload 'yagist-list "yagist"

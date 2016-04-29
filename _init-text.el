@@ -18,6 +18,8 @@
             (toc-org-insert-toc)
           (message "You should add tag TOC to one of the heading lines."))))))
 
+(cheatsheet-add :group 'Org-mode :key "M-x org-insert-or-update-toc"    :description "Insert or update the TOC section (a heading with tag 'TOC' or 'TOC_2' needed)")
+
 ;; ** eldoc support
 (eval-after-load "org"
   `(progn
@@ -63,6 +65,11 @@ The screen-shot tool is determined by `org-download-screenshot-method'."
       (make-frame-visible frame)
       (raise-frame frame))
     (org-download-image temp-file)))
+
+(progn
+  (cheatsheet-add :group 'Org-mode :key "M-x org-insert-image-file"    :description "Copy a image file to ATTACH_DIR and insert link.")
+  (cheatsheet-add :group 'Org-mode :key "M-x org-insert-screenshot"    :description "Take a screenshot, store it into ATTACH_DIR and insert link.")
+  t)
 
 
 (when (memq system-type '(ms-dos windows-nt))
@@ -114,6 +121,8 @@ and `org-download-heading-lvl' obsolete."
         (message "Package `ox-ascii' loaded. now you can publish org-mode to `asciidoc' with <C-c C-e t a> or <C-c C-e t A>"))
     ))
 
+(cheatsheet-add :group 'Org-mode :key "M-x bmz/org-enable-exporting-to-asciidoc"    :description "Load package `ox-ascii' (org>=8) or `org-ascii' (org<8).")
+
 
 ;; * asciidoc
 (autoload 'adoc-mode "adoc-mode"
@@ -125,3 +134,5 @@ and `org-download-heading-lvl' obsolete."
 ;; ** TOC
 (autoload 'markdown-toc-generate-toc "markdown-toc"
   "Generate a TOC for markdown file at current point." t)
+
+(cheatsheet-add :group 'Markdown :key "M-x markdown-toc-generate-toc"    :description "Generate a TOC for markdown file at current point.")

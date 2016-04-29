@@ -51,13 +51,19 @@
      ;;(executable-find "dot.exe")
      ))
 
+(cheatsheet-add :group 'Programming
+                  :key "M-x sct-graphviz"
+                  :description "Analyze the simple tree call and display it as graphic.")
+
 ;; ** tags
 
 ;; *** find-file-in-tags
 (autoload 'find-file-in-tags "find-file-in-tags"
   "find file in TAGS file." t)
 
-(global-set-key (kbd "<f9> . f") 'find-file-in-tags)
+(cheatsheet-add :group 'Programming/Tags
+                :key "M-x find-file-in-tags"
+                :description "Find file in TAGS file")
 
 
 ;; ** highlighting

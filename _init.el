@@ -22,8 +22,10 @@
 (if (and (fboundp 'idle-require-mode) idle-require-mode) ;;`idle-require-mode' not finished yet
     (defalias 'idle-require 'require))
 
+(require 'cheatsheet)
+(global-set-key (kbd "<apps> <f1>") 'cheatsheet-show)
 
 (mapc #'(lambda (file)
-	  (load-file file))
+          (load-file file))
       (directory-files dotemacs-extra-dir 'full "^_init-.*.el$"))
 

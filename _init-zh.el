@@ -19,6 +19,12 @@
   (global-set-key (kbd "<apps> g SPC") 'google-translate-query-translate)
   )
 
+(progn
+  (cheatsheet-add :group 'Language-Tools :key "<apps> g g"    :description "google-translate-at-point")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> G"      :description "google-translate-at-point")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> g SPC"  :description "google-translate-query-translate")
+  t)
+
 ;; ** dictionary
 ;; *** youdao dictionary
 (autoload 'youdao-dictionary-search-at-point+  "youdao-dictionary"
@@ -34,6 +40,12 @@
   )
 
 
+(progn
+  (cheatsheet-add :group 'Language-Tools :key "<apps> y y"    :description "youdao-dictionary-search-at-point+")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> Y"      :description "youdao-dictionary-search-at-point+")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> y SPC"  :description "youdao-dictionary-search-from-input")
+  t)
+
 ;; *** dict protocol
 (setq dictem-server "localhost")
 (autoload 'dictem-run-search  "dictem" nil t)
@@ -41,12 +53,20 @@
 (autoload 'dictem-run-define  "dictem" nil t)
 
 (progn
+  (global-set-key (kbd "<apps> D")   'dictem-run-define)
+  (global-set-key (kbd "<apps> d d") 'dictem-run-define)
   (global-set-key (kbd "<apps> d s") 'dictem-run-search)
   (global-set-key (kbd "<apps> d SPC") 'dictem-run-search)
   (global-set-key (kbd "<apps> d m") 'dictem-run-match)
-  (global-set-key (kbd "<apps> d d") 'dictem-run-define)
-  (global-set-key (kbd "<apps> D")   'dictem-run-define)
   )
+
+(progn
+  (cheatsheet-add :group 'Language-Tools :key "<apps> d d"    :description "dictem-run-define")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> D"      :description "dictem-run-define")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> d SPC"  :description "dictem-run-search")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> d s"    :description "dictem-run-search")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> d m"    :description "dictem-run-match")
+  t)
 
 
 (eval-after-load "dictem"
@@ -65,6 +85,13 @@
 (global-set-key (kbd "<apps> s s")  'sdcv-search-pointer+)
 (global-set-key (kbd "<apps> S")    'sdcv-search-pointer+)
 
+(progn
+  (cheatsheet-add :group 'Language-Tools :key "<apps> s s"    :description "sdcv-search-pointer+")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> S"      :description "sdcv-search-pointer+")
+  (cheatsheet-add :group 'Language-Tools :key "<apps> s SPC"  :description "sdcv-search-input")
+  t)
+
+
 (defun sdcv-search-word-at-pt-mouse (event)
   (interactive "e")
   (mouse-set-point event)
@@ -74,8 +101,8 @@
 ;;(global-set-key (kbd "<C-down-mouse-1>") 'sdcv-search-word-at-pt-mouse)
 
 
-;; * input methods
-;; ** eim
+;; ** input methods
+;; *** eim
 ;;https://github.com/wenbinye/emacs-eim
 
 (add-to-list 'load-path "~/.emacs.d/packages/eim")
@@ -98,7 +125,7 @@
      (global-set-key ";" 'eim-insert-ascii)
      ))
 
-;; ** fcitx.el (make fcitx work better in emacs)
+;; *** fcitx.el (make fcitx work better in emacs)
 (autoload 'fcitx-default-setup "fcitx"
   "Default setup for `fcitx'." t)
 
@@ -112,3 +139,19 @@
      
      (fcitx-prefix-keys-add "M-s")
      ))
+
+;; ** misc
+;; *** pinyin-search
+(autoload 'isearch-forward-pinyin "pinyin-search"
+  "Search Chinese forward by Pinyin." t)
+(autoload 'isearch-backward-pinyin "pinyin-search"
+  "Search Chinese backward by Pinyin." t)
+(autoload 'pinyin-search "pinyin-search"
+  "Search Chinese forward by Pinyin." t)
+(autoload 'pinyin-search-backward "pinyin-search"
+  "Search Chinese backward by Pinyin." t)
+
+(progn
+  (cheatsheet-add :group 'Language-Tools :key "M-x isearch-forward-pinyin"  :description "Search Chinese forward by Pinyin.")
+  (cheatsheet-add :group 'Search         :key "M-x isearch-forward-pinyin"  :description "Search Chinese forward by Pinyin.")
+  )

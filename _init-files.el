@@ -78,8 +78,14 @@
      ;; (add-hook 'dired-initial-position-hook 'dired-k)
      ))
 
+(progn
+  (cheatsheet-add :group 'Dired
+                  :key "K"
+                  :description "dired-k (Highlighting dired buffer by file size, last modified time, and git status).")
+  t
+  )
 
-;; ** dired-narrow
+;; *** dired-narrow
 (autoload 'dired-narrow "dired-narrow"
   "Narrow a dired buffer to the files matching a string." t)
 (autoload 'dired-narrow-regexp "dired-narrow"
@@ -89,6 +95,13 @@
   `(progn
      (define-key dired-mode-map (kbd "M-q") 'dired-narrow-regexp)
      ))
+
+(progn
+  (cheatsheet-add :group 'Dired
+                  :key "M-q"
+                  :description "dired-narrow")
+  t
+  )
 
 ;; ** nav (file browser)
 
@@ -104,3 +117,10 @@
 (autoload 'vlf "vlf"  "View Large FILE." t)
 
 (idle-require 'vlf)
+
+(progn
+  (cheatsheet-add :group 'Open/Save
+                  :key "M-x vlf"
+                  :description "View large file")
+  t
+  )
