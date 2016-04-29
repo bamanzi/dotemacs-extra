@@ -63,8 +63,19 @@
 ;; ** dired
 (idle-require 'dired+)
 
+;; *** win32
 (when (eq system-type 'windows-nt)
   (idle-require 'w32-browser))
+
+(progn
+  (cheatsheet-add :group 'Dired
+                  :key "M-x dired-w32-browser"
+                  :description "Run default Windows application associated with current line's file.")
+  (cheatsheet-add :group 'Dired
+                  :key "M-x dired-w32explore"
+                  :description "Open Windows Explorer to current file or folder.")  
+  t
+  )
 
 ;; *** dired-k
 (autoload 'dired-k  "dired-k"

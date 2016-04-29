@@ -125,6 +125,9 @@
 
 (global-set-key (kbd "<f12> M-*") 'scratch)
 
+(cheatsheet-add :group 'Misc
+                :key "<f12> M-*"
+                :description "scratch (Create (or switch to) scratch buffer for current major mode.")
 
 ;; ** indentation guides
 ;; *** highlight-identation-mode
@@ -232,10 +235,23 @@
 (setq smex-cache nil
       smex-data nil)  ;;workaround for bug of `smex'
 
+;; *** cheatsheet
 (progn
+  (cheatsheet-add :group 'Minibuffer
+                  :key "M-x ivy-mode"
+                  :description "ivy-mode (emacs>=24)")
+  
+  (cheatsheet-add :group 'Minibuffer
+                  :key "M-x ido-ubiquitous-mode"
+                  :description "ido-ubiquitous-mode")
+  (cheatsheet-add :group 'Minibuffer
+                  :key "M-x ido-vertical-mode"
+                  :description "ido-vertical-mode (emacs>=24)")
+
   (cheatsheet-add :group 'Minibuffer
                   :key "ESC M-x"
                   :description "smex-major-mode-commands")
+  
   t)
 
 ;; ** keys
@@ -318,6 +334,10 @@
 ;;--
 (autoload 'restart-emacs "restart-emacs"
   "Restart Emacs." t)
+
+(cheatsheet-add :group 'Misc
+                :key "M-x restart-emacs"
+                :description "Restart emacs")
 
 ;;--
 (idle-require 'buff-menu+)

@@ -70,6 +70,12 @@
 (autoload 'color-identifiers-mode "color-identifiers-mode"
   "Color the identifiers in the current buffer based on their names." t)
 
+(global-set-key (kbd "<f10> c i") 'color-identifiers-mode)
+
+(cheatsheet-add :group 'Programming
+                :key "<f10> c i"
+                :description "color-identifiers-mode")
+
 
 ;;** super+click to jump to declaration/implementation
 (defvar symbol-jump/function-alist
