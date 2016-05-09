@@ -17,7 +17,13 @@
                   :description "avy-goto-line")
   t
   )
-  
+
+;; *** zop-to-char
+(autoload 'zop-to-char  "zop-to-char"
+  "An enhanced version of `zap-to-char'." t)
+
+(global-set-key [remap zap-to-char] 'zop-to-char)
+
 
 ;; ** search
 ;; *** swiper
