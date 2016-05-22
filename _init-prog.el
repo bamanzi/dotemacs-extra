@@ -5,11 +5,30 @@
 
 (eval-after-load "lisp-mode"
   `(progn
-     (add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode 'append)
+     ;;     (add-hook 'emacs-lisp-mode-hook 'aggressive-indent-mode 'append)
      (add-hook 'lisp-interaction-mode-hook 'aggressive-indent-mode 'append)
      ))
 
 (global-set-key (kbd "<f10> a i") 'aggressive-indent-mode)
+
+;; ** indentation guides
+;; *** highlight-identation-mode
+;; (configured in `dotemacs-elite')
+;; cons:
+;;    - only whitespaces supported (tabs not supported)
+
+;; *** indent-guide-mode
+;;`indent-guide-mode' only show guides on current section.
+;; but it would actually use a char (`indent-guide-char') to guide line,
+;; thus it might not be suitable for terminal (if you use external copy (mouse or tmux))
+(autoload 'indent-guide-mode  "indent-guide"
+  "Show vertical lines to guide indentation." t)
+
+(global-set-key (kbd "<f10> ig") 'indent-guide-mode)
+
+;; *** visual-indentation-mode
+
+
 
 ;; ** yasnippet
 (autoload 'yas/global-mode "yasnippet"
