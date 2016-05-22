@@ -1,8 +1,16 @@
 
 ;; ** ibuffer-vc
 ;; make buffer list group by vc status
+(autoload 'ibuffer-vc-set-filter-groups-by-vc-root "ibuffer-vc"
+  "Set the current filter groups to filter by vc root dir." t)
+
+(eval-after-load "ibuffer"
+  `(progn
+     (define-key ibuffer-mode-map (kbd "G v") 'ibuffer-vc-set-filter-groups-by-vc-root)
+     ))
+
 (eval-after-load "ibuffer-vc"
-  `(progn     
+  `(progn
      (add-hook 'ibuffer-hook
                (lambda ()
                  (ibuffer-vc-set-filter-groups-by-vc-root)
@@ -19,17 +27,15 @@
                    " "
                    (vc-status 16 16 :left)
                    " "
-                   filename-and-process)))     
+                   filename-and-process)))
      ))
 
-;; ** highlighting
-;; *** smeargle
-(autoload 'smeargle "smeargle"
-  "Highlight regions by last updated time." t)
+(cheatsheet-add :group 'Ibuffers
+                :key "G v"
+                :description "M-x ibuffer-vc-set-filter-groups-by-vc-root")
 
-(autoload 'smeargle-commits "smeargle"
-  "Highlight regions by age of commits." t)
 
+;; ** highlighting  
 ;; *** git-gutter
 ;; https://github.com/syohex/emacs-git-gutter
 (autoload 'git-gutter:toggle "git-gutter"
