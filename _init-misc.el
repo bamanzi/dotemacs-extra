@@ -1,3 +1,22 @@
+;; ** buffer list
+;; *** buffer-menu
+(idle-require 'buff-menu+)
+(eval-after-load "buff-menu+"
+  `(progn
+     (load-library "buff-menu")))
+
+;; *** ibuffer
+(autoload 'ibuffer-tramp-set-filter-groups-by-tramp-connection "ibuffer-tramp"
+  "Set the current filter groups to filter by TRAMP connection." t)
+
+(eval-after-load "ibuffer"
+  `(progn
+     (define-key ibuffer-mode-map (kbd "G t")   'ibuffer-tramp-set-filter-groups-by-tramp-connection)
+     ))
+
+(cheatsheet-add :group 'Ibuffers
+                :key "G t"
+                :description "M-x ibuffer-tramp-set-filter-groups-by-tramp-connection")
 
 ;; ** cross-buffer navigation
 ;; *** back-button: Visual navigation through mark rings
@@ -128,24 +147,6 @@
 (cheatsheet-add :group 'Misc
                 :key "<f12> M-*"
                 :description "scratch (Create (or switch to) scratch buffer for current major mode.")
-
-;; ** indentation guides
-;; *** highlight-identation-mode
-;; (configured in `dotemacs-elite')
-;; cons:
-;;    - only whitespaces supported (tabs not supported)
-
-;; *** indent-guide-mode
-;;`indent-guide-mode' only show guides on current section.
-;; but it would actually use a char (`indent-guide-char') to guide line,
-;; thus it might not be suitable for terminal (if you use external copy (mouse or tmux))
-(autoload 'indent-guide-mode  "indent-guide"
-  "Show vertical lines to guide indentation." t)
-
-(global-set-key (kbd "<f10> ig") 'indent-guide-mode)
-
-;; *** visual-indentation-mode
-
 
 ;; ** minibuffer completion
 
@@ -358,10 +359,6 @@
                 :description "Restart emacs")
 
 ;;--
-(idle-require 'buff-menu+)
-(eval-after-load "buff-menu+"
-  `(progn
-     (load-library "buff-menu")))
 
 ;;(idle-require 'vc+) ;;disabled as it's buggy
 

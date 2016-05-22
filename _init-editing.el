@@ -289,3 +289,4 @@
   `(progn
      (volatile-highlights-mode t)
      ))
+
