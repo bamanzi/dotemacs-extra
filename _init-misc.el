@@ -279,7 +279,11 @@
                                           "M-g"
                                           "M-s"
                                           "<f1>"
+                                          "<f2>"
+                                          "<f5>"
                                           "<f6>"
+                                          "<f7>"
+                                          "<f8>"
                                           "<f9>"
                                           "<f10>"
                                           "<f11>"
@@ -293,6 +297,20 @@
      (setq guide-key/recursive-key-sequence-flag t)     
      (guide-key-mode 1)  ; Enable guide-key-mode
      ))
+
+
+
+
+;; ** deft (notes manager)
+(autoload 'deft  "deft"
+  "Switch to *Deft* buffer and load files." t)
+
+(progn
+  (setq deft-extensions '("txt" "org" "md"))
+
+  (setq deft-recursive t)
+  (setq deft-auto-save-interval 5.0)
+  )
 
 
 ;; ** misc
@@ -354,5 +372,4 @@
 
 ;; give `diff-mode' some colors
 (idle-require 'diff-mode-)
-
 
