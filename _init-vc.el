@@ -22,7 +22,15 @@
                    filename-and-process)))     
      ))
 
-;; ** git-gutter
+;; ** highlighting
+;; *** smeargle
+(autoload 'smeargle "smeargle"
+  "Highlight regions by last updated time." t)
+
+(autoload 'smeargle-commits "smeargle"
+  "Highlight regions by age of commits." t)
+
+;; *** git-gutter
 ;; https://github.com/syohex/emacs-git-gutter
 (autoload 'git-gutter:toggle "git-gutter"
   "toggle to show diff information" t)
@@ -36,13 +44,13 @@
                 git-gutter:view-diff-function 'git-gutter-fr:view-diff-infos
                 git-gutter:clear-function 'git-gutter-fr:clear)
         (setq git-gutter:init-function nil
-                git-gutter:view-diff-function 'git-gutter:view-diff-infos
-                git-gutter:clear-function 'git-gutter:clear-diff-infos))))
+              git-gutter:view-diff-function 'git-gutter:view-diff-infos
+              git-gutter:clear-function 'git-gutter:clear-diff-infos))))
 
 ;;(add-hook 'after-make-frame-functions '_frame-reinit-git-gutter)
 
 
-;; ** git-gutter+
+;; *** git-gutter+
 ;; |                          | git-gutter+.el | git-gutter-fringe+.el |
 ;; | Works in tty frame       | +              | -                     |
 ;; | Works with linum-mode    | -              | +                     |
@@ -52,7 +60,6 @@
   "Git-Gutter mode" t)
 (autoload 'global-git-gutter+-mode "git-gutter+"
   "Toggle Global-Git-Gutter+ mode on or off." t)
-
 
 (autoload 'git-gutter+-toggle-fringe "git-gutter-fringe+"
   "Undocumented." t)
