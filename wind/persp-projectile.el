@@ -44,7 +44,8 @@
 ;; See perspective.el on github: https://github.com/nex3/perspective-el
 
 ;;; Code:
-(require 'perspective)
+(or (require 'persp-mode)
+    (require 'perspective))
 (require 'projectile)
 
 ;; TODO this may be incompatible helm which let's you find stuff in new frame
@@ -76,7 +77,9 @@ perspective."
   (interactive (list (projectile-completing-read "Switch to project: "
                                                  (projectile-relevant-known-projects))))
   (let* ((name (file-name-nondirectory (directory-file-name project-to-switch)))
-         (persp (gethash name perspectives-hash)))
+         (persp (gethash name (if (fboundp 'persp-mode)
+                                  *persp-hash*
+                                perspectives-hash))))
     (cond
      ;; project-specific perspective already exists
      ((and persp (not (equal persp persp-curr)))
