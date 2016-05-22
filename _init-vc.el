@@ -11,11 +11,11 @@
 
 (eval-after-load "ibuffer-vc"
   `(progn
-     (add-hook 'ibuffer-hook
-               (lambda ()
-                 (ibuffer-vc-set-filter-groups-by-vc-root)
-                 (unless (eq ibuffer-sorting-mode 'alphabetic)
-                   (ibuffer-do-sort-by-alphabetic))))
+     ;; (add-hook 'ibuffer-hook
+     ;;           (lambda ()
+     ;;             (ibuffer-vc-set-filter-groups-by-vc-root)
+     ;;             (unless (eq ibuffer-sorting-mode 'alphabetic)
+     ;;               (ibuffer-do-sort-by-alphabetic))))
 
      (setq ibuffer-formats
            '((mark modified read-only vc-status-mini " "
@@ -30,7 +30,7 @@
                    filename-and-process)))
      ))
 
-(cheatsheet-add :group 'Ibuffers
+(cheatsheet-add :group 'Ibuffer
                 :key "G v"
                 :description "M-x ibuffer-vc-set-filter-groups-by-vc-root")
 

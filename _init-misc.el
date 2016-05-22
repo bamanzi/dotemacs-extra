@@ -14,7 +14,7 @@
      (define-key ibuffer-mode-map (kbd "G t")   'ibuffer-tramp-set-filter-groups-by-tramp-connection)
      ))
 
-(cheatsheet-add :group 'Ibuffers
+(cheatsheet-add :group 'Ibuffer
                 :key "G t"
                 :description "M-x ibuffer-tramp-set-filter-groups-by-tramp-connection")
 
