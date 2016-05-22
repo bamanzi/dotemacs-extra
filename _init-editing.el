@@ -60,6 +60,39 @@
   t
   )
 
+;; ** replace
+(autoload 'vr/query-replace "visual-regexp"
+  "Use vr/query-replace like you would use query-replace-regexp." t)
+
+(defun vr/query-replace/emacs ()
+  "Call `vr/query-repalce' with `vr/engine' set to #'emacs."
+  (interactive)
+  (require 'visual-regexp-steroids)
+  (let ((vr/engine 'emacs))
+    (call-interactively 'vr/query-replace)))
+
+(defun vr/query-replace/python ()
+  "Call `vr/query-repalce' with `vr/engine' set to #'python."
+  (interactive)
+  (require 'visual-regexp-steroids)
+  (let ((vr/engine 'python))
+    (call-interactively 'vr/query-replace)))
+
+(if (executable-find "python")
+    (global-set-key [remap 'query-replace-regexp] 'vr/query-repalce/python)
+  (global-set-key [remap 'query-replace-regexp] 'vr/query-replace/emacs))
+
+(progn
+  (cheatsheet-add :group 'Search
+                  :key "M-x vr/query-replace/emacs"
+                  :description "A regexp/replace command for Emacs with interactive visual feedback.")
+  (cheatsheet-add :group 'Search
+                  :key "M-x vr/query-replace/python"
+                  :description "A regexp/replace command for Emacs with interactive visual feedback.")
+  t
+  )
+
+
 ;; ** folding
 ;; *** outline
 (autoload 'outline-cycle  "outline-magic"
