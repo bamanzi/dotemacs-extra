@@ -4,7 +4,7 @@
 
 (global-set-key (kbd "<f12> C-l") 'desktop-registry-change-desktop)
 
-(idle-require 'desktop-registry)
+;(idle-require 'desktop-registry)
 
 (eval-after-load "desktop-registry"
   `(progn
