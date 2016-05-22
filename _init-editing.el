@@ -60,7 +60,27 @@
   t
   )
 
-;; ** replace
+;; *** regexp search/replace
+(autoload 'vr/isearch-forward "visual-regexp-steroids"
+  "Like isearch-forward, but using Python (or custom) regular expressions." t)
+(autoload 'vr/isearch-backward "visual-regexp-steroids"
+  "Like isearch-backward, but using Python (or custom) regular expressions." t)
+
+(defun vr/isearch-forward/emacs ()
+  "Call `vr/isearch-forward' with `vr/engine' set to 'emacs."
+  (interactive)
+  (require 'visual-regexp-steroids)
+  (let ((vr/engine 'emacs))
+    (call-interactively 'vr/isearch-forward)))
+
+(defun vr/isearch-forward/python ()
+  "Call `vr/isearch-forward' with `vr/engine' set to 'python."
+  (interactive)
+  (require 'visual-regexp-steroids)
+  (let ((vr/engine 'python))
+    (call-interactively 'vr/isearch-forward)))
+
+;; ---
 (autoload 'vr/query-replace "visual-regexp"
   "Use vr/query-replace like you would use query-replace-regexp." t)
 
@@ -78,17 +98,33 @@
   (let ((vr/engine 'python))
     (call-interactively 'vr/query-replace)))
 
-(if (executable-find "python")
-    (global-set-key [remap 'query-replace-regexp] 'vr/query-repalce/python)
-  (global-set-key [remap 'query-replace-regexp] 'vr/query-replace/emacs))
+;; ---
+(idle-require 'visual-regexp-steroids)
+(eval-after-load "visual-regexp-steroids"
+  `(progn
+     (setq vr/engine 
+           (if (executable-find "python")
+               'python
+             'emacs))
+
+     (global-set-key [remap 'isearch-forward-regexp]      'vr/isearch-forward)
+     (global-set-key [remap 'isearch-backward-regexp]     'vr/isearch-backward)
+     ))
 
 (progn
   (cheatsheet-add :group 'Search
+                  :key "M-x vr/isearch-forward"
+                  :description "`isearch-forward' with Python (or custom) regular expressions if available.")
+  (cheatsheet-add :group 'Search
+                  :key "M-x vr/isearch-backward"
+                  :description "`isearch-backward' with Python (or custom) regular expressions if available.")
+  
+  (cheatsheet-add :group 'Search
                   :key "M-x vr/query-replace/emacs"
-                  :description "A regexp/replace command for Emacs with interactive visual feedback.")
+                  :description "`query-replace-regexp' with interactive visual feedback, using emacs regexp.")
   (cheatsheet-add :group 'Search
                   :key "M-x vr/query-replace/python"
-                  :description "A regexp/replace command for Emacs with interactive visual feedback.")
+                  :description "`query-replace-regexp' with interactive visual feedback, using python regexp.")
   t
   )
 
