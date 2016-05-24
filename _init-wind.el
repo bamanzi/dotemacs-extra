@@ -71,6 +71,13 @@
 
      ))
 
+;; *** with a fancy visual effect (similar to tmux)
+(autoload 'switch-window "switch-window"
+  "Display an overlay in each window showing a unique key, then" t)
+
+(global-set-key (kbd "<f11> q") 'switch-window)
+(global-set-key (kbd "<f11> g") 'switch-window)
+
 
 ;; ** other extensions
 (idle-require 'window-extension)
