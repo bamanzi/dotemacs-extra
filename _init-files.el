@@ -123,15 +123,19 @@
   "Toggles the nav panel." t)
 
 
-
 ;; ** vlf
 (autoload 'vlf "vlf"  "View Large FILE." t)
 
-(idle-require 'vlf)
+(cheatsheet-add :group 'Open/Save
+                :key "M-x vlf"
+                :description "View large file")
 
-(progn
-  (cheatsheet-add :group 'Open/Save
-                  :key "M-x vlf"
-                  :description "View large file")
-  t
-  )
+
+;; ** open-junk-file
+(autoload 'open-junk-file "open-junk-file"
+  "Open a new file whose filename is derived from current time." t)
+
+(cheatsheet-add :group 'Open/Save
+                :key "M-x open-junk-file"
+                :description "Open a new file whose filename is derived from current time.")
+
