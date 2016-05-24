@@ -39,26 +39,6 @@
      ))
 
 
-;; ** tempbuf: kill unused buffers in the background
-(idle-require 'tempbuf)
-(eval-after-load "tempbuf"
-  `(progn
-     (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)
-     (add-hook 'custom-mode-hook 'turn-on-tempbuf-mode)
-     (if (require 'man nil t)
-         (add-hook 'Man-mode-hook 'turn-on-tempbuf-mode))
-;;     (add-hook 'view-mode-hook 'turn-on-tempbuf-mode)
-     (add-hook 'diff-mode-hook 'turn-on-tempbuf-mode)
-     (add-hook 'completion-list-mode 'turn-on-tempbf-mode)
-     (add-hook 'occur-mode-hoo 'turn-on-tempbuf-mode)
-     
-     (if (require 'anything nil t)
-         (add-hook 'anything-mode-hook 'turn-on-tempbuf-mode))
-     
-     ;;(add-hook 'w3-mode-hook 'turn-on-tempbuf-mode)
-     
-     ))
-
 
 ;; ** dired
 (idle-require 'dired+)

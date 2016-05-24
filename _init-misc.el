@@ -1,22 +1,3 @@
-;; ** buffer list
-;; *** buffer-menu
-(idle-require 'buff-menu+)
-(eval-after-load "buff-menu+"
-  `(progn
-     (load-library "buff-menu")))
-
-;; *** ibuffer
-(autoload 'ibuffer-tramp-set-filter-groups-by-tramp-connection "ibuffer-tramp"
-  "Set the current filter groups to filter by TRAMP connection." t)
-
-(eval-after-load "ibuffer"
-  `(progn
-     (define-key ibuffer-mode-map (kbd "G t")   'ibuffer-tramp-set-filter-groups-by-tramp-connection)
-     ))
-
-(cheatsheet-add :group 'Ibuffer
-                :key "G t"
-                :description "M-x ibuffer-tramp-set-filter-groups-by-tramp-connection")
 
 ;; ** cross-buffer navigation
 ;; *** back-button: Visual navigation through mark rings
@@ -138,15 +119,7 @@
 ;; *** log scratch content automatically
 (idle-require 'scratch-log)
 
-;; *** scratch buffer for all major modes
-(autoload 'scratch  "scratch"
-  "Get a scratch buffer for the current mode." t)
 
-(global-set-key (kbd "<f12> M-*") 'scratch)
-
-(cheatsheet-add :group 'Misc
-                :key "<f12> M-*"
-                :description "scratch (Create (or switch to) scratch buffer for current major mode.")
 
 ;; ** minibuffer completion
 

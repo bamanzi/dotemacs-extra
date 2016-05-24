@@ -1,39 +1,4 @@
 
-;; ** ibuffer-vc
-;; make buffer list group by vc status
-(autoload 'ibuffer-vc-set-filter-groups-by-vc-root "ibuffer-vc"
-  "Set the current filter groups to filter by vc root dir." t)
-
-(eval-after-load "ibuffer"
-  `(progn
-     (define-key ibuffer-mode-map (kbd "G v") 'ibuffer-vc-set-filter-groups-by-vc-root)
-     ))
-
-(eval-after-load "ibuffer-vc"
-  `(progn
-     ;; (add-hook 'ibuffer-hook
-     ;;           (lambda ()
-     ;;             (ibuffer-vc-set-filter-groups-by-vc-root)
-     ;;             (unless (eq ibuffer-sorting-mode 'alphabetic)
-     ;;               (ibuffer-do-sort-by-alphabetic))))
-
-     (setq ibuffer-formats
-           '((mark modified read-only vc-status-mini " "
-                   (name 18 18 :left :elide)
-                   " "
-                   (size 9 -1 :right)
-                   " "
-                   (mode 16 16 :left :elide)
-                   " "
-                   (vc-status 16 16 :left)
-                   " "
-                   filename-and-process)))
-     ))
-
-(cheatsheet-add :group 'Ibuffer
-                :key "G v"
-                :description "M-x ibuffer-vc-set-filter-groups-by-vc-root")
-
 
 ;; ** highlighting  
 ;; *** git-gutter

@@ -107,8 +107,8 @@
                'python
              'emacs))
 
-     (global-set-key [remap 'isearch-forward-regexp]      'vr/isearch-forward)
-     (global-set-key [remap 'isearch-backward-regexp]     'vr/isearch-backward)
+     (global-set-key [remap isearch-forward-regexp]      'vr/isearch-forward)
+     (global-set-key [remap isearch-backward-regexp]     'vr/isearch-backward)
      ))
 
 (progn

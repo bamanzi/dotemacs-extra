@@ -111,17 +111,3 @@
 (global-set-key (kbd "<f11> `") 'popwin-mode)
 
 
-;; ** perspectives
-
-;; *** persp-mode
-(autoload 'persp-mode  "persp-mode"
-  "Toggle perspective mode." t)
-
-;; *** frame-bufs
-(autoload 'frame-bufs-mode "frame-bufs"
-  "Toggle frame-bufs-mode on and off." t)
-
-
-
-
-
