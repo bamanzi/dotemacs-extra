@@ -1,4 +1,15 @@
 ;; * org-mode
+;; ** org-chinese-utils
+;; 1.  将 org 导出为 HTML 时删除不必要的空格。
+;; 2.  按 'C-c C-c', 根据当前内容智能折行。
+;; 3.  如果 org-babel 结果中包含表格时，对表格进行对齐处理。
+
+(idle-require 'org-chinese-utils)
+(eval-after-load "org-chinese-utils"
+  `(progn
+     (org-chinese-utils-enable)
+     ))
+
 ;; ** TOC
 
 (eval-after-load "toc-org"
