@@ -1,4 +1,5 @@
 ;; * windows
+;; ** move/swap
 (idle-require 'bmz-window-misc)
 
 (eval-after-load "bmz-window-misc"
@@ -20,17 +21,18 @@
      
      ))
 
-(idle-require 'window-extension)
+;; ** display buffer in other window/frame
+;; e.g. `C-x 7 C-x b' works like `switch-to-buffer-other-window',
+;;      `C-x 9 M-x find-function' works like `find-library-other-frame'
 
-(eval-after-load "window-extension"
+(autoload 'other-frame-window-mode "other-frame-window"
+  "Minor mode for other frame/window buffer placement." t)
+
+(idle-require 'other-frame-window)
+
+(eval-after-load "other-frame-window"
   `(progn
-     (global-set-key (kbd "<f11> <f11>") 'toggle-one-window)
-     (global-set-key (kbd "<f11> V")     'delete-other-windows-vertically+)
-     (global-set-key (kbd "<f11> H")     'delete-other-windows-horizontally+)
-     
-     (global-set-key [(control x) (?0)] 'sticky-window-delete-window)
-     (global-set-key [(control x) (?1)] 'sticky-window-delete-other-windows)
-     (global-set-key [(control x) (?9)] 'sticky-window-keep-window-visible)
+     (other-frame-window-mode 1)
      ))
 
 ;; ** window jumping
@@ -67,6 +69,21 @@
                         "□ ")))
          (propertize s 'face 'window-numbering-face)))
 
+     ))
+
+
+;; ** other extensions
+(idle-require 'window-extension)
+
+(eval-after-load "window-extension"
+  `(progn
+     (global-set-key (kbd "<f11> <f11>") 'toggle-one-window)
+     (global-set-key (kbd "<f11> V")     'delete-other-windows-vertically+)
+     (global-set-key (kbd "<f11> H")     'delete-other-windows-horizontally+)
+     
+     (global-set-key [(control x) (?0)] 'sticky-window-delete-window)
+     (global-set-key [(control x) (?1)] 'sticky-window-delete-other-windows)
+     (global-set-key [(control x) (?9)] 'sticky-window-keep-window-visible)
      ))
 
 
