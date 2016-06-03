@@ -28,7 +28,8 @@
 (autoload 'other-frame-window-mode "other-frame-window"
   "Minor mode for other frame/window buffer placement." t)
 
-(idle-require 'other-frame-window)
+(unless (version< emacs-version "24.0")
+  (idle-require 'other-frame-window))
 
 (eval-after-load "other-frame-window"
   `(progn
