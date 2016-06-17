@@ -28,7 +28,7 @@
 (autoload 'other-frame-window-mode "other-frame-window"
   "Minor mode for other frame/window buffer placement." t)
 
-(unless (version< emacs-version "24.0")
+(if (fboundp 'advice-add)
   (idle-require 'other-frame-window))
 
 (eval-after-load "other-frame-window"
@@ -65,9 +65,9 @@
      ;; TODO: make sure new frame get the face correctly copied
      (copy-face 'mode-line-buffer-id 'window-numbering-face)              
      (defun window-numbering-get-number-string (&optional window)
-       (let ((s (concat " "
+       (let ((s (concat " W-"
                         (int-to-string (window-numbering-get-number window))
-                        "□ ")))
+                        " ")))
          (propertize s 'face 'window-numbering-face)))
 
      ))
