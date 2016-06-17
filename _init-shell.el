@@ -112,11 +112,23 @@
 
 ;; *** eshell-prompt-extras
 ;; https://github.com/hiddenlotus/eshell-prompt-extras
-(eval-after-load 'esh-opt
-  `(progn
-    (autoload 'epe-theme-lambda "eshell-prompt-extras")
-    (setq eshell-highlight-prompt nil
-          eshell-prompt-function 'epe-theme-lambda)))
+(defun bmz/eshell-init-prompt (&optional frame)
+  (interactive)
+  (if (and (display-graphic-p)
+             (featurep 'esh-opt)
+             (require 'eshell-prompt-extras nil t))
+      (setq eshell-highlight-prompt nil
+            eshell-prompt-function 'epe-theme-lambda)
+    ;; terminal
+    (setq eshell-highlight-prompt t
+          eshell-prompt-function (lambda nil
+                                   (concat
+                                    (propertize (abbreviate-file-name (eshell/pwd)) 'face 'font-lock-keyword-face)
+                                    (propertize " $ " 'face  'font-lock-type-face))))))
+
+(add-hook 'eshell-mode-hook 'bmz/eshell-init-prompt)
+(add-hook 'after-make-frame-functions 'bmz/eshell-init-prompt)
+
 
 ;; *** eshell-did-you-mean
 ;; https://github.com/xuchunyang/eshell-did-you-mean
