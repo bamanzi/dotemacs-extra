@@ -124,10 +124,10 @@
           eshell-prompt-function (lambda nil
                                    (concat
                                     (propertize (abbreviate-file-name (eshell/pwd)) 'face 'font-lock-keyword-face)
-                                    (propertize " $ " 'face  'font-lock-type-face))))))
-
-(add-hook 'eshell-mode-hook 'bmz/eshell-init-prompt)
-(add-hook 'after-make-frame-functions 'bmz/eshell-init-prompt)
+                                    (propertize " $ " 'face  'font-lock-type-face))))))  
+  
+;;(remove-hook 'eshell-mode-hook 'bmz/eshell-init-prompt)
+;;(add-hook 'after-make-frame-functions 'bmz/eshell-init-prompt)
 
 
 ;; *** eshell-did-you-mean
@@ -138,7 +138,26 @@
      ;;(eshell-did-you-mean-setup)
      ))
 
-;; *** cheatsheet
+;; *** overall
+(defun eshell+ ()
+  "Eshell with some advanced extensions. Note: may not good for slow computer.
+
+Currently intergrated extensions:
+- `eshell-prompt-extras'
+- `eshel-did-you-mean'
+"
+  (interactive)
+  (when (require 'eshell-prompt-extras nil t)
+    (let ((eshell-highlight-prompt nil)
+          (eshell-prompt-function 'epe-theme-lambda)
+          (eshell-preoutput-filter-functions
+           (if (require 'eshell-did-you-mean nil t)
+               (progn
+                 (eshell-did-you-mean--get-all-commands)
+                 (cons #'eshell-did-you-mean-output-filter eshell-preoutput-filter-functions))
+             eshell-preoutput-filter-functions)))
+      (call-interactively 'eshell))))
+
 (progn
   (cheatsheet-add :group 'Eshell :key "$ ?"        :description "esh-help-run-help (man)")
   (cheatsheet-add :group 'Eshell :key "$ help"     :description "esh-help-run-help (man)")
