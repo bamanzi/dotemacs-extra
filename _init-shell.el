@@ -22,9 +22,13 @@
 
 ;; *** autojump
 (eval-after-load "eshell"
-  '(require 'eshell-autojump nil t))
-;;use command `j' to list your MRU path,
-;;use command `j regexp' to jump to one
+  '(progn
+     ;;(require 'eshell-autojump nil t)
+     ;; use command `j' to list your MRU path,
+     ;; use command `j regexp' to jump to one
+     
+     (require 'eshell-z nil t) ; this one is better
+     ))
 
 ;; *** pcompletion
 (eval-after-load "eshell"
@@ -161,8 +165,8 @@ Currently intergrated extensions:
 (progn
   (cheatsheet-add :group 'Eshell :key "$ ?"        :description "esh-help-run-help (man)")
   (cheatsheet-add :group 'Eshell :key "$ help"     :description "esh-help-run-help (man)")
-  (cheatsheet-add :group 'Eshell :key "$ j"        :description "list MRU paths (eshell-autojump)")
-  (cheatsheet-add :group 'Eshell :key "$ j regexp" :description "jump to a MRU path (eshell-autojump)")
+  (cheatsheet-add :group 'Eshell :key "$ z -l"     :description "list MRU paths (eshell-z")
+  (cheatsheet-add :group 'Eshell :key "$ z regexp" :description "jump to a MRU path (eshell-z)")
   t)
 
 
