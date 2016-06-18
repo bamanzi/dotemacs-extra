@@ -116,51 +116,56 @@
 
 ;; *** eshell-prompt-extras
 ;; https://github.com/hiddenlotus/eshell-prompt-extras
-(defun bmz/eshell-init-prompt (&optional frame)
+(defun bmz/enable-eshell-prompt-extras ()
   (interactive)
-  (if (and (display-graphic-p)
-             (featurep 'esh-opt)
-             (require 'eshell-prompt-extras nil t))
-      (setq eshell-highlight-prompt nil
-            eshell-prompt-function 'epe-theme-lambda)
-    ;; terminal
-    (setq eshell-highlight-prompt t
-          eshell-prompt-function (lambda nil
-                                   (concat
-                                    (propertize (abbreviate-file-name (eshell/pwd)) 'face 'font-lock-keyword-face)
-                                    (propertize " $ " 'face  'font-lock-type-face))))))  
-  
-;;(remove-hook 'eshell-mode-hook 'bmz/eshell-init-prompt)
-;;(add-hook 'after-make-frame-functions 'bmz/eshell-init-prompt)
+  (require 'eshell-prompt-extras)
+  (setq eshell-highlight-prompt nil
+        eshell-prompt-function 'epe-theme-lambda)
+  (message "`eshell-prompt-extras' enabled. restart eshell to verify it.")
+  )
+
+;;(bmz/enable-eshell-prompt-extras)
+
+(defun bmz/disable-eshell-prompt-extras ()
+  "Undo what `eshell-prompt-extras' did to default settings."
+  (interactive)
+  ;; terminal
+  (setq eshell-highlight-prompt t
+        eshell-prompt-function (lambda nil
+                                 (concat
+                                  (propertize (abbreviate-file-name (eshell/pwd)) 'face 'font-lock-keyword-face)
+                                  (propertize " $ " 'face  'font-lock-type-face))))
+  (message "`eshell-prompt-extra' disabled. restart eshell to verify it.")
+  )
 
 
 ;; *** eshell-did-you-mean
 ;; https://github.com/xuchunyang/eshell-did-you-mean
 ;; NOTE: this might make the response slow
-(eval-after-load "eshell"
-  `(progn
-     ;;(eshell-did-you-mean-setup)
-     ))
+
+(defun bmz/enable-eshell-did-you-mean ()
+  (interactive)
+  (require 'eshell-did-you-mean)
+  (eshell-did-you-mean-setup)
+  (add-hook 'eshell-mode-hook 'eshell-did-you-mean--get-all-commands)
+  (message "`eshell-did-you-mean' enabled. restart eshell to verify it.")
+  )
+
+;;(bmz/enable-eshell-did-you-mean)
+
+(defun bmz/disable-eshell-did-you-mean ()
+  (interactive)
+  (remove-hook 'eshell-mode-hook 'eshell-did-you-mean--get-all-commands)
+  (remove-hook 'eshell-preoutput-filter-functions #'eshell-did-you-mean-output-filter)
+  (message "`eshell-did-you-mean' disabled. restart eshell to verify it."))
+
 
 ;; *** overall
 (defun eshell+ ()
-  "Eshell with some advanced extensions. Note: may not good for slow computer.
-
-Currently intergrated extensions:
-- `eshell-prompt-extras'
-- `eshel-did-you-mean'
-"
   (interactive)
-  (when (require 'eshell-prompt-extras nil t)
-    (let ((eshell-highlight-prompt nil)
-          (eshell-prompt-function 'epe-theme-lambda)
-          (eshell-preoutput-filter-functions
-           (if (require 'eshell-did-you-mean nil t)
-               (progn
-                 (eshell-did-you-mean--get-all-commands)
-                 (cons #'eshell-did-you-mean-output-filter eshell-preoutput-filter-functions))
-             eshell-preoutput-filter-functions)))
-      (call-interactively 'eshell))))
+  (bmz/enable-eshell-prompt-extras)
+  (bmz/enable-eshell-did-you-mean)
+  (call-interactively 'eshell))
 
 (progn
   (cheatsheet-add :group 'Eshell :key "$ ?"        :description "esh-help-run-help (man)")
