@@ -119,6 +119,20 @@
 ;; *** log scratch content automatically
 (idle-require 'scratch-log)
 
+;; *** page-break-lines
+(autoload 'page-break-lines-mode  "page-break-lines"
+  "Toggle Page Break Lines mode." t)
+(autoload 'global-page-break-lines-mode "page-break-lines"
+  "Toggle Page-Break-Lines mode in all buffers." t)
+
+(idle-require 'page-break-lines)
+
+(eval-after-load "page-break-lines"
+  `(progn
+     (let ((scratch (get-buffer "*scratch*")))
+       (if scratch
+           (with-current-buffer scratch
+             (page-break-lines-mode 1))))))
 
 
 ;; ** minibuffer completion
