@@ -1,4 +1,16 @@
 ;; * windows
+;; ** resizing
+(autoload 'cycle-resize-window-vertically "cycle-resize"
+  "Cycle resize vertically the current window." t)
+(autoload 'cycle-resize-window-horizontally "cycle-resize"
+  "Cycle resize horizontally the current window." t)
+
+(progn
+  (global-set-key (kbd "<f11> v") 'cycle-resize-window-vertically)
+  (global-set-key (kbd "<f11> h") 'cycle-resize-window-horizontally)
+  )
+
+
 ;; ** move/swap
 (idle-require 'bmz-window-misc)
 
