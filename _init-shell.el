@@ -175,3 +175,32 @@
   t)
 
 
+;; *** show images directly in eshell buffer
+;; based on code stolen from http://emacs.stackexchange.com/a/9737
+(defun eshell/img (&rest args)
+  "Display image inline in eshell"
+  (require 'iimage)
+  (let ((image-path (cons default-directory iimage-mode-image-search-path)))
+    (dolist (arg args)
+      (let ((imagep nil)
+            file)
+        (with-silent-modifications
+          (save-excursion
+            (dolist (pair iimage-mode-image-regex-alist)
+              (when (and (not imagep)
+                         (string-match (car pair) arg)
+                         (setq file (match-string (cdr pair) arg))
+                         (setq file (locate-file file image-path)))
+                (setq imagep t)
+                (add-text-properties 0 (length arg)
+                                     `(display ,(create-image file)
+                                               modification-hooks
+                                               (iimage-modification-hook))
+                                     arg)
+                (eshell-buffered-print arg)
+                (eshell-flush)))))
+        (when (not imagep)
+          (format "(File '%s' is not a supported image file.)" arg))))
+    (eshell-flush)))
+
+(defalias 'eshell/display 'eshell/img)
