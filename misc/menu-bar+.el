@@ -3,26 +3,26 @@
 ;; Filename: menu-bar+.el
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
-;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2013, Drew Adams, all rights reserved.
+;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
+;; Copyright (C) 1996-2016, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 0
 ;; Package-Requires: ()
-;; Last-Updated: Sat Oct 19 14:13:18 2013 (-0700)
+;; Last-Updated: Sun Sep 18 10:21:34 2016 (-0700)
 ;;           By: dradams
-;;     Update #: 3705
+;;     Update #: 3746
 ;; URL: http://www.emacswiki.org/menu-bar+.el
 ;; Doc URL: http://www.emacswiki.org/MenuBarPlus
 ;; Keywords: internal, local, convenience
-;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x
+;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x, 24.x, 25.x
 ;;
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `avoid', `fit-frame', `frame-fns',
-;;   `help+20', `info', `info+', `menu-bar', `misc-cmds', `misc-fns',
-;;   `naked', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `help+20', `info', `info+20', `menu-bar', `misc-cmds',
+;;   `misc-fns', `naked', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
           ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -77,8 +77,8 @@
 ;;  Commands defined here:
 ;;
 ;;    `describe-menubar', `fill-paragraph-ala-mode',
-;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window',
-;;    `menu-bar-select-frame' (Emacs 20),
+;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window'
+;;    (Emacs 20), `menu-bar-select-frame' (Emacs 20),
 ;;    `menu-bar-word-search-backward' (Emacs 22+),
 ;;    `menu-bar-word-search-forward' (Emacs 22+),
 ;;    `nonincremental-repeat-search-backward' (Emacs 22+),
@@ -116,8 +116,6 @@
 ;;
 ;;  `menu-bar-select-buffer' (Emacs 20-22) - Uses -other-frame.
 ;;
-;;  `menu-bar-select-frame' - Use Emacs 22 version for Emacs 20.
-;;
 ;;
 ;;  ***** NOTE: The following variables defined in `menu-bar.el' have
 ;;              been REDEFINED HERE:
@@ -130,6 +128,23 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2016/09/18 dadams
+;;     Applied renaming of secondary-dwim to secondary-yank|select|move|swap.
+;; 2016/08/31 dadams
+;;     No longer soft-require cmds-menu.el for Emacs 20.
+;; 2016/05/12 dadams
+;;     menu-bar-doremi-menu: Added doremi-windows+.
+;; 2015/12/06 dadams
+;;     Protect uses of menu-bar-doremi-menu with boundp test.
+;; 2014/12/29 dadams
+;;     menu-bar-next-tag-other-window: Define only for Emacs 20.  Do not autoload.
+;; 2014/12/10 dadams
+;;     menu-bar-edit-menu [paste]: Use x-get-selection, not x-selection-exists-p.
+;;                                 Enable also if kill-ring or (cdr yank-menu).
+;; 2014/05/04 dadams
+;;     Emacs 20-22: soft-require info+20.el (new) instead of info+.el.
+;; 2013/11/-8 dadams
+;;     Added comment-region-lines to menu-bar-edit-region-menu.
 ;; 2013/10/19 dadams
 ;;     Soft-require cmds-menu.el.
 ;; 2013/07/24 dadams
@@ -398,12 +413,16 @@
   (require 'help+ nil t) ;; (no error if not found): help-on-click/key
   (require 'help-fns+ nil t)) ;; (no error if not found): describe-keymap
 
-(require 'info+ nil t) ;; (no error if not found): menu-bar-read-lispref, info-emacs-manual,
+(if (> emacs-major-version 22)
+    (require 'info+ nil t) ;; (no error if not found): menu-bar-read-lispref, info-emacs-manual
+  (require 'info+20) nil t)
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
 (require 'second-sel nil t) ;; (no error if not found):
                             ;; primary-to-secondary, secondary-to-primary, yank-secondary
 (require 'apropos+ nil t) ;; (no error if not found): apropos-user-options
-(require 'cmds-menu nil t) ;; (no error if not found): recent-cmds-menu
+
+(when (> emacs-major-version 20)
+  (require 'cmds-menu nil t)) ;; (no error if not found): recent-cmds-menu
 
 ;; To quiet the Emacs 20 byte compiler
 (defvar menu-bar-goto-menu)
@@ -589,7 +608,7 @@ submenu of the \"Help\" menu."))
       :help "Show, if only one frame visible; else hide.")))
 
 ;;; `Do Re Mi' menu.
-(when (featurep 'doremi-cmd)
+(when (and (featurep 'doremi-cmd)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-global-marks+]
     '(menu-item "Global Marks" doremi-global-marks+
       :help "Successively cycle among global marks: `up'/`down'"))
@@ -601,16 +620,22 @@ submenu of the \"Help\" menu."))
       :help "Successively cycle among bookmarks: `up'/`down'"))
   (define-key menu-bar-doremi-menu [doremi-buffers+]
     '(menu-item "Buffers" doremi-buffers+
-      :help "Successively cycle among buffers: `up'/`down'")))
-(when (featurep 'thumb-frm)
+      :help "Successively cycle among buffers: `up'/`down'"))
+  (when (fboundp 'doremi-windows+)      ; Emacs 22+
+    (define-key menu-bar-doremi-menu [doremi-windows]
+      '(menu-item "Windows" doremi-windows+
+        :help "Successively cycle among windows: `up'/`down'"
+        :enable (not (one-window-p))))))
+
+(when (and (featurep 'thumb-frm)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [thumfr-doremi-thumbnail-frames+]
     '(menu-item "Fisheye Frame" thumfr-doremi-thumbnail-frames+
       :help "Cycle among frames using fisheye: `up'/`down'")))
-(when (and (boundp 'menu-bar-doremi-menu) (featurep 'frame-cmds))
+(when (and (featurep 'frame-cmds)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [save-frame-config]
     '(menu-item "Save Frame Configuration" save-frame-config
       :help "Save current frame configuration (M-x jump-to-frame-config-register restores)")))
-(when (featurep 'doremi-frm)
+(when (and (featurep 'doremi-frm)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-frame-configs+]
     '(menu-item "Frame Configurations" doremi-frame-configs+
       :help "Cycle among frame configurations recorded: `up'/`down'"))
@@ -678,12 +703,12 @@ submenu of the \"Help\" menu."))
     '(menu-item "Face Background..." doremi-face-bg+
       :help "Change background color of a face incrementally: `up'/`down'"))
   )
-(when (featurep 'doremi-cmd)
+(when (and (featurep 'doremi-cmd)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-color-themes+]
     '(menu-item "Color Themes" doremi-color-themes+
       :help "Successively cycle among color themes: `up'/`down'")))
 
-(when (featurep 'doremi-frm)
+(when (and (featurep 'doremi-frm)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-frame-params-separator] '("--"))
   (define-key menu-bar-doremi-menu [doremi-frame-vertically+]
     '(menu-item "Move Frame" doremi-frame-vertically+
@@ -691,7 +716,7 @@ submenu of the \"Help\" menu."))
   (define-key menu-bar-doremi-menu [doremi-frame-height+]
     '(menu-item "Frame Size" doremi-frame-height+
       :help "Resize frame incrementally: `up'/`down'/`left'/`right'")))
-(when (featurep 'doremi-cmd)
+(when (and (featurep 'doremi-cmd)  (boundp 'menu-bar-doremi-menu))
   (define-key menu-bar-doremi-menu [doremi-window-height+]
     '(menu-item "Window Size" doremi-window-height+
       :help "Resize window incrementally: `up'/`down'/`left'/`right'"
@@ -809,42 +834,58 @@ submenu of the \"Help\" menu."))
   '(menu-item "Paste" yank
     :help "Paste (yank) text most recently cut/copied"
     :enable (and (not buffer-read-only)
-             (or (and (fboundp 'x-selection-exists-p) (x-selection-exists-p))
-              (and x-select-enable-clipboard (x-selection-exists-p 'CLIPBOARD)))))
+             (or (and (fboundp 'x-get-selection)
+                  x-select-enable-clipboard
+                  (x-get-selection 'CLIPBOARD))
+              (if (featurep 'ns)        ; Like `paste-from-menu'
+                  (cdr yank-menu)
+                kill-ring))))
   'copy)
-(when (fboundp 'secondary-dwim)
-  (define-key-after menu-bar-edit-menu [secondary-dwim] ; In `second-sel.el'
-    '(menu-item "Paste Secondary" secondary-dwim
+(when (or (fboundp 'secondary-yank|select|move|swap)  (fboundp 'secondary-dwim))
+
+  (define-key-after menu-bar-edit-menu [secondary-yank|select|move|swap] ; In `second-sel.el'
+    `(menu-item "Paste Secondary" ,(if (fboundp 'secondary-yank|select|move|swap)
+                                       'secondary-yank|select|move|swap
+                                       'secondary-dwim)
       :help "Paste (yank) secondary selection."
       :enable (and (not buffer-read-only)
                (fboundp 'x-get-selection)
                (condition-case nil              ; Ignore - Emacs 21 raises error internally.
                    (x-get-selection 'SECONDARY)
                  (error nil)))
-      :keys "\\[secondary-dwim]")
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "\\[secondary-yank|select|move|swap]"
+                 "\\[secondary-dwim]"))
     'paste)
   (define-key-after menu-bar-edit-menu [primary-to-secondary] ; In `second-sel.el'
-    '(menu-item "Move Secondary to Region" primary-to-secondary
+    `(menu-item "Move Secondary to Region" primary-to-secondary
       :help "Make the region in the current buffer into the secondary selection."
-      :enable (menu-barp-nonempty-region-p) :keys "C-1 \\[secondary-dwim]")
-    'secondary-dwim)
+      :enable (menu-barp-nonempty-region-p)
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "C-1 \\[secondary-yank|select|move|swap]"
+                 "C-1 \\[secondary-dwim]"))
+    'secondary-yank|select|move|swap)
   (define-key-after menu-bar-edit-menu [secondary-swap-region] ; In `second-sel.el'
-    '(menu-item "Swap Region and Secondary" secondary-swap-region
+    `(menu-item "Swap Region and Secondary" secondary-swap-region
       :help "Make region into secondary selection, and vice versa."
       :enable (and (fboundp 'x-get-selection)
                (condition-case nil              ; Ignore - Emacs 21 raises error internally.
                    (x-get-selection 'SECONDARY)
                  (error nil)))
-      :keys "C-- \\[secondary-dwim]")
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "C-- \\[secondary-yank|select|move|swap]"
+                 "C-- \\[secondary-dwim]"))
     'primary-to-secondary)
   (define-key-after menu-bar-edit-menu [secondary-to-primary] ; In `second-sel.el'
-    '(menu-item "Select Secondary as Region" secondary-to-primary
+    `(menu-item "Select Secondary as Region" secondary-to-primary
       :help "Go to the secondary selection and select it as the active region."
       :enable (and (fboundp 'x-get-selection)
                (condition-case nil              ; Ignore - Emacs 21 raises error internally.
                    (x-get-selection 'SECONDARY)
                  (error nil)))
-      :keys "C-0 \\[secondary-dwim]")
+      :keys ,(if (fboundp 'secondary-yank|select|move|swap)
+                 "C-0 \\[secondary-yank|select|move|swap]"
+                 "C-0 \\[secondary-dwim]"))
     'secondary-swap-region))
 
 (defvar yank-menu (cons "Select Yank" nil))
@@ -958,7 +999,11 @@ A prefix argument means justify as well as fill."
   '(menu-item "Tabify" tabify
     :help "Convert multiple spaces in the region to tabs when possible"))
 (define-key menu-bar-edit-region-menu [comment-region]
-  '(menu-item "(Un)Comment" comment-region :help "Comment or uncomment each line in the region"))
+  '(menu-item "(Un)Comment" comment-region :help "Comment or uncomment the region"))
+(when (fboundp 'comment-region-lines)
+  (define-key menu-bar-edit-region-menu [comment-region-lines]
+    '(menu-item "(Un)Comment Lines" comment-region-lines
+      :help "Comment or uncomment each line in the region")))
 (define-key menu-bar-edit-region-menu [center-region]
   '(menu-item "Center" center-region
     :help "Center each nonblank line that starts in the region"))
@@ -1229,11 +1274,11 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 ;----------------------
 (define-key menu-bar-search-tags-menu [separator-tags-regexp] '("--"))
 
-;;;###autoload
-(defun menu-bar-next-tag-other-window ()
-  "Find the next definition of the tag already specified."
-  (interactive)
-  (find-tag-other-window nil t))
+(unless (fboundp 'menu-bar-next-tag-other-window)
+  (defun menu-bar-next-tag-other-window ()
+    "Find the next definition of the tag already specified."
+    (interactive)
+    (find-tag-other-window nil t)))
 
 (define-key menu-bar-search-tags-menu [next-tag-other-window]
   '(menu-item "Find Next Tag" menu-bar-next-tag-other-window
@@ -1496,7 +1541,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
   (define-key menu-bar-emacs-lisp-manual-menu [elisp-index-search]
     '(menu-item "    Index..." elisp-index-search
       :help "Look up a topic in the Emacs Lisp manual index")))
-(when (fboundp 'menu-bar-read-lispref)  ; Defined in `info+.el'.
+(when (fboundp 'menu-bar-read-lispref)  ; Defined in `info+.el' or `info+20.el'.
   (define-key menu-bar-emacs-lisp-manual-menu [menu-bar-read-lispref]
     '(menu-item "Manual" menu-bar-read-lispref
       :help "Read the Emacs Lisp reference manual"))
