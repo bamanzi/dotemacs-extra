@@ -19,10 +19,10 @@
   )
 
 ;; *** zop-to-char
-(autoload 'zop-to-char  "zop-to-char"
-  "An enhanced version of `zap-to-char'." t)
+(autoload 'zop-up-to-char  "zop-to-char"
+  "An enhanced version of `zap-up-to-char'." t)
 
-(global-set-key [remap zap-to-char] 'zop-to-char)
+(global-set-key [remap zap-to-char] 'zop-up-to-char)
 
 
 ;; ** search
