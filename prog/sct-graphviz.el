@@ -122,5 +122,29 @@ Then save the file as \"my-file.dot\" and run
               (delete-file tmp-file))))))))
 
 
+;; make sure `anything-simple-call-tree' compatible with latest `simple-call-tree' (>= 20151116)
+(eval-afer-load "anything-config"
+  `(progn
+     (defun anything-c-simple-call-tree-init-base (function message)
+       (require 'simple-call-tree)
+       (with-no-warnings
+         (when (anything-current-buffer-is-modified)
+           (anything-c-simple-call-tree-analyze-maybe)
+           (let ((list (funcall function simple-call-tree-alist)))
+             (with-current-buffer (anything-candidate-buffer 'local)
+               (dolist (entry list)
+                 (let ((funcs (concat "  " (mapconcat #'car (cdr entry) "\n  "))))
+                   (insert (caar entry) message
+                           (if (string= funcs "  ")
+                               "  no functions."
+                             funcs)
+                           "\n\n"))))))))
+
+     (defun anything-c-simple-call-tree-functions-callers-init ()
+       (anything-c-simple-call-tree-init-base #'(lambda (sct-alist)
+                                                  (simple-call-tree-invert))
+                                              " is called by\n"))
+     ))
+
 (provide 'sct-graphviz)
 ;;; sct-graphviz ends here
