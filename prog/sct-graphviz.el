@@ -95,26 +95,32 @@ Then save the file as \"my-file.dot\" and run
 			  (directory-files sct-graphviz-dir t 
 					   (format "\\.jpg\\'")))))
     (error (format "sct-graphviz: unable to access %s" sct-graphviz-dir)))
-  (if (null (executable-find graphviz-command))
-      (error "Command `dot' not found. You need to install package `graphviz'.")
     (let ((tmp-file (make-temp-file (expand-file-name ".tmp" sct-graphviz-dir) nil ".dot"))
           (viz-file (expand-file-name (concat (buffer-name (current-buffer)) ".jpg") sct-graphviz-dir)))
       (with-temp-file tmp-file
         (insert (sct-dot)))
-      (let ((cmd-return (shell-command-to-string (concat "dot " 
-                                                         " -Tjpg " tmp-file
-                                                         " -o " viz-file))))
-        (if (zerop (length cmd-return))
-            (let ((vct (get-buffer-create "*Visual Call Tree*")))
-              (with-current-buffer
-                  vct
-                (image-toggle-display-text)
-                (erase-buffer)
-                (insert-file-contents viz-file)
-                (image-mode))
-              (display-buffer vct))
-          (error "graphivz: error during external command: %s" cmd-return)))
-      (delete-file tmp-file))))
+      (cond
+       ((null (executable-find graphviz-command))
+        (error "Command `dot' not found. You need to install package `graphviz'."))
+       (t
+        (let ((cmd-return (shell-command-to-string (concat "dot " 
+                                                           " -Tjpg " tmp-file
+                                                           " -o " viz-file))))
+          (if (not (zerop (length cmd-return)))
+              (error "graphivz: error during external command: %s" cmd-return)
+            (if (not (display-graphic-p))
+                (progn
+                  (message "`sct-graphviz' generated '%s' successfully, but it needs a graphical frame to display it." viz-file)
+                  (find-file-other-window tmp-file))
+              (let ((vct (get-buffer-create "*Visual Call Tree*")))
+                (with-current-buffer vct
+                  (image-toggle-display-text)
+                  (erase-buffer)
+                  (insert-file-contents viz-file)
+                  (image-mode))
+                (display-buffer vct))
+              (delete-file tmp-file))))))))
+
 
 (provide 'sct-graphviz)
 ;;; sct-graphviz ends here
