@@ -22,12 +22,13 @@
 (defun simple-call-tree-list-functions-and-callers ()
   "List functions and callers in `simple-call-tree-alist'."
   (interactive)
-  (let ((list (simple-call-tree-invert simple-call-tree-alist)))
+  (let ((list (simple-call-tree-invert)))
     (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
     (erase-buffer)
     (dolist (entry list)
-      (let ((callers (mapconcat #'identity (cdr entry) ", ")))
-        (insert (car entry) " is called by "
+      (let ((callee  (caar entry))
+            (callers (mapconcat #'car (cdr entry) ", ")))
+        (insert callee " is called by "
                 (if (string= callers "")
                     "no functions."
                   callers)
@@ -41,8 +42,11 @@
     (switch-to-buffer (get-buffer-create "*simple-call-tree*"))
     (erase-buffer)
     (dolist (entry list)
-      (let ((functions (mapconcat #'identity (cdr entry) ", ")))
-        (insert (car entry) " calls "
+      (let ((caller  (caar entry))
+            (functions (mapconcat #'car
+                                  (cdr entry)
+                                  ", ")))
+        (insert caller " calls "
                 (if (string= functions "")
                     "no functions"
                   functions)
@@ -50,29 +54,30 @@
 
 (defun sct-dot ()
   "Generate dot file for graphviz from `simple-call-tree-alist'.
+
 After calling `simple-call-tree-analyze', use `sct-dot' in an
 empty buffer via `(insert (sct-dot))'.
+
 Then save the file as \"my-file.dot\" and run
 \"dot -Tjpg /path/to/my-file.dot -o result.jpg\" from command line."
   (concat "digraph G {\n" ;; default beginning of a dot file
-          (mapconcat 
-           #'identity ;; end each line with a ";"
-           (mapcar
-            #'(lambda (defun-list)
-                "Called for each elemet (list) of `simple-call-tree-alist',
-                         create all the 'caller -> callee;' strings."
-              (let ((caller (car defun-list))
-                    (callees (cdr defun-list)))
-                (if (null callees)
-                    (concat "\"" caller "\"")
-                  (mapconcat 
-                   #'(lambda (callee)
-                       "Called with each callee, create 'caller -> callee' pairs."
-                       (concat "\"" caller "\"" " -> " "\"" callee "\""))
-                   callees
-                   ";\n"))))
-            simple-call-tree-alist)
-           ";\n") ";\n}"))
+          (mapconcat #'identity ;; end each line with a ";"
+                     (mapcar #'(lambda (defun-list)
+                                 "Called for each elemet (list) of `simple-call-tree-alist', create all the 'caller -> callee;' strings."
+                                 (let* ((caller (car defun-list))
+                                        (caller-name (substring-no-properties (car caller)))
+                                        (callees (cdr defun-list)))
+                                   (if (null callees)
+                                       (concat "\"" caller-name "\"")
+                                     (mapconcat #'(lambda (callee)
+                                                    "Called with each callee, create 'caller -> callee' pairs."
+                                                    (let ((callee-name (substring-no-properties (car callee))))
+                                                      (concat "    \"" caller-name "\"" " -> " "\"" callee-name "\"")))
+                                                callees
+                                                ";\n"))))
+                             simple-call-tree-alist)
+                     ";\n")
+          ";\n}"))
 
 ;;;###autoload
 (defun sct-graphviz ()
@@ -91,7 +96,7 @@ Then save the file as \"my-file.dot\" and run
 					   (format "\\.jpg\\'")))))
     (error (format "sct-graphviz: unable to access %s" sct-graphviz-dir)))
   (if (null (executable-find graphviz-command))
-      (anything-simple-call-tree)
+      (error "Command `dot' not found. You need to install package `graphviz'.")
     (let ((tmp-file (make-temp-file (expand-file-name ".tmp" sct-graphviz-dir) nil ".dot"))
           (viz-file (expand-file-name (concat (buffer-name (current-buffer)) ".jpg") sct-graphviz-dir)))
       (with-temp-file tmp-file
