@@ -12,8 +12,6 @@
                 (normal-top-level-add-subdirs-to-load-path))))
         (directory-files dotemacs-extra-dir 'full "^[a-z][^\\.]+"))
 
-  (if (>= emacs-major-version 24)
-      (add-to-list 'custom-theme-load-path (concat dotemacs-extra-dir "themes")))
   (if (< emacs-major-version 24)
       (add-to-list 'load-path (concat dotemacs-extra-dir "_emacs23")))
   )
