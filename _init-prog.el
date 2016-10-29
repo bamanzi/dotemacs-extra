@@ -50,7 +50,7 @@
      (message "%s: failed to load `auto-complete-scite-api'." load-file-name)))
 
 ;;--
-(idle-require 'ido-at-point)
+(try-require 'ido-at-point)
 
 (eval-after-load "ido-at-point"
   `(progn
@@ -109,7 +109,7 @@
 
 Each function should accept ONE argument in STRING type.")
 
-(idle-require 'pulse)
+(try-idle-require 'pulse)
 
 (defun symbol-jump ()
   (interactive)

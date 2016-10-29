@@ -1,6 +1,6 @@
 ;; * files & buffers
 ;; ** backup-each-save (and keeping folder structure)
-(idle-require 'backup-each-save)
+(try-idle-require 'backup-each-save)
 
 (eval-after-load "backup-each-save"
   `(progn
@@ -41,11 +41,11 @@
 
 
 ;; ** dired
-(idle-require 'dired+)
+(try-idle-require 'dired+)
 
 ;; *** win32
 (when (eq system-type 'windows-nt)
-  (idle-require 'w32-browser))
+  (try-idle-require 'w32-browser))
 
 (progn
   (cheatsheet-add :group 'Dired

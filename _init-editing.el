@@ -99,7 +99,7 @@
     (call-interactively 'vr/query-replace)))
 
 ;; ---
-(idle-require 'visual-regexp-steroids)
+(try-idle-require 'visual-regexp-steroids)
 (eval-after-load "visual-regexp-steroids"
   `(progn
      (setq vr/engine 
@@ -284,7 +284,7 @@
 
 
 ;; *** volatile-highlights
-(idle-require 'volatile-highlights)
+(try-idle-require 'volatile-highlights)
 (eval-after-load "volatile-highlights"
   `(progn
      (volatile-highlights-mode t)

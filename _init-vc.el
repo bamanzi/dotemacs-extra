@@ -37,4 +37,4 @@
 
 
 ;; ** misc
-;;(idle-require 'vc+) ;;disabled as it's buggy
+;;(try-idle-require 'vc+) ;;disabled as it's buggy

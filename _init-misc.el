@@ -6,7 +6,7 @@
          (locate-library "smartrep"))
     (message "WARNING: smartrep isn't compatible with emacs < 23 yet. you should remove it: %s"
              (locate-library "smartrep"))
-  (idle-require 'back-button))
+  (try-require 'back-button))
 
 (eval-after-load "back-button"
   `(progn
@@ -35,7 +35,7 @@
 
 
 ;; *** recent-jump
-;;(idle-require 'recent-jump)
+;;(try-idle-require 'recent-jump)
 
 (autoload 'recent-jump-mode "recent-jump"
   "Toggle recent-jump mode." t)
@@ -58,7 +58,7 @@
 
 ;; ** smart-mode-line
 (if (>= emacs-major-version 24)
-    (idle-require 'smart-mode-line)
+    (try-idle-require 'smart-mode-line)
   )
 
 (autoload 'sml/setup "smart-mode-line"
@@ -109,7 +109,7 @@
 
 ;; ** scratch buffer
 ;; *** pretty print for emacs-lisp
-(idle-require 'ipretty)
+(try-idle-require 'ipretty)
 (eval-after-load "ipretty"
   `(progn
      (define-key emacs-lisp-mode-map [remap eval-print-last-sexp] 'ipretty-last-sexp)
@@ -117,7 +117,7 @@
      ))
 
 ;; *** log scratch content automatically
-(idle-require 'scratch-log)
+(try-idle-require 'scratch-log)
 
 ;; *** page-break-lines
 (autoload 'page-break-lines-mode  "page-break-lines"
@@ -125,7 +125,7 @@
 (autoload 'global-page-break-lines-mode "page-break-lines"
   "Toggle Page-Break-Lines mode in all buffers." t)
 
-(idle-require 'page-break-lines)
+(try-idle-require 'page-break-lines)
 
 (eval-after-load "page-break-lines"
   `(progn
@@ -158,7 +158,7 @@
     ;; Can't use backquote here, it's too early in the bootstrap.
     (list 'set (list 'make-local-variable (list 'quote var)) val)))
 
-;;(idle-require 'ivy)
+;;(try-idle-require 'ivy)
 
 (eval-after-load "ivy"
   `(progn
@@ -186,7 +186,7 @@
 (autoload 'ido-ubiquitous-mode "ido-ubiquitous"
   "Use `ido-completing-read' instead of `completing-read' almost everywhere." t)
 
-(idle-require 'ido-ubiquitous)
+(try-idle-require 'ido-ubiquitous)
 
 (eval-after-load "ido-ubiquitous"
   `(progn
@@ -249,8 +249,8 @@
 (autoload 'which-key-mode "which-key"
   "Toggle which-key-mode." t)
 
-;; (idle-require 'which-key) ;; it requires emacs>=24.3
-(idle-require 'guide-key)
+;; (try-idle-require 'which-key) ;; it requires emacs>=24.3
+(try-require 'guide-key)
 
 (eval-after-load "which-key"
   `(progn
@@ -261,6 +261,7 @@
 (eval-after-load "guide-key"
   `(progn
      (setq guide-key/guide-key-sequence '("C-x r"
+                                          "C-x v"
                                           "C-x 4"
                                           "C-c C-x"
                                           "C-c @"
@@ -347,13 +348,10 @@
 
 ;;--
 
-;;(idle-require 'vc+) ;;disabled as it's buggy
-
-(idle-require 'menu-bar+)
-
-
-(idle-require 'mouse3)
+(when (display-graphic-p)
+  (try-require 'menu-bar+)
+  (try-require 'mouse3))
 
 ;; give `diff-mode' some colors
-(idle-require 'diff-mode-)
+(try-idle-require 'diff-mode-)
 

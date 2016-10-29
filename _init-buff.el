@@ -1,5 +1,5 @@
 ;; ** buffer-menu
-(idle-require 'buff-menu+)
+(try-idle-require 'buff-menu+)
 (eval-after-load "buff-menu+"
   `(progn
      (load-library "buff-menu")))
@@ -66,7 +66,7 @@
 
 
 ;; ** tempbuf: kill unused buffers in the background
-(idle-require 'tempbuf)
+(try-idle-require 'tempbuf)
 (eval-after-load "tempbuf"
   `(progn
      (add-hook 'dired-mode-hook 'turn-on-tempbuf-mode)

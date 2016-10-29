@@ -12,7 +12,7 @@
 
 
 ;; ** move/swap
-(idle-require 'bmz-window-misc)
+(try-require 'bmz-window-misc)
 
 (eval-after-load "bmz-window-misc"
   `(progn
@@ -41,7 +41,7 @@
   "Minor mode for other frame/window buffer placement." t)
 
 (if (fboundp 'advice-add)
-  (idle-require 'other-frame-window))
+  (try-idle-require 'other-frame-window))
 
 (eval-after-load "other-frame-window"
   `(progn
@@ -52,7 +52,7 @@
 (autoload 'window-numbering-mode "window-numbering"
   "A minor mode that assigns a number to each window." t)
 
-(idle-require 'window-numbering)
+(try-idle-require 'window-numbering)
 
 (eval-after-load "window-numbering"
   `(progn     
@@ -93,7 +93,7 @@
 
 
 ;; ** other extensions
-(idle-require 'window-extension)
+(try-require 'window-extension)
 
 (eval-after-load "window-extension"
   `(progn

@@ -4,7 +4,7 @@
 ;;http://packages.debian.org/sid/w3m-el-snapshot
 
 (ignore-errors
-  (idle-require 'w3m-load))
+  (try-require 'w3m-load))
 
 (autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
 

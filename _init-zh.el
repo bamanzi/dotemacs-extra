@@ -131,7 +131,7 @@
 
 (when (and (eq window-system 'x)
            (> (length (shell-command-to-string "pidof fcitx")) 0))
-  (idle-require 'fcitx))
+  (try-idle-require 'fcitx))
 
 (eval-after-load "fcitx"
   `(progn

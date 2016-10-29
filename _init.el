@@ -16,14 +16,29 @@
       (add-to-list 'load-path (concat dotemacs-extra-dir "_emacs23")))
   )
 
-
-(if (and (fboundp 'idle-require-mode) idle-require-mode) ;;`idle-require-mode' not finished yet
-    (defalias 'idle-require 'require))
-
 (require 'cheatsheet)
 (global-set-key (kbd "<apps> <f1>") 'cheatsheet-show)
 
-(mapc #'(lambda (file)
-          (load-file file))
-      (directory-files dotemacs-extra-dir 'full "^_init-.*.el$"))
+(defalias 'try-require 'require)
+(defalias 'try-idle-require 'require)
+
+
+(defun load-dotemacs-extra (load-more)
+  (interactive "p")
+  
+
+  (if (>= load-more 4)                    ; C-u C-u
+      (progn
+        ;; `try-idle-require' -> `idle-require' or `require'
+        (if (fboundp 'idle-require-mode)
+            (progn
+              (defalias 'try-idle-require 'idle-require)
+              (unless idle-require-mode
+                (idle-require-mode 1)))
+          (defalias 'try-idle-require 'require)))
+    (defalias 'try-idle-require 'identity)) ;;to ignore `try-idle-require' in _init-*.el
+
+  (mapc #'(lambda (file)
+            (load-file file))
+        (directory-files dotemacs-extra-dir 'full "^_init-.*.el$")))
 
