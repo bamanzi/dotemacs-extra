@@ -1,57 +1,102 @@
+** 25.1 (32-bit)
+
+#+BEGIN_SRC emacs-lisp
+  dynamic-library-alist
+#+END_SRC
+
+#+RESULTS:
+
+| xpm        | libxpm.dll              | xpm4.dll        | libxpm-nox4.dll |
+| png        | libpng16.dll            | libpng16-16.dll |                 |
+| tiff       | libtiff-5.dll           | libtiff3.dll    | libtiff.dll     |
+| jpeg       | libjpeg-8.dll           |                 |                 |
+| gif        | libgif-7.dll            |                 |                 |
+| svg        | librsvg-2-2.dll         |                 |                 |
+| gdk-pixbuf | libgdk_pixbuf-2.0-0.dll |                 |                 |
+| glib       | libglib-2.0-0.dll       |                 |                 |
+| gobject    | libgobject-2.0-0.dll    |                 |                 |
+| gnutls     | libgnutls-30.dll        |                 |                 |
+| libxml2    | libxml2-2.dll           | libxml2.dll     |                 |
+| zlib       | zlib1.dll               | libz-1.dll      |                 |
+
+
+download locations:
+
+| library | dll                                     | location                                                                                     |
+|---------+-----------------------------------------+----------------------------------------------------------------------------------------------|
+| xpm     | libxpm.dll, xpm4.dll or libxpm-nox4.dll | (libxpm.dll included in emacs zip)                                                           |
+| png     | libpng16.dll or libpng16-16.dll         | http://sourceforge.net/projects/ezwinports/files/libpng-1.6.12-w32-bin.zip/download          |
+|         |                                         | (note it requires `zlib1.dll`)                                                               |
+| jpeg    | libjpeg-8.dll                           | http://sourceforge.net/projects/ezwinports/files/jpeg-v8d-w32-bin.zip/download               |
+| tiff    | libtiff-5.dll,                          | http://sourceforge.net/projects/ezwinports/files/tiff-4.0.3-w32-bin.zip/download             |
+|         |                                         | (note it requires `libjpeg-9.dll` and `liblzma-5.dll`, included in =tiff-4.0.3-w32-bin.zip=) |
+|         | libtiff3.dll / libtiff.dll              | (see below  [[24.3]])                                                                            |
+| gif     | libgif-7.dll                            | http://sourceforge.net/projects/ezwinports/files/giflib-5.1.0-w32-bin.zip/download           |
+|         |                                         | http://gnuwin32.sourceforge.net/packages/libungif.htm                                        |
+| zlib    | zlib1.dll                               | http://sourceforge.net/projects/ezwinports/files/zlib-1.2.8-2-w32-bin.zip/download           |
+| gnutls  | libgnutls-30.dll                        | http://sourceforge.net/projects/ezwinports/files/gnutls-3.4.15-w32-bin.zip/download          |
+| libxml2 | libxml2-2.dll                           | http://sourceforge.net/projects/ezwinports/files/libxml2-2.7.8-w32-bin.zip/download          |
+
+
 ** 24.4
 
 #+BEGIN_SRC elisp
-  (describe-variable 'dynamic-library-alist)
-
-  ((xpm "libxpm.dll" "xpm4.dll" "libXpm-nox4.dll")
-   (png "libpng16.dll" "libpng16-16.dll")
-   (tiff "libtiff-5.dll" "libtiff3.dll" "libtiff.dll")
-   (jpeg "libjpeg-9.dll")
-   (gif "libgif-7.dll")
-   (svg "librsvg-2-2.dll")
-   (gdk-pixbuf "libgdk_pixbuf-2.0-0.dll")
-   (glib "libglib-2.0-0.dll")
-   (gobject "libgobject-2.0-0.dll")
-   (gnutls "libgnutls-28.dll" "libgnutls-26.dll")
-   (libxml2 "libxml2-2.dll" "libxml2.dll")
-   (zlib "zlib1.dll" "libz-1.dll"))
+  dynamic-library-alist
 #+END_SRC
 
+#+RESULTS:
+| xpm        | libxpm.dll              | xpm4.dll         | libXpm-nox4.dll |
+| png        | libpng16.dll            | libpng16-16.dll  |                 |
+| tiff       | libtiff-5.dll           | libtiff3.dll     | libtiff.dll     |
+| jpeg       | libjpeg-9.dll           |                  |                 |
+| gif        | libgif-7.dll            |                  |                 |
+| svg        | librsvg-2-2.dll         |                  |                 |
+| gdk-pixbuf | libgdk_pixbuf-2.0-0.dll |                  |                 |
+| glib       | libglib-2.0-0.dll       |                  |                 |
+| gobject    | libgobject-2.0-0.dll    |                  |                 |
+| gnutls     | libgnutls-28.dll        | libgnutls-26.dll |                 |
+| libxml2    | libxml2-2.dll           | libxml2.dll      |                 |
+| zlib       | zlib1.dll               | libz-1.dll       |                 |
 
-| library | dll                                     | location                                                                            |
-|---------+-----------------------------------------+-------------------------------------------------------------------------------------|
-| xpm     | libxpm.dll, xpm4.dll or libxpm-nox4.dll | (libxpm.dll included in emacs zip)                                                  |
-| png     | libpng16.dll or libpng16-16.dll         | http://sourceforge.net/projects/ezwinports/files/libpng-1.6.12-w32-bin.zip/download |
-|         |                                         | (note it requires `zlib1.dll`)                                                      |
-| jpeg    | libjpeg-9.dll                           | http://sourceforge.net/projects/ezwinports/files/jpeg-v9a-w32-bin.zip/download      |
-| tiff    | libtiff-5.dll,                          | http://sourceforge.net/projects/ezwinports/files/tiff-4.0.3-w32-bin.zip/download    |
-|         |                                         | (note it requires `libjpeg-9.dll` and `liblzma-5.dll`)                              |
-|         | libtiff3.dll / libtiff.dll              | (see below)                                                                         |
-| gif     | libgif-7.dll                            | http://sourceforge.net/projects/ezwinports/files/giflib-5.1.0-w32-bin.zip/download  |
-|         |                                         | http://gnuwin32.sourceforge.net/packages/libungif.htm                               |
-| zlib    | zlib1.dll                               | http://gnuwin32.sourceforge.net/packages/zlib.htm                                   |
-| gnutls  | libgnutls-28.dll                        | http://sourceforge.net/projects/ezwinports/files/gnutls-3.3.11-w32-bin.zip/download |
-| libxml2 | libxml2-2.dll                           | http://sourceforge.net/projects/ezwinports/files/libxml2-2.7.8-w32-bin.zip/download |
+
+download locations:
+
+| library | dll                                     | location                                                                                     |
+|---------+-----------------------------------------+----------------------------------------------------------------------------------------------|
+| xpm     | libxpm.dll, xpm4.dll or libxpm-nox4.dll | (libxpm.dll included in emacs zip)                                                           |
+| png     | libpng16.dll or libpng16-16.dll         | http://sourceforge.net/projects/ezwinports/files/libpng-1.6.12-w32-bin.zip/download          |
+|         |                                         | (note it requires `zlib1.dll`)                                                               |
+| jpeg    | libjpeg-9.dll                           | http://sourceforge.net/projects/ezwinports/files/jpeg-v9a-w32-bin.zip/download               |
+| tiff    | libtiff-5.dll,                          | http://sourceforge.net/projects/ezwinports/files/tiff-4.0.3-w32-bin.zip/download             |
+|         |                                         | (note it requires `libjpeg-9.dll` and `liblzma-5.dll`. included in =tiff-4.0.3-w32-bin.zip=) |
+|         | libtiff3.dll / libtiff.dll              | (see below)                                                                                  |
+| gif     | libgif-7.dll                            | http://sourceforge.net/projects/ezwinports/files/giflib-5.1.0-w32-bin.zip/download           |
+|         |                                         | http://gnuwin32.sourceforge.net/packages/libungif.htm                                        |
+| zlib    | zlib1.dll                               | http://gnuwin32.sourceforge.net/packages/zlib.htm                                            |
+| gnutls  | libgnutls-28.dll                        | http://sourceforge.net/projects/ezwinports/files/gnutls-3.3.11-w32-bin.zip/download          |
+| libxml2 | libxml2-2.dll                           | http://sourceforge.net/projects/ezwinports/files/libxml2-2.7.8-w32-bin.zip/download          |
 
 
 ** 24.3
 
 #+BEGIN_SRC elisp
-  (describe-variable 'dynamic-library-alist)
-
-
-  ((xpm "libxpm.dll" "xpm4.dll" "libXpm-nox4.dll")
-   (png "libpng14-14.dll" "libpng14.dll")
-   (jpeg "jpeg62.dll" "libjpeg.dll" "jpeg-62.dll" "jpeg.dll")
-   (tiff "libtiff3.dll" "libtiff.dll")
-   (gif "giflib4.dll" "libungif4.dll" "libungif.dll")
-   (svg "librsvg-2-2.dll")
-   (gdk-pixbuf "libgdk_pixbuf-2.0-0.dll")
-   (glib "libglib-2.0-0.dll")
-   (gobject "libgobject-2.0-0.dll")
-   (gnutls "libgnutls-28.dll" "libgnutls-26.dll")
-   (libxml2 "libxml2-2.dll" "libxml2.dll"))
+  dynamic-library-alist
 #+END_SRC
+
+#+RESULTS:
+| xpm        | libxpm.dll              | xpm4.dll         | libXpm-nox4.dll |          |
+| png        | libpng14-14.dll         | libpng14.dll     |                 |          |
+| jpeg       | jpeg62.dll              | libjpeg.dll      | jpeg-62.dll     | jpeg.dll |
+| tiff       | libtiff3.dll            | libtiff.dll      |                 |          |
+| gif        | giflib4.dll             | libungif4.dll    | libungif.dll    |          |
+| svg        | librsvg-2-2.dll         |                  |                 |          |
+| gdk-pixbuf | libgdk_pixbuf-2.0-0.dll |                  |                 |          |
+| glib       | libglib-2.0-0.dll       |                  |                 |          |
+| gobject    | libgobject-2.0-0.dll    |                  |                 |          |
+| gnutls     | libgnutls-28.dll        | libgnutls-26.dll |                 |          |
+| libxml2    | libxml2-2.dll           | libxml2.dll      |                 |          |
+
+download locations:
 
 | library | dll              | location                                                                            |
 |---------+------------------+-------------------------------------------------------------------------------------|
