@@ -15,7 +15,8 @@
 ;; `run-help' and eldoc support for eshell
 (eval-after-load "eshell"
   `(when (require 'esh-help nil t)
-     (setup-esh-help-eldoc)
+     (if (= emacs-major-version 24)
+         (setup-esh-help-eldoc))        ;; seems not compatible with emacs-23 or emacs-25
      (defalias 'eshell/?    'esh-help-run-help)
      (defalias 'eshell/help 'esh-help-run-help)
      ))
