@@ -41,7 +41,7 @@
 
 
 ;; ** dired
-(try-idle-require 'dired+)
+(try-require 'dired+)
 
 ;; *** win32
 (when (eq system-type 'windows-nt)

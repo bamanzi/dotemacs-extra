@@ -117,7 +117,9 @@
      ))
 
 ;; *** log scratch content automatically
-(try-idle-require 'scratch-log)
+(autoload 'sl-restore-scratch "scratch-log"
+  "Undocumented." t)
+(try-require 'scratch-log)
 
 ;; *** page-break-lines
 (autoload 'page-break-lines-mode  "page-break-lines"
@@ -350,8 +352,8 @@
 
 (when (display-graphic-p)
   (try-require 'menu-bar+)
-  (try-require 'mouse3))
+  (try-idle-require 'mouse3))
 
 ;; give `diff-mode' some colors
-(try-idle-require 'diff-mode-)
+(try-require 'diff-mode-)
 
