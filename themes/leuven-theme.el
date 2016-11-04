@@ -4,7 +4,7 @@
 
 ;; Author: Fabrice Niessen <(concat "fniessen" at-sign "pirilampo.org")>
 ;; URL: https://github.com/fniessen/emacs-leuven-theme
-;; Version: 20160207.1943
+;; Version: 20161030.2004
 ;; Keywords: color theme
 
 ;; This file is part of GNU Emacs.
@@ -38,6 +38,20 @@
 
 ;;; Code:
 
+;;; Options.
+
+(defgroup leuven nil
+  "Leuven theme options.
+The theme has to be reloaded after changing anything in this group."
+  :group 'faces)
+
+(defcustom leuven-scale-outline-headlines t
+  "Scale `outline' (and `org') level-1 headlines."
+  :type 'boolean
+  :group 'leuven)
+
+;;; Theme Faces.
+
 (deftheme leuven
   "Face colors with a light background.
 Basic, Font Lock, Isearch, Gnus, Message, Org mode, Diff, Ediff,
@@ -52,17 +66,26 @@ more...")
       (code-block '(:foreground "#000088" :background "#FFFFE0"))
       (code-inline '(:foreground "#006400" :background "#FDFFF7"))
       (column '(:height 1.0 :weight normal :slant normal :underline nil :strike-through nil :foreground "#E6AD4F" :background "#FFF2DE"))
-      (diff-added '(:foreground "#008000" :background "#DDFFDD"))
+      (completion-selected-candidate '(:weight bold :foreground "white" :background "#0052A4"))
+      (completion-other-candidates '(:weight bold :foreground "black" :background "#EBF4FE"))
+      (completion-inline '(:weight normal :foreground "#C0C0C0" :inherit hl-line)) ; Like Google.
+      (diff-added '(:background "#DDFFDD"))
       (diff-changed '(:foreground "#0000FF" :background "#DDDDFF"))
       (diff-header '(:foreground "#800000" :background "#FFFFAF"))
       (diff-hunk-header '(:foreground "#990099" :background "#FFEEFF"))
       (diff-none '(:foreground "gray33"))
-      (diff-removed '(:foreground "#A60000" :background "#FFDDDD"))
+      (diff-refine-added '(:background "#97F295"))
+      (diff-refine-removed '(:background "#FFB6BA"))
+      (diff-removed '(:background "#FEE8E9"))
       (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
-      ;; (highlight-line '(:background "#E4E4E3"))
-      ;; (highlight-line '(:underline "#FFFF19" :background "#F6FECD"))
-      (highlight-line '(:background "#FBFFAD"))
+      (file '(:foreground "black"))
+      (highlight-blue '(:background "#E4F1F9"))
+      (highlight-gray '(:background "#E4E4E3"))
+      (highlight-green '(:background "#D5F1CF"))
+      (highlight-red '(:background "#FFC8C8"))
+      (highlight-yellow '(:underline "#FFFF19" :background "#F6FECD"))
       (link '(:weight normal :underline t :foreground "#006DAF"))
+      (link-no-underline '(:weight normal :foreground "#006DAF"))
       (mail-header-name '(:family "Sans Serif" :weight normal :foreground "#A3A3A2"))
       (mail-header-other '(:family "Sans Serif" :slant normal :foreground "#666666"))
       (mail-read '(:foreground "#A9A9A9"))
@@ -73,7 +96,7 @@ more...")
       (mail-unread-high '(:foreground "#135985"))
       (marked-line '(:foreground "#AA0000" :background "#FFAAAA"))
       (match '(:weight bold :background "#FBE448")) ; occur patterns
-      (ol1 '(:height 1.3 :weight bold :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"))
+      (ol1 `(,@(when leuven-scale-outline-headlines (list :height 1.3)) :weight bold :overline "#A7A7A7" :foreground "#3C3C3C" :background "#F0F0F0"))
       (ol2 '(:height 1.0 :weight bold :overline "#123555" :foreground "#123555" :background "#E5F4FB"))
       (ol3 '(:height 1.0 :weight bold :foreground "#005522" :background "#EFFFEF"))
       (ol4 '(:height 1.0 :weight bold :slant normal :foreground "#EA6300"))
@@ -81,8 +104,7 @@ more...")
       (ol6 '(:height 1.0 :weight bold :slant italic :foreground "#0077CC"))
       (ol7 '(:height 1.0 :weight bold :slant italic :foreground "#2EAE2C"))
       (ol8 '(:height 1.0 :weight bold :slant italic :foreground "#FD8008"))
-      ;; (paren-matched '(:background "#99CCFF"))
-      (paren-matched '(:background "#E3C414"))
+      (paren-matched '(:background "#C0E8C3")) ; Or take that green for region?
       (paren-unmatched '(:weight bold :underline "red" :foreground "black" :background "#FFDCDC"))
       (region '(:background "#8ED3FF"))
       (shadow '(:foreground "#7F7F7F"))
@@ -90,8 +112,12 @@ more...")
       (subject '(:family "Sans Serif" :weight bold :foreground "black"))
       (symlink '(:foreground "#1F8DD6"))
       (tab '(:foreground "#E8E8E8" :background "white"))
-      (volatile-highlight '(:underline nil :background "#FFF876")) ; flash-region
-      (vc-branch '(:box (:line-width 1 :color "#00CC33") :foreground "black" :background "#AAFFAA")))
+      (volatile-highlight '(:underline nil :foreground "black" :background "#E6B064")) ; flash-region
+      (vc-branch '(:box (:line-width 1 :color "#00CC33") :foreground "black" :background "#AAFFAA"))
+      (xml-attribute '(:foreground "#F36335"))
+      (xml-tag '(:foreground "#AE1B9A"))
+      (highlight-current-tag '(:background "#E8E8FF")) ; #EEF3F6 or #FFEB26
+  )
 
   (custom-theme-set-faces
    'leuven
@@ -103,20 +129,20 @@ more...")
    `(cursor ((,class (:background "#21BDFF"))))
 
    ;; Highlighting faces.
-   `(fringe ((,class (:foreground "#9B9B9B" :background "white"))))
-   `(highlight ((,class ,volatile-highlight)))
+   `(fringe ((,class (:foreground "#FFDD31" :background "white"))))
+   `(highlight ((,class ,highlight-blue)))
    `(region ((,class ,region)))
-   `(secondary-selection ((,class ,match))) ; used by Org-mode for highlighting matched entries and keywords
+   `(secondary-selection ((,class ,match))) ; Used by Org-mode for highlighting matched entries and keywords.
    `(isearch ((,class (:weight bold :underline "#FF9632" :foreground nil :background "#FDBD33"))))
    `(isearch-fail ((,class (:weight bold :foreground "black" :background "#FF9999"))))
    `(lazy-highlight ((,class (:underline "#FF9632" :background "#FFFF00")))) ; isearch others
-   `(trailing-whitespace ((,class (:background "#FFFF57"))))
+   `(trailing-whitespace ((,class (:foreground "#B3B3B3" :background "#FFFFAB"))))
    `(query-replace ((,class (:inherit isearch))))
    `(whitespace-hspace ((,class (:foreground "#D2D2D2")))) ; see also `nobreak-space'
    `(whitespace-indentation ((,class ,tab)))
    `(whitespace-line ((,class (:foreground "#CC0000" :background "#FFFF88"))))
    `(whitespace-tab ((,class ,tab)))
-   `(whitespace-trailing ((,class (:foreground "#B3B3B3" :background "#FFFF57"))))
+   `(whitespace-trailing ((,class (:foreground "#B3B3B3" :background "#FFFFAB"))))
 
    ;; Mode line faces.
    `(mode-line ((,class (:box (:line-width 1 :color "#1A2F54") :foreground "#85CEEB" :background "#335EA8"))))
@@ -154,7 +180,7 @@ more...")
    `(link ((,class ,link)))
    `(link-visited ((,class (:underline t :foreground "#E5786D"))))
    `(button ((,class (:underline t :foreground "#006DAF"))))
-   `(header-line ((,class (:weight bold :underline "black" :overline "black" :foreground "black" :background "#FFFF88"))))
+   `(header-line ((,class (:weight bold :underline "#BF8DFF" :overline "#BF8DFF" :foreground "black" :background "#E8E8FF"))))
 
    ;; Gnus faces.
    `(gnus-button ((,class (:weight normal))))
@@ -212,7 +238,7 @@ more...")
    `(gnus-summary-low-read ((,class (:slant italic :foreground "#999999" :background "#E0E0E0"))))
    `(gnus-summary-low-ticked ((,class ,mail-ticked)))
    `(gnus-summary-low-unread ((,class (:slant italic :foreground "black"))))
-   `(gnus-summary-normal-ancient ((,class ,mail-read)))
+   `(gnus-summary-normal-ancient ((,class (:slant italic :foreground "#0072C6"))))
    `(gnus-summary-normal-read ((,class ,mail-read)))
    `(gnus-summary-normal-ticked ((,class ,mail-ticked)))
    `(gnus-summary-normal-unread ((,class ,mail-unread)))
@@ -242,25 +268,27 @@ more...")
    `(diff-header ((,class ,diff-header)))
    `(diff-hunk-header ((,class ,diff-hunk-header)))
    `(diff-index ((,class ,diff-header)))
-   `(diff-indicator-added ((,class (:background "#AAFFAA"))))
+   `(diff-indicator-added ((,class (:foreground "#3A993A" :background "#DBFFDB"))))
    `(diff-indicator-changed ((,class (:background "#8080FF"))))
-   `(diff-indicator-removed ((,class (:background "#FFBBBB"))))
+   `(diff-indicator-removed ((,class (:foreground "#CC3333" :background "#FFDDDD"))))
+   `(diff-refine-added ((,class ,diff-refine-added)))
    `(diff-refine-change ((,class (:background "#DDDDFF"))))
+   `(diff-refine-removed ((,class ,diff-refine-removed)))
    `(diff-removed ((,class ,diff-removed)))
 
    ;; SMerge.
    `(smerge-refined-change ((,class (:background "#AAAAFF"))))
 
    ;; Ediff.
-   `(ediff-current-diff-A ((,class (:foreground "gray33" :background "#FFDDDD"))))
-   `(ediff-current-diff-B ((,class (:foreground "gray33" :background "#DDFFDD"))))
-   `(ediff-current-diff-C ((,class (:foreground "black" :background "cyan"))))
-   `(ediff-even-diff-A ((,class (:foreground "black" :background "light grey"))))
-   `(ediff-even-diff-B ((,class (:foreground "black" :background "light grey"))))
-   `(ediff-fine-diff-A ((,class (:foreground "#A60000" :background "#FFAAAA"))))
-   `(ediff-fine-diff-B ((,class (:foreground "#008000" :background "#55FF55"))))
-   `(ediff-odd-diff-A ((,class (:foreground "black" :background "light grey"))))
-   `(ediff-odd-diff-B ((,class (:foreground "black" :background "light grey"))))
+   `(ediff-current-diff-A ((,class (:background "#FFDDDD"))))
+   `(ediff-current-diff-B ((,class (:background "#DDFFDD"))))
+   `(ediff-current-diff-C ((,class (:background "cyan"))))
+   `(ediff-even-diff-A ((,class (:background "light grey"))))
+   `(ediff-even-diff-B ((,class (:background "light grey"))))
+   `(ediff-fine-diff-A ((,class (:background "#FFAAAA"))))
+   `(ediff-fine-diff-B ((,class (:background "#55FF55"))))
+   `(ediff-odd-diff-A ((,class (:background "light grey"))))
+   `(ediff-odd-diff-B ((,class (:background "light grey"))))
 
    ;; Flyspell.
    (if (version< emacs-version "24.4")
@@ -276,8 +304,8 @@ more...")
    ;; `(semantic-decoration-on-protected-members-face ((,class (:background ,alum-2))))
    ;; `(semantic-decoration-on-unknown-includes ((,class (:background ,choc-3))))
    ;; `(semantic-decoration-on-unparsed-includes ((,class (:underline ,orange-3))))
-   `(semantic-highlight-func-current-tag-face ((,class (:background "#EEF3F6"))))
-   `(semantic-tag-boundary-face ((,class (:overline "#F0F0F0"))))
+   `(semantic-highlight-func-current-tag-face ((,class ,highlight-current-tag)))
+   `(semantic-tag-boundary-face ((,class (:overline "#BF8DFF"))))
    ;; `(semantic-unmatched-syntax-face ((,class (:underline ,red-1))))
 
    `(Info-title-1-face ((,class ,ol1)))
@@ -285,26 +313,26 @@ more...")
    `(Info-title-3-face ((,class ,ol3)))
    `(Info-title-4-face ((,class ,ol4)))
    `(ace-jump-face-foreground ((,class (:weight bold :foreground "black" :background "#FEA500"))))
-   `(ahs-face ((,class (:background "#84CFFF"))))
-   `(ahs-definition-face ((,class (:weight bold :background "#84CFFF"))))
-   `(ahs-plugin-defalt-face ((,class (:background "#FFB6C6"))))
+   `(ahs-face ((,class (:background "#E2E6D6")))) ; #84CFFF (blue).
+   `(ahs-definition-face ((,class (:background "#FFE4FF"))))
+   `(ahs-plugin-defalt-face ((,class (:background "#E2E6D6")))) ; #FFB6C6 (rose) = current.
    `(anzu-match-1 ((,class (:foreground "black" :background "aquamarine"))))
    `(anzu-match-2 ((,class (:foreground "black" :background "springgreen"))))
    `(anzu-match-3 ((,class (:foreground "black" :background "red"))))
-   `(anzu-mode-line ((,class (:weight bold :foreground "#FFFE00" :background "black"))))
+   `(anzu-mode-line ((,class (:foreground "black" :background "#80FF80"))))
    `(anzu-replace-highlight ((,class (:inherit query-replace))))
    `(anzu-replace-to ((,class (:weight bold :foreground "#BD33FD" :background "#FDBD33"))))
    `(auto-dim-other-buffers-face ((,class (:background "#F7F7F7"))))
-   `(avy-background-face ((,class (:background "red"))))
+   `(avy-background-face ((,class (:background "#A9A9A9"))))
    `(avy-lead-face ((,class (:weight bold :foreground "black" :background "#FEA500"))))
    `(bbdb-company ((,class (:slant italic :foreground "steel blue"))))
    `(bbdb-field-name ((,class (:weight bold :foreground "steel blue"))))
    `(bbdb-field-value ((,class (:foreground "steel blue"))))
    `(bbdb-name ((,class (:underline t :foreground "#FF6633"))))
-   `(bmkp-light-autonamed ((,class (:background "#BFFFFE"))))
-   `(bmkp-light-fringe-autonamed ((,class (:foreground "#242527" :background "#01FFFB")))) ; default
-   `(bmkp-light-fringe-non-autonamed ((,class (:foreground "#FCEDFD" :background "#C595EE"))))
-   `(bmkp-light-non-autonamed ((,class (:foreground "#C4FFC4"))))
+   `(bmkp-light-fringe-autonamed ((,class (:foreground "#5A5A5A" :background "#D4D4D4"))))
+   `(bmkp-light-autonamed ((,class (:background "#F0F0F0"))))
+   `(bmkp-light-fringe-non-autonamed ((,class (:foreground "#FFFFCC" :background "#01FFFB")))) ; default
+   `(bmkp-light-non-autonamed ((,class (:background "#BFFFFE"))))
    `(browse-kill-ring-separator-face ((,class (:foreground "red"))))
    `(calendar-month-header ((,class (:weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
    `(calendar-today ((,class (:weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
@@ -330,7 +358,7 @@ more...")
    `(cfw:face-toolbar-button-on ((,class (:foreground "#5E5E5E" :background "#F6F6F6"))))
    `(change-log-date ((,class (:foreground "purple"))))
    `(change-log-file ((,class (:weight bold :foreground "#4183C4"))))
-   `(change-log-list ((,class (:foreground "cyan3"))))
+   `(change-log-list ((,class (:box (:line-width 1) :foreground "cyan3"))))
    `(change-log-name ((,class (:foreground "#008000"))))
    `(circe-highlight-all-nicks-face ((,class (:foreground "blue" :background "#F0F0F0")))) ; other nick names
    `(circe-highlight-nick-face ((,class (:foreground "#009300" :background "#F0F0F0")))) ; messages with my nick cited
@@ -342,19 +370,26 @@ more...")
    ;; `(comint-highlight-prompt ((,class (:weight bold :foreground "black" :background "gold"))))
    `(comint-highlight-prompt ((,class (:weight bold :foreground "#0000FF" :inherit nil))))
 
-   `(ac-candidate-face ((,class (:foreground "#5B6367" :background "lightgray")))) ; popup-face
-   `(ac-candidate-mouse-face ((,class (:foreground "white" :background "blue")))) ; popup-menu-mouse-face
-   `(ac-completion-face ((,class (:underline nil :foreground "#C0C0C0" :background "#FBFFAD")))) ; like Google
-   `(ac-selection-face ((,class (:foreground "white" :background "steelblue")))) ; popup-menu-selection-face
+   ;; `(ac-selection-face ((,class ,completion-selected-candidate)))
+   `(ac-selection-face ((,class (:weight bold :foreground "white" :background "orange")))) ; TEMP For diff'ing AC from Comp.
+   `(ac-candidate-face ((,class ,completion-other-candidates)))
+   `(ac-completion-face ((,class ,completion-inline)))
+   `(ac-candidate-mouse-face ((,class (:inherit highlight))))
+   `(popup-scroll-bar-background-face ((,class (:background "#EBF4FE"))))
+   `(popup-scroll-bar-foreground-face ((,class (:background "#D1DAE4")))) ; Scrollbar (visible).
 
-   `(company-preview-common ((,class (:foreground "#C0C0C0" :background "#F6FECD")))) ; same background as `highlight-line'
-   `(company-scrollbar-bg ((,class (:background "#F0F0F0"))))
-   `(company-scrollbar-fg ((,class (:background "#C0C0C0"))))
-   `(company-tooltip ((,class (:weight bold :foreground "#171D28" :background "#E6E6E6"))))
-   `(company-tooltip-annotation ((,class (:weight normal :foreground "#378FC1" :background "#E6E6E6"))))
-   `(company-tooltip-common ((,class (:weight normal :foreground "#5B6367" :inherit company-tooltip))))
-   `(company-tooltip-common-selection ((,class (:weight normal :inherit company-tooltip-selection))))
-   `(company-tooltip-selection ((,class (:weight bold :background "#93B0D8"))))
+   `(company-tooltip-common-selection ((,class (:weight normal :foreground "#F9ECCC" :inherit company-tooltip-selection)))) ; Prefix + common part in tooltip (for selection).
+   `(company-tooltip-selection ((,class ,completion-selected-candidate))) ; Suffix in tooltip (for selection).
+   `(company-tooltip-annotation-selection ((,class (:weight normal :foreground "#F9ECCC")))) ; Annotation (for selection).
+
+   `(company-tooltip-common ((,class (:weight normal :foreground "#B000B0" :inherit company-tooltip)))) ; Prefix + common part in tooltip.
+   `(company-tooltip ((,class ,completion-other-candidates))) ; Suffix in tooltip.
+   `(company-tooltip-annotation ((,class (:weight normal :foreground "#2415FF")))) ; Annotation.
+
+   `(company-preview-common ((,class ,completion-inline)))
+
+   `(company-scrollbar-bg ((,class (:background "#EBF4FE"))))
+   `(company-scrollbar-fg ((,class (:background "#D1DAE4")))) ; Scrollbar (visible).
 
    `(compare-windows ((,class (:background "#FFFF00"))))
    ;; `(completions-common-part ((,class (:foreground "red" :weight bold))))
@@ -435,7 +470,7 @@ more...")
    `(diredp-dir-priv ((,class ,directory)))
    `(diredp-exec-priv ((,class (:background "#03C03C"))))
    `(diredp-executable-tag ((,class (:foreground "ForestGreen" :background "white"))))
-   `(diredp-file-name ((,class (:foreground "black"))))
+   `(diredp-file-name ((,class ,file)))
    `(diredp-file-suffix ((,class (:foreground "#C0C0C0"))))
    `(diredp-flag-mark-line ((,class ,marked-line)))
    `(diredp-ignored-file-name ((,class ,shadow)))
@@ -449,7 +484,7 @@ more...")
    ;; `(eww-form-textarea ((,class ())))
    `(file-name-shadow ((,class ,shadow)))
    `(font-latex-bold-face ((,class (:weight bold :foreground "black"))))
-   `(fancy-narrow-blocked-face ((,class (:foreground "red"))))
+   `(fancy-narrow-blocked-face ((,class (:foreground "#9998A4"))))
    `(flycheck-color-mode-line-error-face ((, class (:background "#FF3F3F"))))
    `(flycheck-color-mode-line-warning-face ((, class (:background "orange"))))
    `(flycheck-color-mode-line-info-face ((, class (:background "yellow"))))
@@ -465,13 +500,14 @@ more...")
    `(font-latex-verbatim-face ((,class (:foreground "#000088" :background "#FFFFE0" :inherit nil))))
    `(git-commit-summary-face ((,class (:foreground "#000000"))))
    `(git-commit-comment-face ((,class (:slant italic :foreground "#696969"))))
-   `(google-translate-text-face ((t (:foreground "#777777" :background "#F5F5F5"))))
-   `(google-translate-phonetic-face ((t (:inherit shadow))))
-   `(google-translate-translation-face ((t (:weight normal :foreground "#3079ED" :background "#E3EAF2"))))
-   `(google-translate-suggestion-label-face ((t (:foreground "red"))))
-   `(google-translate-suggestion-face ((t (:slant italic :underline t))))
-   `(google-translate-listen-button-face ((t (:height 0.8))))
+   `(google-translate-text-face ((,class (:foreground "#777777" :background "#F5F5F5"))))
+   `(google-translate-phonetic-face ((,class (:inherit shadow))))
+   `(google-translate-translation-face ((,class (:weight normal :foreground "#3079ED" :background "#E3EAF2"))))
+   `(google-translate-suggestion-label-face ((,class (:foreground "red"))))
+   `(google-translate-suggestion-face ((,class (:slant italic :underline t))))
+   `(google-translate-listen-button-face ((,class (:height 0.8))))
    `(helm-action ((,class (:foreground "black"))))
+   `(helm-bookmark-file ((,class ,file)))
    `(helm-bookmarks-su-face ((,class (:foreground "red"))))
    `(helm-buffer-directory ((,class ,directory)))
    `(helm-buffer-process ((,class (:foreground "#008200"))))
@@ -479,6 +515,7 @@ more...")
    `(helm-dir-heading ((,class (:foreground "blue" :background "pink"))))
    `(helm-dir-priv ((,class (:foreground "dark red" :background "light grey"))))
    `(helm-ff-directory ((,class ,directory)))
+   `(helm-ff-dotted-directory ((,class ,directory)))
    `(helm-ff-executable ((,class (:foreground "green3" :background "white"))))
    `(helm-ff-file ((,class (:foreground "black"))))
    `(helm-ff-invalid-symlink ((,class (:foreground "yellow" :background "red"))))
@@ -489,7 +526,7 @@ more...")
    `(helm-grep-match ((,class ,match)))
    `(helm-grep-running ((,class (:weight bold :foreground "white"))))
    `(helm-isearch-match ((,class (:background "#CCFFCC"))))
-   `(helm-lisp-show-completion ((,class ,volatile-highlight))) ; see `helm-dabbrev'
+   `(helm-lisp-show-completion ((,class ,volatile-highlight))) ; See `helm-dabbrev'.
    ;; `(helm-ls-git-added-copied-face ((,class (:foreground ""))))
    ;; `(helm-ls-git-added-modified-face ((,class (:foreground ""))))
    ;; `(helm-ls-git-conflict-face ((,class (:foreground ""))))
@@ -501,18 +538,20 @@ more...")
    ;; `(helm-ls-git-untracked-face ((,class (:foreground ""))))
    `(helm-match ((,class ,match)))
    `(helm-moccur-buffer ((,class (:foreground "#0066CC"))))
-   `(helm-selection ((,class ,volatile-highlight)))
-   `(helm-selection-line ((,class ,volatile-highlight)))
+   `(helm-selection ((,class ,highlight-blue)))
+   `(helm-selection-line ((,class ,highlight-gray)))
    `(helm-separator ((,class (:foreground "red"))))
-   `(helm-source-header ((,class (:family "Sans Serif" :height 1.3 :weight bold :foreground "white" :background "#2F69BF"))))
+   `(helm-source-header ((,class ,ol1)))
    `(helm-swoop-target-line-block-face ((,class (:background "#CCCC00" :foreground "#222222"))))
    `(helm-swoop-target-line-face ((,class ,volatile-highlight)))
    `(helm-swoop-target-word-face ((,class (:weight bold :foreground nil :background "#FDBD33"))))
    `(helm-visible-mark ((,class ,marked-line)))
    `(helm-w3m-bookmarks-face ((,class (:underline t :foreground "cyan1"))))
+   `(highlight-changes ((,class (:foreground nil)))) ;; blue "#2E08B5"
+   `(highlight-changes-delete ((,class (:strike-through nil :foreground nil)))) ;; red "#B5082E"
    `(highlight-symbol-face ((,class (:background "#FFFFA0"))))
-   `(hl-line ((,class ,highlight-line)))
-   `(hl-tags-face ((,class (:background "#FEFCAE"))))
+   `(hl-line ((,class ,highlight-green))) ; Highlight current line.
+   `(hl-tags-face ((,class ,highlight-current-tag))) ; ~ Pair highlighting (matching tags).
    `(holiday-face ((,class (:foreground "#777777" :background "#E4EBFE"))))
    `(html-helper-bold-face ((,class (:weight bold :foreground "black"))))
    `(html-helper-italic-face ((,class (:slant italic :foreground "black"))))
@@ -536,12 +575,30 @@ more...")
    `(info-title-1 ((,class ,ol1)))
    `(info-xref ((,class (:underline t :foreground "#006DAF")))) ; unvisited cross-references
    `(info-xref-visited ((,class (:underline t :foreground "magenta4")))) ; previously visited cross-references
+   ;; js2-highlight-vars-face (~ auto-highlight-symbol)
+   `(js2-function-param ((,class (:foreground "LightGoldenrod"))))
+   `(js2-error ((,class (:box (:line-width 1 :color "#FF3737") :background "#FFE1E1")))) ; DONE.
+   `(js2-external-variable ((,class (:foreground "#FF0000")))) ; DONE.
+   `(js2-function-param ((,class (:foreground "SeaGreen"))))
+   `(js2-instance-member ((,class (:foreground "DarkOrchid"))))
+   `(js2-jsdoc-html-tag-delimiter ((,class (:foreground "green"))))
+   `(js2-jsdoc-html-tag-name ((,class (:foreground "yellow"))))
+   `(js2-jsdoc-tag ((,class (:foreground "SlateGray"))))
+   `(js2-jsdoc-type ((,class (:foreground "SteelBlue"))))
+   `(js2-jsdoc-value ((,class (:foreground "PeachPuff3"))))
+   `(js2-magic-paren ((,class (:underline t))))
+   `(js2-private-function-call ((,class (:foreground "goldenrod"))))
+   `(js2-private-member ((,class (:foreground "PeachPuff3"))))
+   `(js2-warning ((,class (:underline "orange"))))
 
    ;; Org non-standard faces.
    `(leuven-org-deadline-overdue ((,class (:foreground "#F22659"))))
    `(leuven-org-deadline-today ((,class (:weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
    `(leuven-org-deadline-tomorrow ((,class (:foreground "#40A80B"))))
    `(leuven-org-deadline-future ((,class (:foreground "#40A80B"))))
+   `(leuven-gnus-unseen ((,class (:weight bold :foreground "#FC7202"))))
+   `(leuven-gnus-date ((,class (:foreground "#FF80BF"))))
+   `(leuven-gnus-size ((,class (:foreground "#8FBF60"))))
 
    `(light-symbol-face ((,class (:background "#FFFFA0"))))
    `(linum ((,class (:foreground "#9A9A9A" :background "#EDEDED"))))
@@ -551,6 +608,11 @@ more...")
    `(lui-highlight-face ((,class (:box '(:line-width 1 :color "#CC0000") :foreground "#CC0000" :background "#FFFF88")))) ; my nickname
    `(lui-time-stamp-face ((,class (:foreground "purple"))))
    `(magit-blame-header ((,class (:inherit magit-diff-file-header))))
+   `(magit-blame-heading ((,class (:overline "#A7A7A7" :foreground "red" :background "#E6E6E6"))))
+   `(magit-blame-hash ((,class (:overline "#A7A7A7" :foreground "red" :background "#E6E6E6"))))
+   `(magit-blame-name ((,class (:overline "#A7A7A7" :foreground "#036A07" :background "#E6E6E6"))))
+   `(magit-blame-date ((,class (:overline "#A7A7A7" :foreground "blue" :background "#E6E6E6"))))
+   `(magit-blame-summary ((,class (:overline "#A7A7A7" :weight bold :foreground "#707070" :background "#E6E6E6"))))
    `(magit-branch ((,class ,vc-branch)))
    `(magit-diff-add ((,class ,diff-added)))
    `(magit-diff-del ((,class ,diff-removed)))
@@ -566,7 +628,7 @@ more...")
    `(makefile-space-face ((,class (:background "hot pink"))))
    `(makefile-targets ((,class (:weight bold :foreground "blue"))))
    ;; `(markdown-blockquote-face ((,class ())))
-   ;; `(markdown-bold-face ((,class (:weight bold :foreground "black"))))
+   `(markdown-bold-face ((,class (:inherit bold))))
    ;; `(markdown-comment-face ((,class ())))
    ;; `(markdown-footnote-face ((,class ())))
    ;; `(markdown-header-delimiter-face ((,class ())))
@@ -579,10 +641,10 @@ more...")
    `(markdown-header-face-6 ((,class ,ol6)))
    ;; `(markdown-header-rule-face ((,class ())))
    `(markdown-inline-code-face ((,class ,code-inline)))
-   ;; `(markdown-italic-face ((,class ())))
+   `(markdown-italic-face ((,class (:inherit italic))))
    ;; `(markdown-language-keyword-face ((,class ())))
    ;; `(markdown-line-break-face ((,class ())))
-   ;; `(markdown-link-face ((,class ())))
+   `(markdown-link-face ((,class ,link-no-underline)))
    ;; `(markdown-link-title-face ((,class ())))
    ;; `(markdown-list-face ((,class ())))
    ;; `(markdown-math-face ((,class ())))
@@ -592,19 +654,22 @@ more...")
    ;; `(markdown-pre-face ((,class ())))
    ;; `(markdown-reference-face ((,class ())))
    ;; `(markdown-strike-through-face ((,class ())))
-   ;; `(markdown-url-face ((,class ())))
+   `(markdown-url-face ((,class ,link)))
    `(match ((,class ,match)))           ; Used for grep matches.
+   `(mc/cursor-bar-face ((,class (:height 1.0 :foreground "white" :background "#1664C4"))))
+   `(mc/cursor-face ((,class (:inverse-video t))))
+   `(mc/region-face ((,class (:inherit region))))
    `(mm-uu-extract ((,class ,code-block)))
    `(moccur-current-line-face ((,class (:foreground "black" :background "#FFFFCC"))))
    `(moccur-face ((,class (:foreground "black" :background "#FFFF99"))))
    `(next-error ((,class ,volatile-highlight)))
    `(nobreak-space ((,class (:background "#CCE8F6"))))
-   `(nxml-attribute-local-name-face ((,class (:foreground "magenta"))))
+   `(nxml-attribute-local-name-face ((,class ,xml-attribute)))
    `(nxml-attribute-value-delimiter-face ((,class (:foreground "green4"))))
    `(nxml-attribute-value-face ((,class (:foreground "green4"))))
    `(nxml-comment-content-face ((,class (:slant italic :foreground "red"))))
    `(nxml-comment-delimiter-face ((,class (:foreground "red"))))
-   `(nxml-element-local-name ((,class (:foreground "#000088" :background "#DEDEDE"))))
+   `(nxml-element-local-name ((,class ,xml-tag)))
    `(nxml-element-local-name-face ((,class (:foreground "blue"))))
    `(nxml-processing-instruction-target-face ((,class (:foreground "purple1"))))
    `(nxml-tag-delimiter-face ((,class (:foreground "blue"))))
@@ -628,7 +693,7 @@ more...")
    `(org-archived ((,class (:foreground "gray70"))))
    `(org-beamer-tag ((,class (:box (:line-width 1 :color "#FABC18") :foreground "#2C2C2C" :background "#FFF8D0"))))
    `(org-block ((,class ,code-block)))
-   `(org-block-background ((,class (:background "#FFFFE0"))))
+   `(org-block-background ((,class (:background "#FFFFE0")))) ;; :inherit fixed-pitch))))
    `(org-block-begin-line ((,class (:underline "#A7A6AA" :foreground "#555555" :background "#E2E1D5"))))
    `(org-block-end-line ((,class (:overline "#A7A6AA" :foreground "#555555" :background "#E2E1D5"))))
    `(org-checkbox ((,class (:weight bold :box (:line-width 1 :style pressed-button) :foreground "#434343" :background "#A3A3A3"))))
@@ -664,7 +729,7 @@ more...")
    `(org-list-dt ((,class (:weight bold :foreground "#335EA8"))))
    `(org-macro ((,class (:weight bold :foreground "#EDB802"))))
    `(org-meta-line ((,class (:slant normal :foreground "#008ED1" :background "#EAEAFF"))))
-   `(org-mode-line-clock ((,class ,clock-line)))
+   `(org-mode-line-clock ((,class (:box (:line-width 1 :color "#335EA8") :foreground "black" :background "#FFA335"))))
    `(org-mode-line-clock-overrun ((,class (:weight bold :box (:line-width 1 :color "#335EA8") :foreground "white" :background "#FF4040"))))
    `(org-number-of-items ((,class (:weight bold :foreground "white" :background "#79BA79"))))
    `(org-property-value ((,class (:foreground "#00A000"))))
@@ -674,7 +739,7 @@ more...")
    `(org-scheduled-today ((,class (:weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
    `(org-sexp-date ((,class (:foreground "#3774CC"))))
    `(org-special-keyword ((,class (:weight bold :foreground "#00BB00" :background "#EAFFEA"))))
-   `(org-table ((,class (:foreground "dark green" :background "#EAFFEA"))))
+   `(org-table ((,class (:foreground "dark green" :background "#EAFFEA")))) ;; :inherit fixed-pitch))))
    `(org-tag ((,class (:weight normal :slant italic :foreground "#9A9FA4" :background "white"))))
    `(org-target ((,class (:foreground "#FF6DAF"))))
    `(org-time-grid ((,class (:foreground "#CFCFCF"))))
@@ -729,6 +794,16 @@ more...")
    `(show-paren-mismatch ((,class ,paren-unmatched)))
    `(sml-modeline-end-face ((,class (:background "#6BADF6")))) ; #335EA8
    `(sml-modeline-vis-face ((,class (:background "#1979CA"))))
+
+   ;; `(sp-pair-overlay-face                        
+   ;; `(sp-show-pair-enclosing                      
+   ;; `(sp-show-pair-match-face                      ; ~ Pair highlighting (matching tags).
+   ;; `(sp-show-pair-mismatch-face                  
+   ;; `(sp-wrap-overlay-closing-pair                
+   ;; `(sp-wrap-overlay-face                        
+   ;; `(sp-wrap-overlay-opening-pair                
+   ;; `(sp-wrap-tag-overlay-face                    
+
    `(speedbar-button-face ((,class (:foreground "green4"))))
    `(speedbar-directory-face ((,class (:foreground "blue4"))))
    `(speedbar-file-face ((,class (:foreground "cyan4"))))
@@ -767,6 +842,7 @@ more...")
    `(vc-annotate-face-FF993F ((,class (:foreground "#FF993F" :background "black"))))
    `(vc-annotate-face-FFC63F ((,class (:foreground "#FF993F" :background "black"))))
    `(vc-annotate-face-FFF33F ((,class (:foreground "#FFF33F" :background "black"))))
+   `(vhl/default-face ((,class ,volatile-highlight))) ; `volatile-highlights.el'.
    `(w3m-anchor ((,class ,link)))
    `(w3m-arrived-anchor ((,class (:foreground "purple1"))))
    `(w3m-bitmap-image-face ((,class (:foreground "gray4" :background "green"))))
@@ -783,7 +859,85 @@ more...")
    `(w3m-link-numbering ((,class (:foreground "#B4C7EB")))) ; mouseless browsing
    `(w3m-strike-through-face ((,class (:strike-through t))))
    `(w3m-underline-face ((,class (:underline t))))
+
+   ;; `(web-mode-block-attr-name-face ((,class ())))
+   ;; `(web-mode-block-attr-value-face ((,class ())))
+   ;; `(web-mode-block-comment-face ((,class ())))
+   ;; `(web-mode-block-control-face ((,class ())))
+   ;; `(web-mode-block-delimiter-face ((,class ())))
+   ;; `(web-mode-block-face ((,class ())))
+   ;; `(web-mode-block-string-face ((,class ())))
+   ;; `(web-mode-bold-face ((,class ())))
+   ;; `(web-mode-builtin-face ((,class ())))
+   ;; `(web-mode-comment-face ((,class ())))
+   ;; `(web-mode-comment-keyword-face ((,class ())))
+   ;; `(web-mode-constant-face ((,class ())))
+   ;; `(web-mode-css-at-rule-face ((,class ())))
+   ;; `(web-mode-css-color-face ((,class ())))
+   ;; `(web-mode-css-comment-face ((,class ())))
+   ;; `(web-mode-css-function-face ((,class ())))
+   ;; `(web-mode-css-priority-face ((,class ())))
+   ;; `(web-mode-css-property-name-face ((,class ())))
+   ;; `(web-mode-css-pseudo-class-face ((,class ())))
+   ;; `(web-mode-css-selector-face ((,class ())))
+   ;; `(web-mode-css-string-face ((,class ())))
+   ;; `(web-mode-css-variable-face ((,class ())))
+   ;; `(web-mode-current-column-highlight-face ((,class ())))
+   `(web-mode-current-element-highlight-face ((,class (:background "#BF8DFF")))) ; #FFEE80
+   ;; `(web-mode-doctype-face ((,class ())))
+   ;; `(web-mode-error-face ((,class ())))
+   ;; `(web-mode-filter-face ((,class ())))
+   ;; `(web-mode-folded-face ((,class ())))
+   ;; `(web-mode-function-call-face ((,class ())))
+   ;; `(web-mode-function-name-face ((,class ())))
+   ;; `(web-mode-html-attr-custom-face ((,class ())))
+   ;; `(web-mode-html-attr-engine-face ((,class ())))
+   ;; `(web-mode-html-attr-equal-face ((,class ())))
+   `(web-mode-html-attr-name-face ((,class ,xml-attribute)))
+   ;; `(web-mode-html-attr-value-face ((,class ())))
+   ;; `(web-mode-html-entity-face ((,class ())))
+   `(web-mode-html-tag-bracket-face ((,class ,xml-tag)))
+   ;; `(web-mode-html-tag-custom-face ((,class ())))
+   `(web-mode-html-tag-face ((,class ,xml-tag)))
+   ;; `(web-mode-html-tag-namespaced-face ((,class ())))
+   ;; `(web-mode-inlay-face ((,class ())))
+   ;; `(web-mode-italic-face ((,class ())))
+   ;; `(web-mode-javascript-comment-face ((,class ())))
+   ;; `(web-mode-javascript-string-face ((,class ())))
+   ;; `(web-mode-json-comment-face ((,class ())))
+   ;; `(web-mode-json-context-face ((,class ())))
+   ;; `(web-mode-json-key-face ((,class ())))
+   ;; `(web-mode-json-string-face ((,class ())))
+   ;; `(web-mode-jsx-depth-1-face ((,class ())))
+   ;; `(web-mode-jsx-depth-2-face ((,class ())))
+   ;; `(web-mode-jsx-depth-3-face ((,class ())))
+   ;; `(web-mode-jsx-depth-4-face ((,class ())))
+   ;; `(web-mode-keyword-face ((,class ())))
+   ;; `(web-mode-param-name-face ((,class ())))
+   ;; `(web-mode-part-comment-face ((,class ())))
+   `(web-mode-part-face ((,class (:background "#FFFFE0"))))
+   ;; `(web-mode-part-string-face ((,class ())))
+   ;; `(web-mode-preprocessor-face ((,class ())))
+   `(web-mode-script-face ((,class (:background "#EFF0F1"))))
+   ;; `(web-mode-sql-keyword-face ((,class ())))
+   ;; `(web-mode-string-face ((,class ())))
+   ;; `(web-mode-style-face ((,class ())))
+   ;; `(web-mode-symbol-face ((,class ())))
+   ;; `(web-mode-type-face ((,class ())))
+   ;; `(web-mode-underline-face ((,class ())))
+   ;; `(web-mode-variable-name-face ((,class ())))
+   ;; `(web-mode-warning-face ((,class ())))
+   ;; `(web-mode-whitespace-face ((,class ())))
+
    `(which-func ((,class (:weight bold :foreground "white"))))
+   ;; `(which-key-command-description-face)
+   ;; `(which-key-group-description-face)
+   ;; `(which-key-highlighted-command-face)
+   ;; `(which-key-key-face)
+   `(which-key-local-map-description-face ((,class (:weight bold :background "#F3F7FC" :inherit which-key-command-description-face))))
+   ;; `(which-key-note-face)
+   ;; `(which-key-separator-face)
+   ;; `(which-key-special-key-face)
    `(widget-button ((,class ,link)))
    `(widget-button-pressed ((,class (:foreground "red"))))
    `(widget-documentation ((,class (:foreground "green4"))))
@@ -793,24 +947,35 @@ more...")
    `(woman-bold ((,class (:weight bold :foreground "#F13D3D"))))
    `(woman-italic ((,class (:weight bold :slant italic :foreground "#46BE1B"))))
    `(woman-symbol ((,class (:weight bold :foreground "purple"))))
-   `(yas/field-debug-face ((,class (:background "ivory2"))))
-   `(yas/field-highlight-face ((,class (:background "DarkSeaGreen1"))))
+   `(yas-field-debug-face ((,class (:background "red"))))
+   `(yas-field-highlight-face ((,class (:box (:line-width 1 :color "#838383") :foreground "black" :background "#D4DCD8"))))
    ))
 
 (custom-theme-set-variables 'leuven
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
-                                        ; colors used in Shell mode
+
+  ;; highlight-sexp-mode.
+  '(hl-sexp-background-color "#efebe9")
+
+  '(ansi-color-faces-vector
+    [default default default italic underline success warning error])
+
+  ;; Colors used in Shell mode.
+  '(ansi-color-names-vector
+    ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
  )
 
 ;;;###autoload
 (when (and (boundp 'custom-theme-load-path)
            load-file-name)
-  ;; add theme folder to `custom-theme-load-path' when installing over MELPA
+  ;; Add theme folder to `custom-theme-load-path' when installing over MELPA.
   (add-to-list 'custom-theme-load-path
                (file-name-as-directory (file-name-directory load-file-name))))
+
+;;;###autoload
+(when (string-match "/etc/themes/$"
+                    (file-name-directory (or load-file-name (buffer-file-name))))
+  (message "To stay up-to-date, you should better install and use leuven-theme from MELPA.")
+  (sit-for 2))
 
 (provide-theme 'leuven)
 

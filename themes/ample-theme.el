@@ -61,6 +61,7 @@
       (ample/dark-gray "#656565")
       (ample/darker-gray "#454545")
       (ample/darkest-gray "#252525")
+      (ample/brown "#987654")
       (ample/red "#cd5542")
       (ample/dark-red "#9d2512")
 
@@ -296,7 +297,7 @@
    ;;`(helm-selection-line		((t ())))
    ;;`(helm-separator			((t ())))
    `(helm-source-header			((t (:foreground ,ample/darkest-gray :background ,ample/blue))))
-   ;;`(helm-visible-mark		((t ())))
+   `(helm-visible-mark		        ((t (:foreground ,ample/bg :background ,ample/green))))
 
    ;; jabber
    `(jabber-activity-face		((t (:inherit font-lock-variable-name-face :bold t))))
@@ -612,21 +613,27 @@
 
    ;; magit
    ;; new
-   `(magit-section-heading        ((t (:foreground ,ample/blue, :background nil))))
-   `(magit-hash                   ((t (:foreground ,ample/purple :background nil))))
-   `(magit-branch-local           ((t (:foreground ,ample/orange :background nil))))
-   `(magit-branch-remote          ((t (:foreground ,ample/yellow :background nil))))
+   `(magit-section-heading             ((t (:foreground ,ample/blue :background nil))))
+   `(magit-section-heading-selection   ((t (:foreground ,ample/lighter-blue))))
+   `(magit-hash                        ((t (:foreground ,ample/purple :background nil))))
+   `(magit-branch-local                ((t (:foreground ,ample/orange :background nil))))
+   `(magit-branch-remote               ((t (:foreground ,ample/yellow :background nil))))
 
-   `(magit-diff-added-highlight   ((t (:background ,ample/region :foreground ,ample/green))))
-   `(magit-diff-removed-highlight ((t (:background ,ample/region :foreground ,ample/red))))
-   `(magit-diff-added             ((t (:background nil :foreground ,ample/green))))
-   `(magit-diff-removed           ((t (:background nil :foreground ,ample/red))))
+   `(magit-diff-added-highlight        ((t (:background ,ample/region :foreground ,ample/green))))
+   `(magit-diff-removed-highlight      ((t (:background ,ample/region :foreground ,ample/red))))
+   `(magit-diff-added                  ((t (:background nil :foreground ,ample/green))))
+   `(magit-diff-removed                ((t (:background nil :foreground ,ample/red))))
+   `(magit-diff-file-heading-selection ((t (:foreground ,ample/lighter-blue :inherit magit-diff-file-heading-highlight))))
+   `(magit-diff-hunk-heading-selection ((t (:foreground ,ample/lighter-blue :inherit magit-diff-hunk-heading-highlight))))
+   `(magit-diff-lines-heading          ((t (:background ,ample/light-blue :foreground ,ample/bg))))
 
-   `(magit-blame-date             ((t (:foreground ,ample/purple :background "grey25"))))
-   `(magit-blame-hash             ((t (:foreground ,ample/purple :background "grey25"))))
-   `(magit-blame-heading          ((t (:foreground ,ample/blue :background "grey25"))))
-   `(magit-blame-name             ((t (:foreground ,ample/green :background "grey25"))))
-   `(magit-blame-summary          ((t (:foreground ,ample/blue :background "grey25"))))
+   `(magit-blame-date                  ((t (:foreground ,ample/purple :background "grey25"))))
+   `(magit-blame-hash                  ((t (:foreground ,ample/purple :background "grey25"))))
+   `(magit-blame-heading               ((t (:foreground ,ample/blue :background "grey25"))))
+   `(magit-blame-name                  ((t (:foreground ,ample/green :background "grey25"))))
+   `(magit-blame-summary               ((t (:foreground ,ample/blue :background "grey25"))))
+
+   `(magit-popup-argument              ((t (:foreground ,ample/red :inherit font-lock-warning-face))))
 
    ;; old
    `(magit-branch				((t (:foreground ,ample/orange :background nil))))
@@ -688,22 +695,23 @@
    `(trailing-whitespace ((t (:background "white" :bold t))))
 
    ;; auctex
-   `(font-latex-bold-face                 ((t (:inherit bold :foreground ,ample/gray))))
+   `(font-latex-bold-face                 ((t (:inherit bold :foreground ,ample/dark-green))))
    `(font-latex-doctex-documentation-face ((t (:background unspecified))))
-   `(font-latex-doctex-preprocessor-face  ((t (:inherit (font-latex-doctex-documentation-face font-lock-builtin-face font-lock-preprocessor-face)))))
-   `(font-latex-italic-face               ((t (:inherit italic :foreground ,ample/gray))))
+   `(font-latex-doctex-preprocessor-face  ((t (:inherit (font-latex-doctex-documentation-face font-lock-preprocessor-face)))))
+   `(font-latex-italic-face               ((t (:inherit italic :foreground ,ample/dark-green))))
    `(font-latex-math-face                 ((t (:foreground ,ample/purple))))
-   `(font-latex-sectioning-0-face         ((t (:inherit font-latex-sectioning-1-face :height 1.1))))
-   `(font-latex-sectioning-1-face         ((t (:inherit font-latex-sectioning-2-face :height 1.1))))
-   `(font-latex-sectioning-2-face         ((t (:inherit font-latex-sectioning-3-face :height 1.1))))
-   `(font-latex-sectioning-3-face         ((t (:inherit font-latex-sectioning-4-face :height 1.1))))
-   `(font-latex-sectioning-4-face         ((t (:inherit font-latex-sectioning-5-face :height 1.1))))
+   ;;`(font-latex-sectioning-0-face       ((t (:inherit font-latex-sectioning-1-face :height 1.1))))
+   ;;`(font-latex-sectioning-1-face       ((t (:inherit font-latex-sectioning-2-face :height 1.1))))
+   ;;`(font-latex-sectioning-2-face       ((t (:inherit font-latex-sectioning-3-face :height 1.1))))
+   ;;`(font-latex-sectioning-3-face       ((t (:inherit font-latex-sectioning-4-face :height 1.1))))
+   ;;`(font-latex-sectioning-4-face       ((t (:inherit font-latex-sectioning-5-face :height 1.1))))
    `(font-latex-sectioning-5-face         ((t (:foreground ,ample/red :weight bold))))
-   `(font-latex-sedate-face               ((t (:foreground ,ample/gray))))
+   `(font-latex-sedate-face               ((t (:foreground ,ample/brown))))
    `(font-latex-slide-title-face          ((t (:inherit font-lock-type-face :weight bold :height 1.2))))
    `(font-latex-string-face               ((t (:inherit font-lock-string-face))))
-   `(font-latex-subscript-face            ((t (:height 0.8))))
-   `(font-latex-superscript-face          ((t (:height 0.8))))
+   ;;`(font-latex-subscript-face          ((t (:height 0.8))))
+   ;;`(font-latex-superscript-face        ((t (:height 0.8))))
+   `(font-latex-verbatim-face             ((t (:foreground ,ample/tan))))
    `(font-latex-warning-face              ((t (:inherit font-lock-warning-face))))
 
    ;; guide-key
@@ -765,7 +773,7 @@
   (custom-theme-set-variables
    'ample
    `(ansi-color-names-vector
-     [,ample/darker-gray ,ample/red ,ample/green ,ample/yellow ,ample/blue ,ample/purple ,ample/tan ,ample/fg])))
+     [,ample/darker-gray ,ample/red ,ample/green ,ample/yellow ,ample/blue ,ample/purple ,ample/lighter-blue ,ample/fg])))
 
 ;;;###autoload
 (when load-file-name

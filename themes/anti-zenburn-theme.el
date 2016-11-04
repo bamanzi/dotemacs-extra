@@ -2,7 +2,7 @@
 
 ;; Author: Andrey Kotlarski <m00naticus@gmail.com>
 ;; URL: https://github.com/m00natic/anti-zenburn-theme
-;; Version: 2.2
+;; Version: 2.4
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -184,9 +184,13 @@
    `(avy-background-face
      ((t (:foreground ,azenburn-fg-1 :background ,azenburn-bg :inverse-video nil))))
    `(avy-lead-face-0
-     ((t (:foreground ,azenburn-violet+3 :background ,azenburn-bg :inverse-video nil))))
+     ((t (:foreground ,azenburn-violet+3 :background ,azenburn-bg :inverse-video nil :weight bold))))
+   `(avy-lead-face-1
+     ((t (:foreground ,azenburn-dark-blue :background ,azenburn-bg :inverse-video nil :weight bold))))
+   `(avy-lead-face-2
+     ((t (:foreground ,azenburn-blue+1 :background ,azenburn-bg :inverse-video nil :weight bold))))
    `(avy-lead-face
-     ((t (:foreground ,azenburn-violet+2 :background ,azenburn-bg :inverse-video nil))))
+     ((t (:foreground ,azenburn-bordeaux :background ,azenburn-bg :inverse-video nil :weight bold))))
 
 ;;; full-ack
    `(ack-separator ((t (:foreground ,azenburn-fg))))
@@ -243,6 +247,14 @@
 
 ;;; cider
    `(cider-result-overlay-face ((t (:foreground ,azenburn-fg-1 :background unspecified))))
+   `(cider-enlightened-face ((t (:box (:color ,azenburn-light-blue :line-width -1)))))
+   `(cider-enlightened-local-face ((t (:weight bold :foreground ,azenburn-violet+1))))
+   `(cider-deprecated-face ((t (:background ,azenburn-dark-blue-2))))
+   `(cider-instrumented-face ((t (:box (:color ,azenburn-blue :line-width -1)))))
+   `(cider-traced-face ((t (:box (:color ,azenburn-bordeaux :line-width -1)))))
+   `(cider-test-failure-face ((t (:background ,azenburn-blue-4))))
+   `(cider-test-error-face ((t (:background ,azenburn-green))))
+   `(cider-test-success-face ((t (:background ,azenburn-violet-1))))
 
 ;;; circe
    `(circe-highlight-nick-face ((t (:foreground ,azenburn-bordeaux))))
@@ -306,10 +318,9 @@
       (t (:background ,azenburn-fg :foreground ,azenburn-bg :bold t))))
 
 ;;; diff-hl
-   `(diff-hl-change ((,class (:foreground ,azenburn-beige-2 :background ,azenburn-bg-05))))
-   `(diff-hl-delete ((,class (:foreground ,azenburn-blue+1 :background ,azenburn-bg-05))))
-   `(diff-hl-insert ((,class :foreground ,azenburn-violet+1 :background ,azenburn-bg-05)))
-   `(diff-hl-unknown ((,class (:foreground ,azenburn-dark-blue :background ,azenburn-bg-05))))
+   `(diff-hl-change ((,class (:foreground ,azenburn-beige :background ,azenburn-beige-2))))
+   `(diff-hl-delete ((,class (:foreground ,azenburn-blue+1 :background ,azenburn-blue-1))))
+   `(diff-hl-insert ((,class :foreground ,azenburn-violet+1 :background ,azenburn-violet-1)))
 
 ;;; dim-autoload
    `(dim-autoload-cookie-line ((t (:foreground ,azenburn-bg+1))))
@@ -428,15 +439,15 @@
    `(erc-current-nick-face ((t (:foreground ,azenburn-beige :weight bold))))
    '(erc-dangerous-host-face ((t (:inherit font-lock-warning-face))))
    `(erc-default-face ((t (:foreground ,azenburn-fg))))
-   '(erc-direct-msg-face ((t (:inherit erc-default))))
+   '(erc-direct-msg-face ((t (:inherit erc-default-face))))
    '(erc-error-face ((t (:inherit font-lock-warning-face))))
-   '(erc-fool-face ((t (:inherit erc-default))))
+   '(erc-fool-face ((t (:inherit erc-default-face))))
    '(erc-highlight-face ((t (:inherit hover-highlight))))
    `(erc-input-face ((t (:foreground ,azenburn-dark-blue))))
    `(erc-keyword-face ((t (:foreground ,azenburn-beige :weight bold))))
    `(erc-nick-default-face ((t (:foreground ,azenburn-dark-blue :weight bold))))
    `(erc-my-nick-face ((t (:foreground ,azenburn-blue :weight bold))))
-   '(erc-nick-msg-face ((t (:inherit erc-default))))
+   '(erc-nick-msg-face ((t (:inherit erc-default-face))))
    `(erc-notice-face ((t (:foreground ,azenburn-violet))))
    `(erc-pal-face ((t (:foreground ,azenburn-light-blue :weight bold))))
    `(erc-prompt-face ((t (:foreground ,azenburn-light-blue :background ,azenburn-bg :weight bold))))
@@ -485,7 +496,7 @@
    '(gnus-group-news-6 ((t (:bold t :inherit gnus-group-news-6-empty))))
    '(gnus-group-news-low ((t (:bold t :inherit gnus-group-news-low-empty))))
    '(gnus-header-content ((t (:inherit message-header-other))))
-   '(gnus-header-from ((t (:inherit message-header-from))))
+   '(gnus-header-from ((t (:inherit message-header-to))))
    '(gnus-header-name ((t (:inherit message-header-name))))
    '(gnus-header-newsgroups ((t (:inherit message-header-other))))
    '(gnus-header-subject ((t (:inherit message-header-subject))))
@@ -576,6 +587,7 @@
    `(helm-grep-lineno ((t (:foreground ,azenburn-fg-1 :background ,azenburn-bg))))
    `(helm-grep-match ((t (:foreground nil :background nil :inherit helm-match))))
    `(helm-grep-running ((t (:foreground ,azenburn-blue :background ,azenburn-bg))))
+   `(helm-match ((t (:foreground ,azenburn-light-blue :background ,azenburn-bg-1 :weight bold))))
    `(helm-moccur-buffer ((t (:foreground ,azenburn-bordeaux :background ,azenburn-bg))))
    `(helm-mu-contacts-address-face ((t (:foreground ,azenburn-fg-1 :background ,azenburn-bg))))
    `(helm-mu-contacts-name-face ((t (:foreground ,azenburn-fg :background ,azenburn-bg))))
@@ -626,8 +638,17 @@
    `(js2-jsdoc-tag ((t (:foreground ,azenburn-violet-1))))
    `(js2-jsdoc-type ((t (:foreground ,azenburn-violet+2))))
    `(js2-jsdoc-value ((t (:foreground ,azenburn-violet+3))))
-   `(js2-function-param ((t (:foreground ,azenburn-violet+3))))
+   `(js2-function-param ((t (:foreground ,azenburn-light-blue))))
    `(js2-external-variable ((t (:foreground ,azenburn-light-blue))))
+   `(js2-instance-member ((t (:foreground ,azenburn-violet-1))))
+   `(js2-jsdoc-html-tag-delimiter ((t (:foreground ,azenburn-light-blue))))
+   `(js2-jsdoc-html-tag-name ((t (:foreground ,azenburn-blue-1))))
+   `(js2-object-property ((t (:foreground ,azenburn-beige+1))))
+   `(js2-magic-paren ((t (:foreground ,azenburn-beige-5))))
+   `(js2-private-function-call ((t (:foreground ,azenburn-bordeaux))))
+   `(js2-function-call ((t (:foreground ,azenburn-bordeaux))))
+   `(js2-private-member ((t (:foreground ,azenburn-beige-1))))
+   `(js2-keywords ((t (:foreground ,azenburn-green))))
 
 ;;; jabber-mode
    `(jabber-roster-user-away ((t (:foreground ,azenburn-violet+2))))
@@ -790,7 +811,6 @@
    `(message-header-name ((t (:foreground ,azenburn-violet+1))))
    `(message-header-other ((t (:foreground ,azenburn-violet))))
    `(message-header-to ((t (:foreground ,azenburn-dark-blue :weight bold))))
-   `(message-header-from ((t (:foreground ,azenburn-dark-blue :weight bold))))
    `(message-header-cc ((t (:foreground ,azenburn-dark-blue :weight bold))))
    `(message-header-newsgroups ((t (:foreground ,azenburn-dark-blue :weight bold))))
    `(message-header-subject ((t (:foreground ,azenburn-light-blue :weight bold))))
@@ -905,6 +925,8 @@
    `(org-mode-line-clock-overrun ((t (:foreground ,azenburn-bg :background ,azenburn-blue-1))))
    `(org-ellipsis ((t (:foreground ,azenburn-dark-blue-1 :underline t))))
    `(org-footnote ((t (:foreground ,azenburn-bordeaux :underline t))))
+   `(org-document-title ((t (:foreground ,azenburn-beige))))
+   `(org-document-info ((t (:foreground ,azenburn-beige))))
    `(org-habit-ready-face ((t :background ,azenburn-violet)))
    `(org-habit-alert-face ((t :background ,azenburn-dark-blue-1 :foreground ,azenburn-bg)))
    `(org-habit-clear-face ((t :background ,azenburn-beige-3)))
@@ -1211,6 +1233,14 @@
 
 ;;; which-func-mode
    `(which-func ((t (:foreground ,azenburn-violet+4))))
+
+;;; xcscope
+   `(cscope-file-face ((t (:foreground ,azenburn-dark-blue :weight bold))))
+   `(cscope-function-face ((t (:foreground ,azenburn-bordeaux :weight bold))))
+   `(cscope-line-number-face ((t (:foreground ,azenburn-blue :weight bold))))
+   `(cscope-mouse-face ((t (:foreground ,azenburn-bg :background ,azenburn-beige+1))))
+   `(cscope-separator-face ((t (:foreground ,azenburn-blue :weight bold
+                                            :underline t :overline t))))
 
 ;;; yascroll
    `(yascroll:thumb-text-area ((t (:background ,azenburn-bg-1))))

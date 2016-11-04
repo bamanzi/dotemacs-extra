@@ -1,24 +1,20 @@
-** standalone themes
+** themes for emacs>=24
 
 gallery: http://pawelbx.github.io/emacs-theme-gallery/
 
-| theme          | emacs-23      | emacs-24   | term | bg           | homepage                                        |
-|                | (color-theme) | (deftheme) |      |              |                                                 |
-|----------------+---------------+------------+------+--------------+-------------------------------------------------|
-| molokai        | Y             | Y          |      | dark         | https://github.com/alloy-d/color-theme-molokai  |
-| monokai        |               | Y          |      | dark         | https://github.com/oneKelvinSmith/monokai-emacs |
-| subatomic256   |               | Y          |  256 | dark         | https://github.com/d11wtq/subatomic256          |
-| tangotango     | Y             | Y          |      | dark         | https://github.com/juba/color-theme-tangotango  |
-| *tango-plus*   |               | Y          |  256 | light        | https://github.com/tmalsburg/tango-plus-theme   |
-| zenburn        | Y [*]         | Y          |      | dark         | https://github.com/bbatsov/zenburn-emacs        |
-| *anti-zenburn* |               | Y          |      | light        | https://github.com/m00natic/anti-zenburn-theme  |
-| *ample*        |               | Y          |  256 | dark / light | https://github.com/jordonbiondo/ample-theme     |
-| *leuven*       |               | Y          |      | light        | https://github.com/fniessen/emacs-leuven-theme  |
-| +billc+        | Y             |            |      | dark         |                                                 |
-| +hober2+       | Y             |            |      | dark         |                                                 |
-| +naquadah+     |               | Y          |      | dark         | https://github.com/jd/naquadah-theme            |
+| theme               | term | dark           | light      | homepage                                                   |   |
+|                     |      |                |            |                                                            |   |
+|---------------------+------+----------------+------------+------------------------------------------------------------+---|
+| zenburn             | 89   | Y              |            | https://github.com/bbatsov/zenburn-emacs                   |   |
+| anti-zenburn        | 89   |                | Y          | https://github.com/m00natic/anti-zenburn-theme             |   |
+| leuven              | 89   |                | Y          | https://github.com/fniessen/emacs-leuven-theme             |   |
+| solarized           | 89   | dark           | light      | https://github.com/bbatsov/solarized-emacs                 |   |
+| monokai             | 256  | Y              |            | https://github.com/oneKelvinSmith/monokai-emacs            |   |
+| sanityinc-tomorrow  | 89   | night/eighties | day/bright | https://github.com/purcell/color-theme-sanityinc-tomorrow  |   |
+| sanityinc-solarized |   89 | dark           | light      | https://github.com/purcell/color-theme-sanityinc-solarized |   |
+| ample               |  256 | dark           | light      | https://github.com/jordonbiondo/ample-theme                |   |
 
-** goodies in color-theme-library
+** themes for emacs<=23 (based on color-theme.el)
 
 gallery: https://code.google.com/p/gnuemacscolorthemetest/
 
@@ -30,5 +26,17 @@ gallery: https://code.google.com/p/gnuemacscolorthemetest/
 | color-theme-lethe ()           | 445 |       |
 | color-theme-emacs-nw ()        | 376 | light |
 | color-theme-matrix ()          | 670 |       |
+
+
+** my favorites
+| theme        | emacs-23      | emacs-24   | term | bg    | homepage                                       |
+|              | (color-theme) | (deftheme) |      |       |                                                |
+|--------------+---------------+------------+------+-------+------------------------------------------------|
+| subatomic256 |               | Y          |  256 | dark  | https://github.com/d11wtq/subatomic256         |
+| tangotango   | Y             | Y          |      | dark  | https://github.com/juba/color-theme-tangotango |
+| *tango-plus* |               | Y          |  256 | light | https://github.com/tmalsburg/tango-plus-theme  |
+| naquadah     |               | Y          |      | dark  | https://github.com/jd/naquadah-theme           |
+| +billc+      | Y             |            |      | dark  |                                                |
+| +hober2+     | Y             |            |      | dark  |                                                |
 
 

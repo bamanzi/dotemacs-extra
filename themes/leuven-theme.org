@@ -2,7 +2,7 @@
 #+AUTHOR:    Fabrice Niessen
 #+EMAIL:     (concat "fniessen" at-sign "pirilampo.org")
 #+DESCRIPTION: Emacs custom color theme for light background
-#+KEYWORDS:  emacs, leuven, custom theme, color theme, faces, melpa
+#+KEYWORDS:  emacs, leuven, custom theme, color theme, light, popular, faces, melpa
 #+LANGUAGE:  en
 
 #+SETUPFILE: ~/src/org-style/setup/bigblow-pirilampo.setup
@@ -13,9 +13,10 @@
 [[http://melpa.org/#/leuven-theme][http://melpa.org/packages/leuven-theme-badge.svg]]
 [[https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VCVAS6KPDQ4JC&lc=BE&item_number=emacs%2dleuven%2dtheme&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted][https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif]]
 
-Looking for an awesome Emacs color theme?  Here's the place to find one!
+Looking for an awesome Emacs color theme?  Looking for one of the best light
+themes for Org mode, and for other modes too?  Here's the place to find one!
 
-Welcome to the custom Leuven theme, an elegant color theme for light
+Welcome to the custom Leuven theme, an elegant and popular color theme for light
 backgrounds, with built-in style for many components such as Org mode, Gnus,
 Dired+ and EDiff. Make it yours!
 
@@ -46,6 +47,15 @@ use another emacs-theme." \\
 
 "I still am really enjoying using the theme -- wish I'd had it years back..." \\
 -- /V./
+
+"I've been using leuven-theme, which is a fantastic theme for Org-mode files." \\
+-- /thnetos/
+
+"I love leuven for it's magit faces. E.g. the different sections of the magit
+status screen stand out much better with leuven than with any other theme I've
+tried.  It's a good looking theme but what makes it stand out is the attention
+the author has put into all of the different faces you find everywhere." \\
+-- /UnwashedMeme/
 
 * Screenshots
 
@@ -126,16 +136,22 @@ Restart Emacs.
 You don't like my large Org level-1 headings (though I made them larger on
 purpose!)?
 
+#+begin_src emacs-lisp
+(setq leuven-scale-outline-headlines nil)
+#+end_src
+
+You don't like my large Org agenda-date heading either?
+
 You should be able to get my theme and a smaller face by using something such
 as:
 
 #+begin_src emacs-lisp
-(set-face-attribute 'org-level-1 nil :height 90) ; 9 pt font.
+(set-face-attribute 'org-agenda-date nil :height 90) ; 9 pt font.
 #+end_src
 
 That should change the font size without changing the colors.
 
-That recipe can of course be applied to other faces, such as ~org-agenda-date~.
+That recipe can of course be applied to other faces.
 
 * Contributing
 
