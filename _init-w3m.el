@@ -1,3 +1,12 @@
+;; ** eww
+
+(eval-after-load "eww"
+  `(progn
+     (when (require 'eww-lnum nil t)
+       (define-key eww-mode-map "f" 'eww-lnum-follow)
+       (define-key eww-mode-map "F" 'eww-lnum-universal))))
+
+
 ;; ** w3m
 
 ;;a recommended to download latest snapshot:
