@@ -70,9 +70,16 @@
      ;;(executable-find "dot.exe")
      ))
 
+(autoload 'helm-simple-call-tree "helm-call-tree"
+  "Preconfigured `helm' for simple-call-tree. List function relationships." t)
+
 (cheatsheet-add :group 'Programming
                   :key "M-x sct-graphviz"
                   :description "Analyze the simple tree call and display it as graphic.")
+(cheatsheet-add :group 'Programming
+                  :key "M-x helm-simple-call-tree"
+                  :description "Show function call relationships with Helm interface.")
+
 
 ;; ** tags
 

@@ -52,15 +52,16 @@ http://www.emacswiki.org/cgi-bin/wiki/download/simple-call-tree.el")
       (let ((list (funcall function simple-call-tree-alist)))
         (with-current-buffer (helm-candidate-buffer 'local)
           (dolist (entry list)
-            (let ((funcs (concat "  " (mapconcat #'identity (cdr entry) "\n  "))))
-              (insert (car entry) message
+            (let ((funcs (concat "  " (mapconcat #'car (cdr entry) "\n  "))))
+              (insert (caar entry) message
                       (if (string= funcs "  ")
                           "  no functions."
                           funcs)
                       "\n\n"))))))))
 
 (defun helm-c-simple-call-tree-functions-callers-init ()
-  (helm-c-simple-call-tree-init-base 'simple-call-tree-invert
+  (helm-c-simple-call-tree-init-base #'(lambda (sct-alist)
+                                         (simple-call-tree-invert))
                                      " is called by\n"))
 
 (defun helm-c-simple-call-tree-candidates ()
