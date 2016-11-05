@@ -32,9 +32,9 @@ gallery: https://code.google.com/p/gnuemacscolorthemetest/
 | theme        | emacs-23      | emacs-24   | term | bg    | homepage                                       |
 |              | (color-theme) | (deftheme) |      |       |                                                |
 |--------------+---------------+------------+------+-------+------------------------------------------------|
-| subatomic256 |               | Y          |  256 | dark  | https://github.com/d11wtq/subatomic256         |
+| subatomic256 |               | Y          | 256* | dark  | https://github.com/d11wtq/subatomic256         |
 | tangotango   | Y             | Y          |      | dark  | https://github.com/juba/color-theme-tangotango |
-| *tango-plus* |               | Y          |  256 | light | https://github.com/tmalsburg/tango-plus-theme  |
+| tango-plus   |               | Y          | 89   | light | https://github.com/tmalsburg/tango-plus-theme  |
 | naquadah     |               | Y          |      | dark  | https://github.com/jd/naquadah-theme           |
 | +billc+      | Y             |            |      | dark  |                                                |
 | +hober2+     | Y             |            |      | dark  |                                                |
