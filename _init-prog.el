@@ -83,6 +83,71 @@
 
 ;; ** tags
 
+;; *** helm-etags+ / anything-etags+
+;; compared with `anything-c-etags-select' from anything-config.el, `helm-etags+' has some advantages:
+;; - it hornors `tags-file-name' (while `anything-c-etags-select' only supports TAGS file along the path)
+;; - it supports multiple TAGS file (i.e. `tags-table-list')
+;; - we can go forward in history
+;; but `helm-etags+' has its own history ring, `helm-etags+history-go-back' is not fully compatible with `pop-tag-mark'
+
+(autoload 'helm-etags+-select "helm-etags+"
+  "Find Tag using `etags' and `helm'" t)
+
+(eval-after-load "helm-etags+"
+  `(progn
+     (global-set-key (kbd "<f7> M-.")   'helm-etags+-select)
+     (global-set-key (kbd "<f7> . SPC") #'(lambda ()
+                                            (interactive)
+                                            (helm-etags+-select-internal "")))
+
+     ;; 'helm-etags+-history' has its own marker-ring. thus could
+     ;; not be used with `find-tag'
+     (global-set-key (kbd "<f7> .  M-h") 'helm-etags+-history)
+
+     (global-set-key (kbd "<f7> . <") 'helm-etags+-history-go-back)
+     (global-set-key (kbd "<f7> . >") 'helm-etags+-history-go-forward)
+     ))
+
+(eval-after-load "cheatsheet"
+  `(progn
+     (cheatsheet-add :group 'Programming/Tags
+                     :key "<f7> M-."
+                     :description "helm-etags+-select-at-point (or anything-...)")
+     (cheatsheet-add :group 'Programming/Tags
+                     :key "<f7> . SPEC"
+                     :description "helm-etags+-select (or anything-...)")
+     (cheatsheet-add :group 'Programming/Tags
+                     :key "<f7> . M-h"
+                     :description "helm-etags+-history (or anything-...)")
+     (cheatsheet-add :group 'Programming/Tags
+                     :key "<f7> . <"
+                     :description "helm-etags+-history-go-back (or anything-...)")
+     (cheatsheet-add :group 'Programming/Tags
+                     :key "<f7> . >"
+                     :description "helm-etags+-history-go-forward (or anything-...)")
+     t))
+
+
+;; **** for emacs<=23 (helm requires emacs>=24.3)
+(autoload 'anything-etags+-select-at-point "anything-etags+"
+  "Tag jump with current symbol using etags and `anything'." t)
+(autoload 'anything-etags+-select "anything-etags+"
+  "Tag jump using etags and `anything'." t)
+
+(eval-after-load "anything-etags+"
+  `(progn
+     (global-set-key (kbd "<f7> M-.")   'anything-etags+-select-at-point)
+     (global-set-key (kbd "<f7> . SPC") 'anything-etags+-select)
+
+     ;; 'anything-etags+-history' has its own marker-ring. thus could
+     ;; not be used with `find-tag'
+     (global-set-key (kbd "<f7> .  M-h") 'anything-etags+-history)
+
+     (global-set-key (kbd "<f7> . <") 'anything-etags+-history-go-back)
+     (global-set-key (kbd "<f7> . >") 'anything-etags+-history-go-forward)
+     ))
+
+
 ;; *** find-file-in-tags
 (autoload 'find-file-in-tags "find-file-in-tags"
   "find file in TAGS file." t)
