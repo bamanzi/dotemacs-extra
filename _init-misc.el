@@ -59,7 +59,7 @@
 ;; ** smart-mode-line
 (if (>= emacs-major-version 24)
     (try-idle-require 'smart-mode-line)
-  )
+  (idle-require 'diminish))
 
 (autoload 'sml/setup "smart-mode-line"
   "Setup the mode-line, or revert it." t)
@@ -86,6 +86,14 @@
                                        (default-value 'mode-line-format)))))
      ))
 
+(eval-after-load "diminish"
+  `(progn
+     (diminish 'drag-stuff-mode)
+     (diminish 'highlight-changes-mode)
+     (diminish 'hi-lock-mode)
+     (diminish 'orgstruct-mode)
+     (diminish 'visual-line-mode)
+     ))
 
 ;; ** vi emulation (viper)
 
