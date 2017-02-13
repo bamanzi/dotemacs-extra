@@ -41,7 +41,7 @@
   "Minor mode for other frame/window buffer placement." t)
 
 (if (fboundp 'advice-add)
-  (try-idle-require 'other-frame-window))
+  (try-require 'other-frame-window))
 
 (eval-after-load "other-frame-window"
   `(progn
