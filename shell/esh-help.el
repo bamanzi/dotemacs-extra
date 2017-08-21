@@ -1,10 +1,10 @@
 ;;; esh-help.el --- Add some help functions and support for Eshell
 
-;; Copyright (C) 2013  by Tomoya Tanjo
+;; Copyright (C) 2013, 2014 by Tomoya Tanjo
 
 ;; Author: Tomoya Tanjo <ttanjo@gmail.com>
 ;; URL: https://github.com/tom-tan/esh-help/
-;; Package-Requires: ((dash "20130617.739"))
+;; Package-Requires: ((dash "1.4.0"))
 ;; Keywords: eshell, extensions
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 ;;
 ;; To use this package, add these lines to your .emacs file:
 ;;     (require 'esh-help)
-;;     (esh-help-eldoc-setup)  ;; To use eldoc in Eshell
+;;     (setup-esh-help-eldoc)  ;; To use eldoc in Eshell
 ;; And by using M-x eldoc-mode in Eshell, you can see help strings
 ;; for the pointed command in minibuffer.
 ;; And by using M-x esh-help-run-help, you can see full help string
@@ -43,6 +43,7 @@
 (require 'eldoc)
 (require 'env)
 (require 'dash)
+(require 'man)
 
 ;;;###autoload
 (defun setup-esh-help-eldoc ()
@@ -85,21 +86,28 @@ It comes from Zsh."
           (goto-char it)
           (current-word))))))
 
+(defalias 'esh-help--get-fnsym-args-string
+    (if (fboundp 'eldoc-get-fnsym-args-string)
+        #'eldoc-get-fnsym-args-string
+      #'elisp-get-fnsym-args-string)
+  "eldoc-get-fnsym-args-string is no longer defined in Emacs 25")
+
 (defun esh-help-eldoc-help-string (cmd)
   "Return minibuffer help string for CMD."
   (cond
     ((eshell-find-alias-function cmd)
-     (eldoc-get-fnsym-args-string (eshell-find-alias-function cmd)))
+     (esh-help--get-fnsym-args-string (eshell-find-alias-function cmd)))
     ((string-match-p "^\\*." cmd)
      (esh-help-eldoc-man-minibuffer-string (substring cmd 1)))
     ((eshell-search-path cmd) (esh-help-eldoc-man-minibuffer-string cmd))
-    ((functionp (intern cmd)) (eldoc-get-fnsym-args-string (intern cmd)))))
+    ((functionp (intern cmd)) (esh-help--get-fnsym-args-string (intern cmd)))))
 
 (defun esh-help-man-string (cmd)
   "Return help string for the shell command CMD."
   (let ((lang (getenv "LANG")))
     (setenv "LANG" "C")
-    (let ((str (shell-command-to-string (format "man %s | col -b" cmd))))
+    (let ((str (shell-command-to-string (format "%s %s | col -b"
+                                                manual-program cmd))))
       (setenv "LANG" lang)
       str)))
 
