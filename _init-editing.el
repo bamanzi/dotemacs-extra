@@ -189,10 +189,14 @@
 (define-key ctl-x-r-map (kbd "M-n")   'rectplus-insert-number-rectangle)
 
 (progn
-  (cheatsheet-add :group 'Rectangle
+  (cheatsheet-add :group 'Rectangle/rect
                   :key "M-x rectplus-copy-rectangle"
-                  :description "Copy rectang-area to `killed-rectangle'.")
-  (cheatsheet-add :group 'Rectangle
+                  :description "Copy rectangle-area to `killed-rectangle'.")
+  (cheatsheet-add :group 'Rectangle/rect
+                  :key "M-x yank-rectandle"
+                  :description "Yank the last killed rectangle (`killed-rectangle').")
+  
+  (cheatsheet-add :group 'Rectangle/kill-ring
                   :key "M-x rectplus-rectangle-to-kill-ring"
                   :description "Copy content of `killed-rectangle' to `kill-ring'")
   t
@@ -224,7 +228,7 @@
   (global-set-key (kbd "<C-M-down-mouse-1>")   'cua-mouse-set-rectangle-mark))
 
 (progn
-  (cheatsheet-add :group 'Rectangle
+  (cheatsheet-add :group 'Rectangle/cua
                   :key "<C-M-down-mouse-1>"
                   :description "mouse-start-rectangle (r-m-m) / cua-mouse-set-rectangle-mark (cua)")
   t
