@@ -14,6 +14,16 @@
 ;; ** move/swap
 (try-require 'bmz-window-misc)
 
+(autoload 'swap-buffer-right "bmz-window-misc"
+  "Undocumented." t)
+(autoload 'swap-buffer-left "bmz-window-misc"
+  "Undocumented." t)
+(autoload 'swap-buffer-up "bmz-window-misc"
+  "Undocumented." t)
+(autoload 'swap-buffer-down "bmz-window-misc"
+  "Undocumented." t)
+
+
 (eval-after-load "bmz-window-misc"
   `(progn
      (global-set-key (kbd "<f11> g")     'ido-jump-to-window)
@@ -21,12 +31,12 @@
      (global-set-key (kbd "<f11> <M-left>")  'move-buffer-left)
      (global-set-key (kbd "<f11> <M-right>") 'move-buffer-right)
      (global-set-key (kbd "<f11> <M-up>")    'move-buffer-up)
-     (global-set-key (kbd "<f11> <M-down>")  'move-buffer-right)
+     (global-set-key (kbd "<f11> <M-down>")  'move-buffer-down)
 
      (global-set-key (kbd "<f11> <M-S-left>")  'swap-buffer-left)
      (global-set-key (kbd "<f11> <M-S-right>") 'swap-buffer-right)
      (global-set-key (kbd "<f11> <M-S-up>")    'swap-buffer-up)
-     (global-set-key (kbd "<f11> <M-S-down>")  'swap-buffer-right)
+     (global-set-key (kbd "<f11> <M-S-down>")  'swap-buffer-down)
 
      (global-set-key (kbd "<f11> <M-backspace>") 'rotate-windows)
      (global-set-key (kbd "<f11> |")    'window-toggle-split-direction)
