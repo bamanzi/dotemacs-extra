@@ -198,6 +198,8 @@
 
 ;;; Code:
 
+(require 'dbus)
+
 ;; To get rid of byte compilation warnings
 ;; evil-related
 (defvar evil-mode)
@@ -216,6 +218,10 @@
 (defvar fcitx-prefix-keys-polling-time 0.1
   "Time interval to execute prefix keys polling function.")
 
+(defvar fcitx-use-dbus nil
+  "Whether we should use D-Bus version or not.
+Default value is nil.")
+
 (defvar fcitx--prefix-keys-sequence nil
   "Prefix keys that can trigger disabling fcitx.")
 
@@ -230,19 +236,53 @@
     (error "`fcitx-remote' is not avaiable. Please check your
  fcitx installtion.")))
 
-(defun fcitx--activate ()
+(defmacro fcitx--defun-dbus-or-proc (func-suffix)
+  (let ((func-name (intern (format "fcitx--%S" func-suffix)))
+        (dbus-fn (intern (format "fcitx--%S-dbus" func-suffix)))
+        (proc-fn (intern (format "fcitx--%S-proc" func-suffix))))
+    `(defun ,func-name ()
+       (if fcitx-use-dbus (,dbus-fn)
+         (,proc-fn)))))
+
+(fcitx--defun-dbus-or-proc activate)
+(fcitx--defun-dbus-or-proc deactivate)
+(fcitx--defun-dbus-or-proc active-p)
+
+(defun fcitx--activate-proc ()
   (call-process "fcitx-remote" nil nil nil "-o"))
 
-(defun fcitx--deactivate ()
+(defun fcitx--deactivate-proc ()
   (call-process "fcitx-remote" nil nil nil "-c"))
 
-(defun fcitx--active-p ()
+(defun fcitx--active-p-proc ()
   (let ((output (with-temp-buffer
                   (call-process "fcitx-remote" nil t)
                   (buffer-string))))
 
     (char-equal
      (aref output 0) ?2)))
+
+(defun fcitx--activate-dbus ()
+  (dbus-call-method :session
+                    "org.fcitx.Fcitx"
+                    "/inputmethod"
+                    "org.fcitx.Fcitx.InputMethod"
+                    "ActivateIM"))
+
+(defun fcitx--deactivate-dbus ()
+  (dbus-call-method :session
+                    "org.fcitx.Fcitx"
+                    "/inputmethod"
+                    "org.fcitx.Fcitx.InputMethod"
+                    "InactivateIM"))
+
+(defun fcitx--active-p-dbus ()
+  (= (dbus-call-method :session
+                       "org.fcitx.Fcitx"
+                       "/inputmethod"
+                       "org.fcitx.Fcitx.InputMethod"
+                       "GetCurrentState")
+     2))
 
 (defmacro fcitx--defun-maybe (prefix)
   (let ((var-symbol (intern
@@ -266,7 +306,7 @@
        (defun ,activate-symbol ()
          (when ,var-symbol
            (fcitx--activate)
-           (setq ,var-symbol))))))
+           (setq ,var-symbol nil))))))
 
 ;; ------------------- ;;
 ;; prefix keys support ;;
@@ -312,7 +352,7 @@
   (interactive)
   (when fcitx--prefix-keys-timer
     (cancel-timer fcitx--prefix-keys-timer)
-    (setq fcitx--prefix-keys-timer)))
+    (setq fcitx--prefix-keys-timer nil)))
 
 ;;;###autoload
 (defun fcitx-prefix-keys-setup ()
@@ -342,7 +382,7 @@
     (setq fcitx--evil-saved-active-p
           (or (fcitx--active-p)
               fcitx--prefix-keys-disabled-by-elisp))
-    (setq fcitx--prefix-keys-disabled-by-elisp)))
+    (setq fcitx--prefix-keys-disabled-by-elisp nil)))
 
 (defun fcitx--evil-switch-buffer-after ()
   (when (and evil-mode
@@ -352,7 +392,7 @@
       (fcitx--deactivate))
      (fcitx--evil-saved-active-p
       (fcitx--activate)))
-    (setq fcitx--evil-saved-active-p)))
+    (setq fcitx--evil-saved-active-p nil)))
 
 (defun fcitx--evil-switch-buffer (orig-func &rest args)
   ;; before switch
@@ -524,7 +564,7 @@
 (defun fcitx--aggressive-minibuffer-maybe-activate ()
   (when fcitx--aggressive-minibuffer-disabled-by-elisp
     (fcitx--activate)
-    (setq fcitx--aggressive-minibuffer-disabled-by-elisp)))
+    (setq fcitx--aggressive-minibuffer-disabled-by-elisp nil)))
 
 ;;;###autoload
 (defun fcitx-aggressive-minibuffer-turn-on ()
@@ -538,7 +578,7 @@
 ;;;###autoload
 (defun fcitx-aggressive-minibuffer-turn-off ()
   (interactive)
-  (setq fcitx--aggressive-p)
+  (setq fcitx--aggressive-p nil)
   (remove-hook 'minibuffer-setup-hook
                #'fcitx--aggressive-minibuffer-maybe-deactivate)
   (remove-hook 'minibuffer-exit-hook
