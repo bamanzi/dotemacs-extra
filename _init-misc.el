@@ -192,9 +192,13 @@
        (icompletep-cycling-mode 1))))
 
 ;; *** ido enhancement
+(when (and (boundp 'icomplete-with-completion-tables)
+           (eq icomplete-with-completion-tables t))
+  ;; use `ido' to override `icomplete' for `find-file'  (emacs >= 24.4)
+  (setq ido-everywhere t))
+
 ;; **** ido-ubiquitous-mode
-;; `ido-ubiquitous-mode' is better than `icomplete-mode' (is it?)
-(setq ido-everywhere t)
+;; NOTE: `ido-ubiquitous-mode' is better than `icomplete-mode' (is it?)
 
 (autoload 'ido-ubiquitous-mode "ido-ubiquitous"
   "Use `ido-completing-read' instead of `completing-read' almost everywhere." t)
@@ -282,6 +286,8 @@
                                           "M-s"
                                           "<f1>"
                                           "<f2>"
+                                          "<f3>"
+                                          "<f4>"
                                           "<f5>"
                                           "<f6>"
                                           "<f7>"

@@ -102,7 +102,7 @@
      (add-to-list 'ac-modes 'shell-mode)
      ))
 
-(define-key global-map (kbd "<apps> , p") 'ac-complete-pcomplete)
+(define-key global-map (kbd "<f4> p") 'ac-complete-pcomplete)
 
 (eval-after-load "cheatsheet"
   `(progn

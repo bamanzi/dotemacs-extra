@@ -242,7 +242,7 @@
   "Set point at one end of THING and set mark ARG THINGs from point." t)
 
 (global-set-key (kbd "C-x `") 'mark-thing)
-
+(global-set-key (kbd "<apps> m") 'mark-thing)
 
 ;; this one works for THING without `forward-op' (such as number, string)
 ;; but it lacks continous marking capability (it can't mark several things)
