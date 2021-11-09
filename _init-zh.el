@@ -14,15 +14,15 @@
       google-translate-default-target-language "zh-CN")
 
 (progn
-  (global-set-key (kbd "<apps> g g")   'google-translate-at-point)
-  (global-set-key (kbd "<apps> G")     'google-translate-at-point)
-  (global-set-key (kbd "<apps> g SPC") 'google-translate-query-translate)
+  (global-set-key (kbd "M-s M-s g g")   'google-translate-at-point)
+  (global-set-key (kbd "M-s M-s G")     'google-translate-at-point)
+  (global-set-key (kbd "M-s M-s g SPC") 'google-translate-query-translate)
   )
 
 (progn
-  (cheatsheet-add :group 'Language-Tools :key "<apps> g g"    :description "google-translate-at-point")
-  (cheatsheet-add :group 'Language-Tools :key "<apps> G"      :description "google-translate-at-point")
-  (cheatsheet-add :group 'Language-Tools :key "<apps> g SPC"  :description "google-translate-query-translate")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s g g"    :description "google-translate-at-point")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s G"      :description "google-translate-at-point")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s g SPC"  :description "google-translate-query-translate")
   t)
 
 ;; ** dictionary
@@ -34,16 +34,16 @@
   "Search word from input and display result with buffer." t)
 
 (progn
-  (global-set-key (kbd "<apps> y y")   'youdao-dictionary-search-at-point+)
-  (global-set-key (kbd "<apps> Y")     'youdao-dictionary-search-at-point+)
-  (global-set-key (kbd "<apps> y SPC") 'youdao-dictionary-search-from-input)
+  (global-set-key (kbd "M-s M-s y y")   'youdao-dictionary-search-at-point+)
+  (global-set-key (kbd "M-s M-s Y")     'youdao-dictionary-search-at-point+)
+  (global-set-key (kbd "M-s M-s y SPC") 'youdao-dictionary-search-from-input)
   )
 
 
 (progn
-  (cheatsheet-add :group 'Language-Tools :key "<apps> y y"    :description "youdao-dictionary-search-at-point+")
-  (cheatsheet-add :group 'Language-Tools :key "<apps> Y"      :description "youdao-dictionary-search-at-point+")
-  (cheatsheet-add :group 'Language-Tools :key "<apps> y SPC"  :description "youdao-dictionary-search-from-input")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s y y"    :description "youdao-dictionary-search-at-point+")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s Y"      :description "youdao-dictionary-search-at-point+")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s y SPC"  :description "youdao-dictionary-search-from-input")
   t)
 
 ;; *** dict protocol
@@ -53,11 +53,11 @@
 (autoload 'dictem-run-define  "dictem" nil t)
 
 (progn
-  (global-set-key (kbd "<apps> D")   'dictem-run-define)
-  (global-set-key (kbd "<apps> d d") 'dictem-run-define)
-  (global-set-key (kbd "<apps> d s") 'dictem-run-search)
-  (global-set-key (kbd "<apps> d SPC") 'dictem-run-search)
-  (global-set-key (kbd "<apps> d m") 'dictem-run-match)
+  (global-set-key (kbd "M-s M-s D")   'dictem-run-define)
+  (global-set-key (kbd "M-s M-s d d") 'dictem-run-define)
+  (global-set-key (kbd "M-s M-s d s") 'dictem-run-search)
+  (global-set-key (kbd "M-s M-s d SPC") 'dictem-run-search)
+  (global-set-key (kbd "M-s M-s d m") 'dictem-run-match)
   )
 
 (progn
@@ -77,18 +77,18 @@
 ;; *** sdcv
 (autoload 'sdcv-search-input "sdcv"
   "Search WORD through the `command-line' tool sdcv." t)
-(global-set-key (kbd "<apps> s SPC")  'sdcv-search-input)
+(global-set-key (kbd "M-s M-s s SPC")  'sdcv-search-input)
 
 ;;(setq sdcv-dictionary-simple-list '("XDICT英汉辞典" "XDICT汉英辞典"))
 (autoload 'sdcv-search-pointer+ "sdcv"
   "Translate current point word with command-line tool `sdcv'." t)
-(global-set-key (kbd "<apps> s s")  'sdcv-search-pointer+)
-(global-set-key (kbd "<apps> S")    'sdcv-search-pointer+)
+(global-set-key (kbd "M-s M-s s s")  'sdcv-search-pointer+)
+(global-set-key (kbd "M-s M-s S")    'sdcv-search-pointer+)
 
 (progn
-  (cheatsheet-add :group 'Language-Tools :key "<apps> s s"    :description "sdcv-search-pointer+")
-  (cheatsheet-add :group 'Language-Tools :key "<apps> S"      :description "sdcv-search-pointer+")
-  (cheatsheet-add :group 'Language-Tools :key "<apps> s SPC"  :description "sdcv-search-input")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s s s"    :description "sdcv-search-pointer+")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s S"      :description "sdcv-search-pointer+")
+  (cheatsheet-add :group 'Language-Tools :key "M-s M-s s SPC"  :description "sdcv-search-input")
   t)
 
 
