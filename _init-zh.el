@@ -141,6 +141,12 @@
      ))
 
 ;; ** misc
+;; *** helm-unicode
+(autoload 'helm-unicode "helm-unicode"
+  "Precofigured ‘helm’ for looking up unicode characters by name." t)
+
+(global-set-key (kbd "<f5> 8") 'helm-unicode)
+
 ;; *** pinyin-search
 (autoload 'isearch-forward-pinyin "pinyin-search"
   "Search Chinese forward by Pinyin." t)
