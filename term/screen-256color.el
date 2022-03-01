@@ -6,7 +6,7 @@
 (defun terminal-init-screen ()
   "Terminal initialization function for screen."
   ;; Use the xterm color initialization code.
-  (xterm-register-default-colors)
+  (xterm-register-default-colors xterm-standard-colors)
   (tty-set-up-initial-frame-faces))
 
 ;; screen.el ends here
