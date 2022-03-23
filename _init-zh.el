@@ -14,15 +14,16 @@
       google-translate-default-target-language "zh-CN")
 
 (progn
-  (define-key search-map (kbd "g g")  'google-translate-at-point)
-  (define-key search-map (kbd "G")    'google-translate-at-point)
-  (define-key search-map (kbd "SPC")  'google-translate-query-translate)
+  (define-key global-map (kbd "M-l g g")  'google-translate-at-point)
+  (define-key global-map (kbd "M-l M-g")  'google-translate-at-point)
+  (define-key global-map (kbd "M-l G")    'google-translate-at-point)
+  (define-key global-map (kbd "M-l g SPC")  'google-translate-query-translate)
   )
 
 (progn
-  (cheatsheet-add :group 'Language-Tools :key "M-s g g"    :description "google-translate-at-point")
-  (cheatsheet-add :group 'Language-Tools :key "M-s G"      :description "google-translate-at-point")
-  (cheatsheet-add :group 'Language-Tools :key "M-s g SPC"  :description "google-translate-query-translate")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l g g"    :description "google-translate-at-point")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l G"      :description "google-translate-at-point")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l g SPC"  :description "google-translate-query-translate")
   t)
 
 ;; ** dictionary
@@ -34,16 +35,17 @@
   "Search word from input and display result with buffer." t)
 
 (progn
-  (define-key search-map (kbd "y y")   'youdao-dictionary-search-at-point+)
-  (define-key search-map (kbd "Y")     'youdao-dictionary-search-at-point+)
-  (define-key search-map (kbd "y SPC") 'youdao-dictionary-search-from-input)
+  (define-key global-map (kbd "M-l y y")   'youdao-dictionary-search-at-point+)
+  (define-key global-map (kbd "M-l M-y")   'youdao-dictionary-search-at-point+)  
+  (define-key global-map (kbd "M-l Y")     'youdao-dictionary-search-at-point+)
+  (define-key global-map (kbd "M-l y SPC") 'youdao-dictionary-search-from-input)
   )
 
 
 (progn
-  (cheatsheet-add :group 'Language-Tools :key "M-s y y"    :description "youdao-dictionary-search-at-point+")
-  (cheatsheet-add :group 'Language-Tools :key "M-s Y"      :description "youdao-dictionary-search-at-point+")
-  (cheatsheet-add :group 'Language-Tools :key "M-s y SPC"  :description "youdao-dictionary-search-from-input")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l y y"    :description "youdao-dictionary-search-at-point+")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l Y"      :description "youdao-dictionary-search-at-point+")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l y SPC"  :description "youdao-dictionary-search-from-input")
   t)
 
 ;; *** dict protocol
@@ -53,19 +55,20 @@
 (autoload 'dictem-run-define  "dictem" nil t)
 
 (progn
-  (define-key search-map (kbd "D")   'dictem-run-define)
-  (define-key search-map (kbd "d d") 'dictem-run-define)
-  (define-key search-map (kbd "d s") 'dictem-run-search)
-  (define-key search-map (kbd "d SPC") 'dictem-run-search)
-  (define-key search-map (kbd "d m") 'dictem-run-match)
+  (define-key global-map (kbd "M-l d d") 'dictem-run-define)
+  (define-key global-map (kbd "M-l M-d") 'dictem-run-define)
+  (define-key global-map (kbd "M-l D")   'dictem-run-define)
+  (define-key global-map (kbd "M-l d s") 'dictem-run-search)
+  (define-key global-map (kbd "M-l d SPC") 'dictem-run-search)
+  (define-key global-map (kbd "M-l d m") 'dictem-run-match)
   )
 
 (progn
-  (cheatsheet-add :group 'Language-Tools :key "M-s d d"    :description "dictem-run-define")
-  (cheatsheet-add :group 'Language-Tools :key "M-s D"      :description "dictem-run-define")
-  (cheatsheet-add :group 'Language-Tools :key "M-s d SPC"  :description "dictem-run-search")
-  (cheatsheet-add :group 'Language-Tools :key "M-s d s"    :description "dictem-run-search")
-  (cheatsheet-add :group 'Language-Tools :key "M-s d m"    :description "dictem-run-match")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l d d"    :description "dictem-run-define")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l D"      :description "dictem-run-define")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l d SPC"  :description "dictem-run-search")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l d s"    :description "dictem-run-search")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l d m"    :description "dictem-run-match")
   t)
 
 
@@ -77,18 +80,19 @@
 ;; *** sdcv
 (autoload 'sdcv-search-input "sdcv"
   "Search WORD through the `command-line' tool sdcv." t)
-(define-key search-map (kbd "s SPC")  'sdcv-search-input)
+(define-key global-map (kbd "M-l s SPC")  'sdcv-search-input)
 
 ;;(setq sdcv-dictionary-simple-list '("XDICT英汉辞典" "XDICT汉英辞典"))
 (autoload 'sdcv-search-pointer+ "sdcv"
   "Translate current point word with command-line tool `sdcv'." t)
-(define-key search-map (kbd "s s")  'sdcv-search-pointer+)
-(define-key search-map (kbd "S")    'sdcv-search-pointer+)
+(define-key global-map (kbd "M-l s s")  'sdcv-search-pointer+)
+(define-key global-map (kbd "M-l S")    'sdcv-search-pointer+)
+(define-key global-map (kbd "M-l M-s")  'sdcv-search-pointer+)
 
 (progn
-  (cheatsheet-add :group 'Language-Tools :key "M-s s s"    :description "sdcv-search-pointer+")
-  (cheatsheet-add :group 'Language-Tools :key "M-s S"      :description "sdcv-search-pointer+")
-  (cheatsheet-add :group 'Language-Tools :key "M-s s SPC"  :description "sdcv-search-input")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l s s"    :description "sdcv-search-pointer+")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l S"      :description "sdcv-search-pointer+")
+  (cheatsheet-add :group 'Language-Tools/Dict :key "M-l s SPC"  :description "sdcv-search-input")
   t)
 
 
@@ -146,6 +150,9 @@
   "Precofigured ‘helm’ for looking up unicode characters by name." t)
 
 (global-set-key (kbd "<f5> 8") 'helm-unicode)
+
+(cheatsheet-add :group 'Language-Tools :key "M-x helm-unicode"  :description "Look up unicode charactors by name.")
+
 
 ;; *** pinyin-search
 (autoload 'isearch-forward-pinyin "pinyin-search"
