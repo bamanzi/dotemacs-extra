@@ -240,7 +240,7 @@
 (setq smex-cache nil
       smex-data nil)  ;;workaround for bug of `smex'
 
-;; *** cheatsheet
+;; **** cheatsheet
 (progn
   (cheatsheet-add :group 'Minibuffer
                   :key "M-x ivy-mode"
@@ -286,6 +286,7 @@
                                           "M-s"
                                           "M-c"
                                           "M-l"
+                                          "M-o"
                                           "<f1>"
                                           "<f2>"
                                           "<f3>"

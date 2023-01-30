@@ -8,11 +8,11 @@
   (interactive)
   (anything  '(anything-c-source-lacarte)))
 
-(define-key global-map (kbd "<f5> <f10>") 'anything-lacarte)
+(define-key global-map (kbd "M-o <f10>") 'anything-lacarte)
 
 (progn
   (cheatsheet-add :group 'Term :key "ESC <f10>"    :description "lacarte-execute-menu-command")
-  (cheatsheet-add :group 'Term :key "<f5> <f10>"   :description "anything-larcate")
+  (cheatsheet-add :group 'Term :key "M-o <f10>"   :description "anything-larcate")
   )
 
 ;; ** tmux integration

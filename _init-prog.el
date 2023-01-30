@@ -40,7 +40,7 @@
 (autoload 'anything-yasnippet-2 "anything-c-yasnippet-2"
   "Yasnippet from `anything'." t)
 
-(global-set-key (kbd "<f5> s")  'anything-yasnippet-2)
+(global-set-key (kbd "M-o s")  'anything-yasnippet-2)
 
 
 ;; ** completion
@@ -95,35 +95,35 @@
 
 (eval-after-load "helm-etags+"
   `(progn
-     (global-set-key (kbd "<f5> M-.")   'helm-etags+-select)
-     (global-set-key (kbd "<f5> . SPC") #'(lambda ()
+     (global-set-key (kbd "M-o M-.")   'helm-etags+-select)
+     (global-set-key (kbd "M-o . SPC") #'(lambda ()
                                             (interactive)
                                             (helm-etags+-select-internal "")))
 
      ;; 'helm-etags+-history' has its own marker-ring. thus could
      ;; not be used with `find-tag'
-     (global-set-key (kbd "<f5> .  M-h") 'helm-etags+-history)
+     (global-set-key (kbd "M-o .  M-h") 'helm-etags+-history)
 
-     (global-set-key (kbd "<f5> . <") 'helm-etags+-history-go-back)
-     (global-set-key (kbd "<f5> . >") 'helm-etags+-history-go-forward)
+     (global-set-key (kbd "M-o . <") 'helm-etags+-history-go-back)
+     (global-set-key (kbd "M-o . >") 'helm-etags+-history-go-forward)
      ))
 
 (eval-after-load "cheatsheet"
   `(progn
      (cheatsheet-add :group 'Programming/Tags
-                     :key "<f5> M-."
+                     :key "M-o M-."
                      :description "helm-etags+-select-at-point (or anything-...)")
      (cheatsheet-add :group 'Programming/Tags
-                     :key "<f5> . SPEC"
+                     :key "M-o . SPEC"
                      :description "helm-etags+-select (or anything-...)")
      (cheatsheet-add :group 'Programming/Tags
-                     :key "<f5> . M-h"
+                     :key "M-o . M-h"
                      :description "helm-etags+-history (or anything-...)")
      (cheatsheet-add :group 'Programming/Tags
-                     :key "<f5> . <"
+                     :key "M-o . <"
                      :description "helm-etags+-history-go-back (or anything-...)")
      (cheatsheet-add :group 'Programming/Tags
-                     :key "<f5> . >"
+                     :key "M-o . >"
                      :description "helm-etags+-history-go-forward (or anything-...)")
      t))
 
@@ -136,15 +136,15 @@
 
 (eval-after-load "anything-etags+"
   `(progn
-     (global-set-key (kbd "<f5> M-.")   'anything-etags+-select-at-point)
-     (global-set-key (kbd "<f5> . SPC") 'anything-etags+-select)
+     (global-set-key (kbd "M-o M-.")   'anything-etags+-select-at-point)
+     (global-set-key (kbd "M-o . SPC") 'anything-etags+-select)
 
      ;; 'anything-etags+-history' has its own marker-ring. thus could
      ;; not be used with `find-tag'
-     (global-set-key (kbd "<f5> .  M-h") 'anything-etags+-history)
+     (global-set-key (kbd "M-o .  M-h") 'anything-etags+-history)
 
-     (global-set-key (kbd "<f5> . <") 'anything-etags+-history-go-back)
-     (global-set-key (kbd "<f5> . >") 'anything-etags+-history-go-forward)
+     (global-set-key (kbd "M-o . <") 'anything-etags+-history-go-back)
+     (global-set-key (kbd "M-o . >") 'anything-etags+-history-go-forward)
      ))
 
 

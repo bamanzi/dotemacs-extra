@@ -149,9 +149,10 @@
 (autoload 'helm-unicode "helm-unicode"
   "Precofigured ‘helm’ for looking up unicode characters by name." t)
 
-(global-set-key (kbd "<f5> 8") 'helm-unicode)
+(global-set-key (kbd "M-o *") 'helm-unicode)
 
-(cheatsheet-add :group 'Language-Tools :key "M-x helm-unicode"  :description "Look up unicode charactors by name.")
+(cheatsheet-add :group 'Language-Tools :key "M-x helm-unicode"
+                :description "Look up unicode charactors by name.")
 
 
 ;; *** pinyin-search
