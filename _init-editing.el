@@ -138,8 +138,11 @@
 (autoload 'outline-move-subtree-down  "outline-magic"
   "Move the currrent subtree down past ARG headlines of the same level." t)
 
-(eval-after-load "outline-cycle"
+(eval-after-load "outline-magic"
   `(progn
+     ;; cancal "TAB" key overridden by `outine-magic.el'
+     (define-key outline-mode-map (kbd "TAB") nil)
+     
      (define-key outline-mode-prefix-map (kbd "TAB") 'outline-cycle)
      ))
 
