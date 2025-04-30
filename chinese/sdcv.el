@@ -376,9 +376,12 @@ The result will be displayed in buffer named with
 (defun sdcv-search-simple (&optional word)
   "Search WORD simple translate result."
   (let ((result (sdcv-search-witch-dictionary word sdcv-dictionary-simple-list)))
-    (if (fboundp 'popup-tip)
-        (popup-tip result)
-      (showtip result))))
+    (cond ((fboundp 'pos-tip-show)
+           (pos-tip-show result))
+          ((fboundp 'popup-tip)
+           (popup-tip result))
+          (t
+           (showtip result)))))
 
 (defun sdcv-search-witch-dictionary (word dictionary-list)
   "Search some WORD with dictionary list.
