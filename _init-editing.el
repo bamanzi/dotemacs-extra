@@ -1,24 +1,4 @@
-;; ** go-to
-(autoload 'avy-goto-char-in-line "avy"
-  "Jump to the currently visible CHAR in the current line." t)
-
-(autoload 'avy-goto-line "avy"
-  "Jump to a line start in current buffer." t)
-
-(global-set-key (kbd "M-g c") 'avy-goto-char-in-line)
-(global-set-key (kbd "M-g l") 'avy-goto-line)
-
-(progn
-  (cheatsheet-add :group 'Jump
-                  :key "M-g c"
-                  :description "avy-goto-char-in-line")
-  (cheatsheet-add :group 'Jump
-                  :key "M-g l"
-                  :description "avy-goto-line")
-  t
-  )
-
-;; *** zop-to-char
+;; ** zop-to-char
 (autoload 'zop-up-to-char  "zop-to-char"
   "An enhanced version of `zap-up-to-char'." t)
 
